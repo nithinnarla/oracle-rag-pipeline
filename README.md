@@ -1,5 +1,4 @@
-# ORACLE — Optimized Retrieval Augmented 
-Clinical and Lay-language Enquiry
+# ORACLE — Optimized Retrieval Augmented Clinical and Lay-language Enquiry
 
 ## Overview
 ORACLE is a personalized RAG pipeline designed to make complex biomedical information accessible to non-expert users. It dynamically adapts retrieved health content to match a user's health literacy level, background, and information needs — bridging the gap between complex medical knowledge and diverse healthcare consumers.
