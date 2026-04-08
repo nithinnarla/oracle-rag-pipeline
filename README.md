@@ -6,7 +6,9 @@ ORACLE is a personalized RAG pipeline designed to make complex biomedical inform
 Evaluated across a retrieval corpus of 35M+ biomedical documents and 400K+ QA evaluation instances spanning clinical, patient-facing, and plain language domains.
 
 ## Research Question
-How can RAG systems dynamically adapt retrieved biomedical content to match diverse user health literacy levels, improving accessibility and actionability of health information for non-expert consumers?
+**Broad motivation:** How can RAG systems improve health information accessibility for general users?
+
+**This paper specifically asks:** How can RAG systems dynamically adapt retrieved biomedical content to match diverse user health literacy levels, improving accessibility for non-expert healthcare consumers?
 
 ## Pipeline Architecture
 
