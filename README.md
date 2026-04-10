@@ -75,7 +75,9 @@ Python, LangChain, FAISS, HuggingFace Transformers, sentence-transformers, BioSe
 - March 2026: Stage 1-2 retrieval pipeline implementation
 - April 2026: Stage 3 health literacy adaptation module
 - May 2026: Stage 4 generation and evaluation
+- June 2026: Paper writing begins, preliminary results
 - July 2026: Cross-dataset evaluation and ablation studies
+- August 2026: Paper writing, revisions, final polish  
 - September 2026: Target submission to ACL/SIGIR
 
 ## Status
