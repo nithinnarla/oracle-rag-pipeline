@@ -17,6 +17,7 @@ rank-bm25==0.2.2
 
 # Biomedical embeddings
 # BioSentVec loaded via HuggingFace Hub (no pip install needed)
+# APPLS metrics loaded from Guo et al. evaluation code (no pip install — clone from github.com/xiaolan98/APPLS)
 
 # OpenAI
 openai==1.30.1

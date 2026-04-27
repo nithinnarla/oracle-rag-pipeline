@@ -87,16 +87,20 @@ This is contested territory. The field is actively debating whether literacy-con
 | MIRAGE Benchmark | 2024 | 7,663 | Multi-domain QA | RAG eval |
 | Consumer Health QA | 2020 | 3,000+ | Patient Q&A | Accessibility eval |
 | PLABA | 2023 | 750+ | Plain language | Accessibility eval |
+| MIMIC-III Clinical | 2001-2012 | 46,000+ | Clinical | Discharge summary accessibility eval |
+| MIMIC-III Clinical | 2001-2012 | 46,000+ | Clinical | Discharge summary accessibility eval |
 
 **Retrieval corpus: 35M+ documents**
-**Evaluation: 400K+ QA instances across 7 datasets**
+**Evaluation: 475K+ instances across 8 datasets**
 
 Dataset notes:
 - PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025)
 - PubMedQA and MedMCQA benchmark standard biomedical QA retrieval — baseline comparison
 - MIRAGE (2024) is the most comprehensive RAG-specific medical evaluation benchmark currently available
 - Consumer Health QA and PLABA are the critical datasets — both evaluate plain language accessibility, which is the core research question
-- Cross-dataset evaluation ensures ORACLE generalizes across clinical and patient-facing contexts
+- MIMIC-III discharge summaries represent the clinical-to-patient translation challenge — documents written for clinicians that patients and caregivers must navigate after hospital discharge
+- Access via PhysioNet credentialed registration (same credentials as FAPE)
+- Cross-dataset evaluation ensures ORACLE generalizes across consumer, clinical, and plain language contexts
 
 ---
 
