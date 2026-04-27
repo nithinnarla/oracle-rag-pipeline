@@ -88,7 +88,6 @@ This is contested territory. The field is actively debating whether literacy-con
 | Consumer Health QA | 2020 | 3,000+ | Patient Q&A | Accessibility eval |
 | PLABA | 2023 | 750+ | Plain language | Accessibility eval |
 | MIMIC-III Clinical | 2001-2012 | 46,000+ | Clinical | Discharge summary accessibility eval |
-| MIMIC-III Clinical | 2001-2012 | 46,000+ | Clinical | Discharge summary accessibility eval |
 
 **Retrieval corpus: 35M+ documents**
 **Evaluation: 475K+ instances across 8 datasets**
