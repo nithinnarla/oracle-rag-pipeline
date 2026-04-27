@@ -205,3 +205,37 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# macOS
+.DS_Store
+
+# Research data files
+*.csv
+*.json
+*.jsonl
+*.parquet
+*.tsv
+
+# Large model files
+*.bin
+*.pt
+*.pth
+*.safetensors
+*.gguf
+
+# HuggingFace cache
+.cache/
+huggingface/
+
+# FAISS index files
+*.faiss
+*.index
+
+# API response caches
+api_cache/
+response_cache/
+
+# Experiment outputs
+outputs/
+results/
+logs/
