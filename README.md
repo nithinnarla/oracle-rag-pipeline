@@ -89,8 +89,7 @@ This is contested territory. The field is actively debating whether literacy-con
 | PLABA | 2023 | 750+ | Plain language | Accessibility eval |
 | MIMIC-III Clinical | 2001-2012 | 46,000+ | Clinical | Discharge summary accessibility eval |
 
-**Retrieval corpus: 35M+ documents**
-**Evaluation: 475K+ instances across 8 datasets**
+**Pipeline planned: 35M+ retrieval corpus, 475K+ evaluation instances across 8 datasets — loaders under development**
 
 Dataset notes:
 - PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025)
@@ -125,15 +124,17 @@ Full dependency list: `requirements.txt`
 
 ## Research Timeline
 
-- January 2026: Research conception and literature review
-- February 2026: Architecture design and dataset corpus setup
-- March 2026: Stage 1-2 retrieval pipeline implementation
-- April 2026: Stage 3 health literacy adaptation module
-- May 2026: Stage 4 generation and evaluation pipeline
-- June 2026: Preliminary results, paper writing begins
-- July 2026: Cross-dataset evaluation and ablation studies
-- August 2026: Paper writing, revisions, final polish
-- September 2026: Target submission — ACL/SIGIR + arXiv simultaneously
+- January 2026: Research conception — health information accessibility gap identified in clinical NLP deployments
+- February 2026: Architecture design — 4-stage literacy-conditioned RAG pipeline designed, dataset corpus planned
+- March 2026: Literature review — RAG, health literacy, and plain language summarization domains scoped
+- April 2026: GitHub repository created, pipeline architecture and research question documented
+- May 2026: Dataset corpus planned, loaders under development
+- June 2026: Stage 1-2 retrieval pipeline implementation — PubMed ingestion and literacy-conditioned dense retrieval
+- July 2026: Stage 3 health literacy adaptation module
+- August 2026: Stage 4 generation and evaluation pipeline
+- September 2026: Cross-dataset evaluation and ablation studies
+- October 2026: Paper writing, revisions, final polish
+- November 2026: Target submission — ACL/SIGIR + arXiv simultaneously
 
 ---
 
