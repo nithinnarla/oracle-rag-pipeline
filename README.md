@@ -92,7 +92,7 @@ This is contested territory. The field is actively debating whether literacy-con
 **Confirmed: 273,518 records — PubMedQA verified | all other datasets pending download**
 
 Dataset notes:
-- PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025)
+- PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025) — pending API access via NCBI E-utilities
 - PubMedQA and MedMCQA benchmark standard biomedical QA retrieval — baseline comparison
 - MIRAGE (2024) is the most comprehensive RAG-specific medical evaluation benchmark currently available
 - Consumer Health QA and PLABA are the critical datasets — both evaluate plain language accessibility, which is the core research question
@@ -141,7 +141,7 @@ Full dependency list: `requirements.txt`
 ## Status
 
 🔬 Research in progress
-Target venue: ACL/SIGIR 2026 (arXiv preprint uploaded on submission day)
+Target venue: ACL/SIGIR 2027 (arXiv preprint uploaded on submission day)
 
 ---
 
