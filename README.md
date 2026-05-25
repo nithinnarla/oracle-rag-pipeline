@@ -80,16 +80,16 @@ This is contested territory. The field is actively debating whether literacy-con
 
 | Dataset | Year | Size | Domain | Purpose |
 |---------|------|------|--------|---------|
-| PubMed Abstracts | 1966-2025 | 35,000,000+ | Biomedical | Retrieval corpus |
-| PubMedQA | 2019 | 211,000+ | Biomedical QA | Retrieval eval |
-| MedMCQA | 2022 | 194,000+ | Medical QA | Retrieval eval |
-| MedQA (USMLE) | 2021 | 12,723 | Clinical QA | Retrieval eval |
-| MIRAGE Benchmark | 2024 | 7,663 | Multi-domain QA | RAG eval |
-| Consumer Health QA | 2020 | 3,000+ | Patient Q&A | Accessibility eval |
-| PLABA | 2023 | 750+ | Plain language | Accessibility eval |
-| MIMIC-III Clinical | 2001-2012 | 46,000+ | Clinical | Discharge summary accessibility eval |
+| PubMed Abstracts | 1966-2025 | — | Biomedical | Retrieval corpus |
+| PubMedQA | 2019 | 273,518 | Biomedical QA | Retrieval eval |
+| MedMCQA | 2022 | — | Medical QA | Retrieval eval |
+| MedQA (USMLE) | 2021 | — | Clinical QA | Retrieval eval |
+| MIRAGE Benchmark | 2024 | — | Multi-domain QA | RAG eval |
+| Consumer Health QA | 2020 | — | Patient Q&A | Accessibility eval |
+| PLABA | 2023 | — | Plain language | Accessibility eval |
+| MIMIC-III Clinical | 2001-2012 | — | Clinical | Discharge summary accessibility eval |
 
-**Pipeline planned: 35M+ retrieval corpus, 475K+ evaluation instances across 8 datasets — loaders under development**
+**Confirmed: 273,518 records — PubMedQA verified | all other datasets pending download**
 
 Dataset notes:
 - PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025)
