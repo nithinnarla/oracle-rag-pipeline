@@ -83,13 +83,13 @@ This is contested territory. The field is actively debating whether literacy-con
 | PubMed Abstracts | 1966-2025 | — | Biomedical | Retrieval corpus |
 | PubMedQA | 2019 | 273,518 | Biomedical QA | Retrieval eval |
 | MedMCQA | 2022 | 193,155 | Medical QA | Retrieval eval |
-| MedQA (USMLE) | 2021 | — | Clinical QA | Retrieval eval |
+| MedQA (USMLE) | 2021 | 11,451 | Clinical QA | Retrieval eval |
 | MIRAGE Benchmark | 2024 | — | Multi-domain QA | RAG eval |
 | Consumer Health QA | 2020 | — | Patient Q&A | Accessibility eval |
 | PLABA | 2023 | — | Plain language | Accessibility eval |
 | MIMIC-III Clinical | 2001-2012 | — | Clinical | Discharge summary accessibility eval |
 
-**Confirmed: 466,673 records — PubMedQA + MedMCQA verified | remaining datasets pending download**
+**Confirmed: 478,124 records — PubMedQA + MedMCQA + MedQA verified | remaining datasets pending download**
 
 Dataset notes:
 - PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025) — pending API access via NCBI E-utilities
