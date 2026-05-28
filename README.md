@@ -85,17 +85,17 @@ This is contested territory. The field is actively debating whether literacy-con
 | MedMCQA | 2022 | 193,155 | Medical QA | Retrieval eval |
 | MedQA (USMLE) | 2021 | 11,451 | Clinical QA | Retrieval eval |
 | MIRAGE Benchmark | 2024 | 7,663 | Multi-domain QA | RAG eval |
-| Consumer Health QA | 2020 | — | Patient Q&A | Accessibility eval |
+| MedQuAD | 2019 | 47,441 | Patient Q&A | Accessibility eval |
 | PLABA | 2023 | — | Plain language | Accessibility eval |
 | MIMIC-III Clinical | 2001-2012 | — | Clinical | Discharge summary accessibility eval |
 
-**Confirmed: 485,787 records — PubMedQA + MedMCQA + MedQA + MIRAGE verified | remaining datasets pending download**
+**Confirmed: 533,228 records — PubMedQA + MedMCQA + MedQA + MIRAGE + MedQuAD verified | PLABA + MIMIC-III pending download**
 
 Dataset notes:
 - PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025) — pending API access via NCBI E-utilities
 - PubMedQA and MedMCQA benchmark standard biomedical QA retrieval — baseline comparison
 - MIRAGE (2024) is the most comprehensive RAG-specific medical evaluation benchmark currently available
-- Consumer Health QA and PLABA are the critical datasets — both evaluate plain language accessibility, which is the core research question
+- MedQuAD and PLABA are the critical datasets — both evaluate plain language accessibility, which is the core research question
 - MIMIC-III discharge summaries represent the clinical-to-patient translation challenge — documents written for clinicians that patients and caregivers must navigate after hospital discharge
 - Access via PhysioNet credentialed registration (same credentials as FAPE)
 - Cross-dataset evaluation ensures ORACLE generalizes across consumer, clinical, and plain language contexts
@@ -161,6 +161,6 @@ Target venue: ACL/SIGIR 2027 (arXiv preprint uploaded on submission day)
 - Jin et al. (2019) — PubMedQA: A Biomedical Research Question Answering Dataset, EMNLP
 - Pal et al. (2022) — MedMCQA: Large-scale Medical QA, CHIL
 - Jin et al. (2021) — MedQA: USMLE Dataset, Applied Sciences
-- Ben Abacha et al. (2020) — Consumer Health QA Dataset, ACL
+- Ben Abacha & Demner-Fushman (2019) — MedQuAD: A Manually Curated Question-Answer Dataset, BMC Bioinformatics
 - Koreeda et al. (2023) — PLABA: Plain Language Adaptations of Biomedical Abstracts, arXiv
 - Johnson et al. (2016) — MIMIC-III Clinical Database, Scientific Data
