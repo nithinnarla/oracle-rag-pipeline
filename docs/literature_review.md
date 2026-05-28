@@ -70,8 +70,8 @@ Meta-evaluation of plain language metrics — which metrics actually predict whe
 **Koreeda et al. (2023) — PLABA: Plain Language Adaptations of Biomedical Abstracts (arXiv)**
 750+ biomedical abstracts with expert plain language adaptations. Small dataset, high quality. The critical dataset for ORACLE's Stage 4 evaluation — it has gold-standard plain language references that allow factual consistency verification. Limitation: 750 examples is a small evaluation set. ORACLE uses PLABA for evaluation, not training.
 
-**Ben Abacha et al. (2020) — Consumer Health QA Dataset (ACL)**
-3,000+ consumer health questions with expert answers. The dataset that gets closest to real patient information needs. Questions written by actual health consumers, answers written for health consumers. This is the dataset that matters most for ORACLE's core research question — does literacy-conditioned retrieval actually improve outcomes for the population being served.
+**Ben Abacha & Demner-Fushman (2019) — MedQuAD: A Manually Curated Question-Answer Dataset (BMC Bioinformatics)**
+47,441 patient-facing QA pairs from 12 NIH websites including MedlinePlus, NIDDK, NCI, and GARD. Questions written by health consumers, answers written for health consumers. Initially planned as Consumer Health QA (Ben Abacha et al. 2020) — during dataset verification May 2026, MedQuAD was identified as the appropriate downloadable resource from the same NLM/NIH research group. More comprehensive, better documented, and directly relevant to ORACLE's health information accessibility evaluation.
 
 ### Clinical Text and MIMIC-III
 
@@ -130,7 +130,7 @@ The implication for ORACLE: reporting Flesch-Kincaid scores is necessary for com
 
 Post-processing simplification has a fundamental limitation: it rewrites content written for a different audience. The errors introduced in simplification come from the mismatch between the source document's intended reader and the target reader. Simplifying a passage written for a clinician into a passage for a patient requires judgment calls about which technical details to drop, which concepts to merge, which qualifications to omit. These judgment calls introduce factual errors — exactly what PlainQAFact documents.
 
-Literacy-conditioned retrieval sidesteps this by retrieving documents already written for the target audience. Consumer Health QA answers are written for health consumers. PLABA adaptations are written for general audiences. If the retrieval step surfaces these documents for low-literacy users instead of PubMed abstracts written for researchers, the generation step starts from content appropriate for the audience — reducing the simplification burden and the associated error rate.
+Literacy-conditioned retrieval sidesteps this by retrieving documents already written for the target audience. MedQuAD answers are written for health consumers by NIH subject matter experts. PLABA adaptations are written for general audiences. If the retrieval step surfaces these documents for low-literacy users instead of PubMed abstracts written for researchers, the generation step starts from content appropriate for the audience — reducing the simplification burden and the associated error rate.
 
 This is the architectural insight ORACLE is built on. It is not a new idea in accessibility research — matching content to reader has been studied in educational technology for decades. What is new is applying it to RAG systems for health information and evaluating it rigorously against the production failure modes that motivated the research.
 
@@ -165,7 +165,7 @@ MIRAGE measures factual accuracy. APPLS measures plain language quality. No benc
 - Guo et al. (2024) — Personalized Jargon Identification for Enhanced Interdisciplinary Communication, NAACL
 - Guo et al. (2024) — APPLS: Evaluating Evaluation Metrics for Plain Language Summarization, EMNLP
 - Koreeda et al. (2023) — PLABA: Plain Language Adaptations of Biomedical Abstracts, arXiv
-- Ben Abacha et al. (2020) — Consumer Health QA Dataset, ACL
+- Ben Abacha & Demner-Fushman (2019) — MedQuAD: A Manually Curated Question-Answer Dataset, BMC Bioinformatics
 - Johnson et al. (2016) — MIMIC-III Clinical Database, Scientific Data
 - Nutbeam (2000) — Health Literacy as a Public Health Goal, Health Promotion International
 - Baker (2006) — The Meaning and Measure of Health Literacy, Journal of General Internal Medicine
