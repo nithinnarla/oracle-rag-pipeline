@@ -86,10 +86,10 @@ This is contested territory. The field is actively debating whether literacy-con
 | MedQA (USMLE) | 2021 | 11,451 | Clinical QA | Retrieval eval |
 | MIRAGE Benchmark | 2024 | 7,663 | Multi-domain QA | RAG eval |
 | MedQuAD | 2019 | 47,441 | Patient Q&A | Accessibility eval |
-| PLABA | 2023 | — | Plain language | Accessibility eval |
+| PLABA | 2023 | 921 | Plain language | Accessibility eval |
 | MIMIC-III Clinical | 2001-2012 | — | Clinical | Discharge summary accessibility eval |
 
-**Confirmed: 533,228 records — PubMedQA + MedMCQA + MedQA + MIRAGE + MedQuAD verified | PLABA + MIMIC-III pending download**
+**Confirmed: 534,149 records — PubMedQA + MedMCQA + MedQA + MIRAGE + MedQuAD + PLABA verified | MIMIC-III pending PhysioNet approval**
 
 Dataset notes:
 - PubMed provides large-scale up-to-date biomedical retrieval base (1966-2025) — pending API access via NCBI E-utilities
