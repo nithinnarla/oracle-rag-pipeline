@@ -67,7 +67,7 @@ Jargon identification as a personalization task — different users need differe
 **Guo et al. (2024) — APPLS: Evaluating Evaluation Metrics for Plain Language Summarization (EMNLP)**
 Meta-evaluation of plain language metrics — which metrics actually predict whether humans understand plain language summaries. The finding: standard NLP metrics do not correlate well with human comprehension. APPLS provides the evaluation framework ORACLE uses in Stage 4. This paper is why ORACLE reports comprehension outcome measurement rather than just readability scores.
 
-**Koreeda et al. (2023) — PLABA: Plain Language Adaptations of Biomedical Abstracts (arXiv)**
+**Attal et al. (2023) — PLABA: A Dataset for Plain Language Adaptation of Biomedical Abstracts (Scientific Data)**
 750+ biomedical abstracts with expert plain language adaptations. Small dataset, high quality. The critical dataset for ORACLE's Stage 4 evaluation — it has gold-standard plain language references that allow factual consistency verification. Limitation: 750 examples is a small evaluation set. ORACLE uses PLABA for evaluation, not training.
 
 **Ben Abacha & Demner-Fushman (2019) — MedQuAD: A Manually Curated Question-Answer Dataset (BMC Bioinformatics)**
@@ -164,7 +164,7 @@ MIRAGE measures factual accuracy. APPLS measures plain language quality. No benc
 - Guo et al. (2025) — PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization, arXiv
 - Guo et al. (2024) — Personalized Jargon Identification for Enhanced Interdisciplinary Communication, NAACL
 - Guo et al. (2024) — APPLS: Evaluating Evaluation Metrics for Plain Language Summarization, EMNLP
-- Koreeda et al. (2023) — PLABA: Plain Language Adaptations of Biomedical Abstracts, arXiv
+- Attal et al. (2023) — PLABA: A Dataset for Plain Language Adaptation of Biomedical Abstracts, Scientific Data
 - Ben Abacha & Demner-Fushman (2019) — MedQuAD: A Manually Curated Question-Answer Dataset, BMC Bioinformatics
 - Johnson et al. (2016) — MIMIC-III Clinical Database, Scientific Data
 - Nutbeam (2000) — Health Literacy as a Public Health Goal, Health Promotion International
