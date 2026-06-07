@@ -187,61 +187,62 @@ ORACLE's Stage 4 evaluation includes downstream task success rate by literacy gr
 
 ## Protocol 8 — Knowledge Map
 
+```
 ORACLE Knowledge Map — June 2026
 Verified: 534,149 records across 6 datasets
 
 RAG ARCHITECTURE CLUSTER
-Lewis et al. 2020 (NeurIPS) — Foundational RAG
-  literacy-agnostic by design → ORACLE GAP 1
-Karpukhin et al. 2020 (EMNLP) — DPR backbone
-  ORACLE builds on DPR + adds literacy conditioning
-Izacard & Grave 2021 (EACL) — FiD multi-passage
-  multi-passage fusion → informs Stage 2 design
+└── Literacy-agnostic retrieval is the core architectural gap
+    ├── Lewis et al. 2020 (NeurIPS) — Foundational RAG
+    │   └── literacy-agnostic by design → ORACLE GAP 1
+    ├── Karpukhin et al. 2020 (EMNLP) — DPR backbone
+    │   └── ORACLE builds on DPR + adds literacy conditioning
+    └── Izacard & Grave 2021 (EACL) — FiD multi-passage
+        └── multi-passage fusion → informs Stage 2 design
 
 BIOMEDICAL BENCHMARK CLUSTER
-Jin et al. 2019 — PubMedQA 273,518 records
-Pal et al. 2022 — MedMCQA 193,155 records
-Jin et al. 2021 — MedQA 11,451 records
-Xiong et al. 2024 — MIRAGE 7,663 records
-  best available RAG medical benchmark
-  no accessibility evaluation → ORACLE GAP 2
+├── Jin et al. 2019 — PubMedQA 273,518 records
+├── Pal et al. 2022 — MedMCQA 193,155 records
+├── Jin et al. 2021 — MedQA 11,451 records
+└── Xiong et al. 2024 — MIRAGE 7,663 records
+    ├── best available RAG medical benchmark
+    └── no accessibility evaluation → ORACLE GAP 2
 
 PLAIN LANGUAGE CLUSTER (Guo et al. UIUC series)
-APPLS 2024 — standard metrics fail on plain language
-  ORACLE uses downstream task success rate
-Jargon 2024 — personalization required
-  ORACLE per-literacy-band PEFT adapters
-PlainQAFact 2025 — simplification degrades factuality
-  ORACLE upstream retrieval conditioning
+├── APPLS 2024 — standard metrics fail on plain language
+│   └── ORACLE uses downstream task success rate
+├── Jargon 2024 — personalization required
+│   └── ORACLE per-literacy-band PEFT adapters
+└── PlainQAFact 2025 — simplification degrades factuality
+    └── ORACLE upstream retrieval conditioning
 
 PATIENT-FACING DATASET CLUSTER
-MedQuAD 47,441 records (NIH, 12 websites)
-  replaces Consumer Health QA — same NLM/NIH group
-MIMIC-III pending PhysioNet
-  discharge summaries — hardest accessibility challenge
+├── MedQuAD 47,441 records (NIH, 12 websites)
+│   └── replaces Consumer Health QA — same NLM/NIH group
+└── MIMIC-III pending PhysioNet
+    └── discharge summaries — hardest accessibility challenge
 
 PLAIN LANGUAGE EVALUATION CLUSTER
-Attal et al. 2023 — PLABA 921 records
-  75 health topics, gold standard NLM annotations
-  primary plain language evaluation dataset
+└── Attal et al. 2023 — PLABA 921 records
+    ├── 75 health topics, gold standard NLM annotations
+    └── primary plain language evaluation dataset
 
 HEALTH LITERACY FRAMEWORK CLUSTER
-Nutbeam 2000 — three-level literacy classification
-  ORACLE literacy band design
-Baker 2006 — literacy predicts health outcomes
-  justifies comprehension outcome measurement
-IOM 2004 — health literacy policy framework
-  motivates production deployment framing
+├── Nutbeam 2000 — three-level literacy classification
+│   └── ORACLE literacy band design
+├── Baker 2006 — literacy predicts health outcomes
+│   └── justifies comprehension outcome measurement
+└── IOM 2004 — health literacy policy framework
+    └── motivates production deployment framing
 
 ORACLE CORE CONTRIBUTION
-Literacy-conditioned dense retrieval
-  Gap 1: first system to condition retrieval on literacy
-  Gap 2: first RAG benchmark with accessibility evaluation
-  Gap 3: architectural fix for simplification errors
-  Gap 4: first NLP operationalization of Nutbeam framework
-  Gap 5: end-to-end clinical-to-patient evaluation
-
----
+└── Literacy-conditioned dense retrieval
+    ├── Gap 1: first system to condition retrieval on literacy
+    ├── Gap 2: first RAG benchmark with accessibility evaluation
+    ├── Gap 3: architectural fix for simplification errors
+    ├── Gap 4: first NLP operationalization of Nutbeam framework
+    └── Gap 5: end-to-end clinical-to-patient evaluation
+```
 
 ## Protocol 9 — So What Test (3 Points in Plain English)
 
