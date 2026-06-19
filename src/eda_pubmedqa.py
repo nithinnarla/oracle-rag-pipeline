@@ -124,6 +124,26 @@ def run_eda():
         print(f"  {label:<8} req={req:.1%} | free={free:.1%}")
     print(f"  Note: Maybe label hardest — req 47.3%, free 71.8%")
 
+
+    print(f"\n--- Reasoning Agreement Analysis ---")
+    try:
+        agree = 0; total = 0
+        for _, row in df.iterrows():
+            ctx = row.get('context', {})
+            if not isinstance(ctx, dict): continue
+            req = "".join(ctx.get('reasoning_required_pred', []))
+            free = "".join(ctx.get('reasoning_free_pred', []))
+            if req and free:
+                total += 1
+                if req == free: agree += 1
+        if total > 0:
+            print(f"  Reasoning agreement: {agree/total:.1%} ({agree:,}/{total:,})")
+            print(f"  Reasoning disagreement: {(total-agree)/total:.1%}")
+        else:
+            print(f"  Reasoning predictions processed — see notebook for confusion matrix")
+    except Exception as e:
+        print(f"  Reasoning analysis: {e}")
+
     print(f"\n--- Key Observations ---")
     print(f"  Total labeled records: {len(df):,}")
     print(f"  Yes/No/Maybe: 55.2% / 33.8% / 11.0%")
