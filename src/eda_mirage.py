@@ -110,6 +110,30 @@ def run_eda():
         long_q = (subset['q_len'] > df['q_len'].quantile(0.75)).sum()
         print(f"  {src:<12} questions in top quartile of length: {long_q:,} ({long_q/len(subset):.1%})")
 
+
+
+
+
+    print(f"\n--- Word Count by Source ---")
+    df['q_words'] = df['question'].astype(str).str.split().str.len()
+    for src, subset in df.groupby('source'):
+        print(f"  {src:<12} mean={subset['q_words'].mean():.1f} | median={subset['q_words'].median():.0f} | min={subset['q_words'].min()} | max={subset['q_words'].max()}")
+    print(f"  Overall:     mean={df['q_words'].mean():.1f} | median={df['q_words'].median():.0f}")
+    medqa_words = df[df['source']=='medqa']['q_words'].mean()
+    bioasq_words = df[df['source']=='bioasq']['q_words'].mean()
+    print(f"  Note: medqa mean {medqa_words:.0f} words vs bioasq mean {bioasq_words:.0f} words — clinical scenarios vs factual queries")
+
+    print(f"\n--- Option Text Length by Source ---")
+    for src, subset in df.groupby('source'):
+        opt_lens = []
+        for opts in subset['options']:
+            if isinstance(opts, dict):
+                opt_lens.extend([len(str(v)) for v in opts.values()])
+        if opt_lens:
+            import numpy as np
+            print(f"  {src:<12} mean_option_len={np.mean(opt_lens):.0f} | median={np.median(opt_lens):.0f} | min={min(opt_lens)} | max={max(opt_lens)}")
+    print(f"  Note: bioasq/pubmedqa options are 2-3 chars (yes/no/maybe) vs medqa/mmlu options are 21-33 chars mean (full clinical statements)")
+
     print(f"\n--- Missing Values ---")
     nulls = df[['question', 'options', 'answer', 'source']].isnull().sum()
     if nulls.sum() == 0:
