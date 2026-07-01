@@ -148,6 +148,8 @@ def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
     df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
     # Stratified cap by subject_name to preserve diversity across 21 medical subjects
     # while preventing MedMCQA from dominating the retrieval corpus
+    if "subject_name" not in df.columns:
+        print(f"    WARNING: subject_name column missing -- MedMCQA cap NOT applied, {len(df):,} records uncapped")
     if len(df) > MEDMCQA_CAP and "subject_name" in df.columns:
         frac = MEDMCQA_CAP / len(df)
         df = df.groupby("subject_name", group_keys=False).apply(
