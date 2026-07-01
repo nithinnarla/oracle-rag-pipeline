@@ -130,8 +130,11 @@ def process_medqa(record_id_offset: int = 0) -> pd.DataFrame:
     return pd.DataFrame(records)
 
 
+MEDMCQA_CAP = 20000  # capped to prevent single-source domination of retrieval corpus (was 189,366 = 89.9% of corpus)
+
+
 def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
-    """Process MedMCQA dataset."""
+    """Process MedMCQA dataset -- capped and stratified by subject."""
     print("  Loading MedMCQA...")
     from medmcqa_loader import load_medmcqa_all
     d = load_medmcqa_all()
@@ -143,6 +146,14 @@ def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
             split_df['split'] = split_name
             dfs.append(split_df)
     df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
+    # Stratified cap by subject_name to preserve diversity across 21 medical subjects
+    # while preventing MedMCQA from dominating the retrieval corpus
+    if len(df) > MEDMCQA_CAP and "subject_name" in df.columns:
+        frac = MEDMCQA_CAP / len(df)
+        df = df.groupby("subject_name", group_keys=False).apply(
+            lambda g: g.sample(frac=frac, random_state=42)
+        ).reset_index(drop=True)
+        print(f"    MedMCQA capped: {len(df):,} records (stratified by subject, {frac:.1%} of original)")
     records = []
     for idx, row in df.iterrows():
         question = clean_text(str(row.get("question", "")))
@@ -163,6 +174,7 @@ def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
             "record_id": f"medmcqa_{record_id_offset + idx}",
             "source": "medmcqa",
             "source_type": "benchmark",
+            "subject": str(row.get("subject_name", "")),
             "question": question,
             "answer": explanation,
             "full_text": full_text.strip(),
@@ -390,7 +402,20 @@ def run_preprocessor():
 
     print("\n--- Combining Corpus ---")
     corpus = pd.concat(dfs, ignore_index=True)
-    print(f"  Total records: {len(corpus):,}")
+    print(f"  Total records before quality filter: {len(corpus):,}")
+
+    print("\n--- Quality Filtering ---")
+    before = len(corpus)
+    answer_str = corpus["answer"].astype(str).str.strip().str.lower()
+    null_answer = corpus["answer"].isna() | (answer_str == "") | (answer_str == "nan") | (answer_str == "none")
+    print(f"  Dropping {null_answer.sum():,} records with no answer content (unusable for RAG retrieval)")
+    corpus = corpus[~null_answer].copy()
+
+    unknown_fk = corpus["literacy_band"] == "unknown"
+    print(f"  Dropping {unknown_fk.sum():,} records with unscoreable literacy (cannot assign PEFT adapter band)")
+    corpus = corpus[~unknown_fk].copy()
+
+    print(f"  Total records after quality filter: {len(corpus):,} (removed {before - len(corpus):,}, {(before-len(corpus))/before*100:.1f}%)")
 
     print("\n--- Corpus Statistics ---")
     print(f"  Sources: {corpus['source'].value_counts().to_dict()}")
