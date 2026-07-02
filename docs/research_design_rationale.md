@@ -150,3 +150,25 @@ The EDA found MIRAGE's 5 source datasets use incompatible answer formats — bin
 ---
 
 *This document was written after completing all 6 dataset EDAs and before beginning Stage 1 pipeline implementation. Design decisions documented here reflect what the literature and EDA findings actually support.*
+
+---
+
+## Corrections During Stage 1 Implementation
+
+**MedMCQA corpus domination**
+
+Did not anticipate that MedMCQA (182,822 raw records) would outscale every other source by an order of magnitude once combined into a single retrieval corpus. Uncapped, MedMCQA was 89.9% of the corpus (189,366 of 210,731 records) -- a health-literacy RAG paper whose retrieval index is 90% medical entrance-exam questions undermines the patient-facing framing this project claims. Capped MedMCQA to 20,000 records, stratified by subject_name to preserve all 21 medical subjects proportionally. Post-cap: MedMCQA 42.4% of corpus, no single source above 50%.
+
+**Answer field quality -- literal null-string bug**
+
+MedMCQA's answer field (mapped from the exp/explanation column, since the correct-option index is not present in the loader output) contained records where exp was missing. The code used row.get("exp", "") to read it, which only returns the default value when the key itself is absent from the row -- if the key exists but the value is NaN, str(nan) produces the literal three-character string "nan", which passed initial null/empty checks undetected. 2,306 records had the literal string "nan" as their stored answer before this was caught. Quality filter now explicitly checks for the string tokens "nan" and "none" in addition to true null/empty. Combined with dropping records with unscoreable literacy (no FK grade assignable), final corpus after quality filtering: 37,096 records, zero null answers, zero unassigned literacy bands.
+
+**Retrieval content for exam-format sources (MedQA, MedMCQA, MIRAGE) -- open architectural risk**
+
+UPDATE: MedQA's missing-answer problem was a loader oversight, not missing data -- the loader returns answer_idx in a separate "labels" key that the preprocessor never read. Fixed: answer_idx is now pulled and mapped to resolved option text, same pattern as MIRAGE. MedQA answers are now genuinely resolved (verified: mean 3.6 words, e.g. "Haemophilus ducreyi", "Administer desmopressin" -- not option dumps).
+
+Remaining question is narrower than originally stated: MedMCQA and MIRAGE both HAVE resolved answer content in their answer field (explanation text and mapped option letter respectively) -- the open question is only whether full_text (the actual retrieval unit passed to the encoder) should bake that resolved answer in, or stay as question+options with the answer held separately. Currently full_text for MedQA/MedMCQA/MIRAGE is question+options only; the answer field exists correctly but full_text does not include it. This is a full_text construction decision, not a missing-data problem for any of the three sources anymore. OPEN RISK, not yet resolved: if Stage 3/4 generation requires the resolved answer to be present in the retrieved full_text (rather than pulled separately from the answer column) to perform literacy simplification, the current full_text construction does not support that for these three sources -- medmcqa (42.4%) + medqa (30.8%) + mirage (20.4%) = 93.6% of the corpus by source, all three using question+options-only full_text. Must be validated when Stage 3 generation pipeline is designed -- do not assume this is settled.
+
+**Flesch-Kincaid as literacy proxy -- confirmed failure mode, not yet mitigated**
+
+Checked literacy_band distribution by source after the quality filter. PLABA -- the one source that is explicitly plain-language-adapted health text -- has zero records classified as "low" literacy band (0 of 921). PubMed abstracts: zero. PubMedQA: one. Meanwhile MedMCQA contributes 3,422 of 4,365 total "low" band records (78%) -- these are short exam-question stems ("All of the following are surgical options for X, Except"), not accessible patient-facing text. FK grade measures sentence length and syllable count, not vocabulary difficulty or domain jargon; a 10-word question using clinical terminology scores as "low" grade by FK while being inaccessible to an actual low-literacy reader. This means the corpus currently cannot reliably serve genuinely low-literacy retrieval requests -- it serves short clinical fragments instead. Not fixed in Stage 1. Needs either a supplementary readability signal (e.g. medical jargon density, SMOG index cross-check) or acceptance as a stated limitation before Stage 4 evaluation claims literacy-band-conditioned retrieval is working as designed.

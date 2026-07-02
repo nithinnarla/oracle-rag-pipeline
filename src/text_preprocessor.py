@@ -81,16 +81,19 @@ def assign_literacy_band(fk_grade: float) -> str:
 
 
 def process_medqa(record_id_offset: int = 0) -> pd.DataFrame:
-    """Process MedQA USMLE dataset."""
+    """Process MedQA USMLE dataset -- answer_idx pulled from labels sibling key, mapped to resolved option text."""
     print("  Loading MedQA USMLE...")
     from medqa_loader import load_medqa_all
     d = load_medqa_all()
-    # MedQA uses split structure: d['train']['data'], d['test']['data']
+    # MedQA uses split structure: d['train']['data'] (features) + d['train']['labels'] (answer_idx)
+    # labels is a sibling key the preprocessor previously never read -- answer_idx exists, was just unreachable
     dfs = []
     for split_name in ['train', 'test']:
         if split_name in d and 'data' in d[split_name]:
-            split_df = d[split_name]['data'].copy()
+            split_df = d[split_name]['data'].copy().reset_index(drop=True)
             split_df['split'] = split_name
+            if 'labels' in d[split_name]:
+                split_df['answer_idx'] = d[split_name]['labels'].reset_index(drop=True)
             dfs.append(split_df)
     df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
     records = []
@@ -98,21 +101,21 @@ def process_medqa(record_id_offset: int = 0) -> pd.DataFrame:
         question = clean_text(str(row.get("question", "")))
         if len(question) < MIN_TEXT_LENGTH:
             continue
-        # Build full text: question + answer options
         options = row.get("options", {})
         if isinstance(options, dict):
             options_text = " ".join([f"{k}: {v}" for k, v in options.items()])
         else:
             options_text = str(options)
-        full_text = f"{question} {clean_text(options_text)}"
-        scores = score_literacy(question)
-        # answer column not in loader output -- use options text as retrieval content
-        options = row.get("options", {})
-        if isinstance(options, dict):
-            answer_text = " ".join([f"{k}: {v}" for k, v in options.items()])
+        # Resolve answer_idx -> letter -> full option text, same pattern as MIRAGE
+        answer_idx = str(row.get("answer_idx", "")).strip()
+        if isinstance(options, dict) and answer_idx in options:
+            answer_text = clean_text(options[answer_idx])
+        elif isinstance(options, dict):
+            answer_text = clean_text(options_text)
         else:
             answer_text = str(options)
-        answer_text = clean_text(answer_text)
+        full_text = f"{question} {clean_text(options_text)}"
+        scores = score_literacy(full_text)
         records.append({
             "record_id": f"medqa_{record_id_offset + idx}",
             "source": "medqa",
