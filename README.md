@@ -134,14 +134,14 @@ Full dependency list: `requirements.txt`
 - August 2026: Stage 4 generation and evaluation pipeline
 - September 2026: Cross-dataset evaluation and ablation studies
 - October 2026: Paper writing, revisions, final polish
-- November 2026: Target submission — ACL/SIGIR + arXiv simultaneously
+- August 2026: Target submission — Journal of Biomedical Informatics + arXiv simultaneously
 
 ---
 
 ## Status
 
 🔬 Research in progress
-Target venue: ACL/SIGIR 2027 (arXiv preprint uploaded on submission day)
+Target venue: Journal of Biomedical Informatics (arXiv preprint uploaded on submission day)
 
 ---
 
