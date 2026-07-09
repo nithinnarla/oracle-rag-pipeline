@@ -240,3 +240,11 @@ outputs/
 results/
 logs/
 data/
+
+# Embeddings — large numpy files, regenerate with dpr_encoder.py
+data/processed/embeddings/
+data/processed/*.npy
+
+# Processed corpus — regenerate with text_preprocessor.py
+data/processed/oracle_corpus.csv
+data/processed/pubmed_abstracts.csv
