@@ -182,3 +182,24 @@ If original XML from abachaa/MedQuAD is parsed before Stage 3, MedQuAD will be a
 ## References
 
 All references as listed in literature_review.md and literature_analysis.md.
+
+## Decision 11 — Literacy Classification: Rule-Based FK Thresholds Rather Than ML Classifier
+
+**Decision:** Use rule-based Flesch-Kincaid grade thresholds for query literacy routing rather than a trained ML classifier.
+
+**What was tried:** Gradient Boosting classifier trained on corpus documents using FK grade, FRE score, and word count as features. Achieved 100% test accuracy and 100% 5-fold CV accuracy.
+
+**Why rejected:** The 100% accuracy is circular — FK grade was used to create the literacy band labels (low ≤6, medium 7-10, high 11-14, clinical 15+) and then used as the primary classifier feature. The model is not learning anything — it is recovering the deterministic rule used to create the labels. This is data leakage from label construction.
+
+**Why rule-based routing:** Rule-based FK thresholds are honest, interpretable, and directly implement the same logic used in corpus labeling. No model file needed. No training required.
+
+**Known limitation:** FK grade is unreliable for short queries (fewer than 3 sentences). Single-sentence queries produce FK scores that may not reflect the reader's actual literacy level. Sample accuracy on 8 test queries: 4/8 (50%). This is a known open risk — see research_design_rationale.md.
+
+**Word count gate tried and rejected:** A 20-word threshold defaulting short queries to medium was implemented but reduced accuracy to 2/8 (25%) because all test queries were under 20 words. Reverted to pure FK thresholds.
+
+**Architectural resolution — Stage 3 handles literacy correction:**
+Stage 2 routing is a best-effort FK approximation. The retrieval pipeline passes both the routed band AND routing confidence to Stage 3. Stage 3 health literacy adaptation corrects for routing errors by adapting the response to the user's actual literacy level regardless of which band was retrieved from. This separation of concerns — retrieve relevant documents (Stage 2) then adapt to literacy level (Stage 3) — is architecturally cleaner than requiring perfect query-time routing.
+
+**Implication for retrieval_pipeline.py:** Must pass routing_band, fk_grade, routing_confidence, and full query to Stage 3. Stage 3 cannot assume routing is correct.
+
+**Implication for Stage 3 design:** Must include a literacy correction layer that operates on retrieved documents regardless of routing band. User-declared literacy level or session-level adaptation preferred over query-level FK classification.
