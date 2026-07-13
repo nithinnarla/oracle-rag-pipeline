@@ -129,19 +129,21 @@ Full dependency list: `requirements.txt`
 - March 2026: Literature review — RAG, health literacy, and plain language summarization domains scoped
 - April 2026: GitHub repository created, pipeline architecture and research question documented
 - May 2026: Dataset corpus planned, loaders under development
-- June 2026: Stage 1-2 retrieval pipeline implementation — PubMed ingestion and literacy-conditioned dense retrieval
-- July 2026: Stage 3 health literacy adaptation module
-- August 2026: Stage 4 generation and evaluation pipeline
-- September 2026: Cross-dataset evaluation and ablation studies
-- October 2026: Paper writing, revisions, final polish
-- August 2026: Target submission — Journal of Biomedical Informatics + arXiv simultaneously
+- June 2026: Stage 1 complete — corpus pipeline (37,076 records, 6 sources, 4 literacy bands); EDA complete (67 figures); FK-based literacy scoring
+- July 2026: Stage 2 complete — DPR encoder (768-dim embeddings); FK rule-based query router; literacy-conditioned retrieval pipeline; retrieval evaluation (20 queries, 7 figures)
+- August 2026: Stage 3 health literacy adaptation + Stage 4 generation pipeline + paper writing + submission JBI Aug 21 2026
 
 ---
 
 ## Status
 
-🔬 Research in progress
-Target venue: Journal of Biomedical Informatics (arXiv preprint uploaded on submission day)
+🔬 Research in progress — Stage 2 complete, Stage 3 starting
+
+**Stage 1 (complete):** Corpus pipeline — 37,076 records across 6 sources, 4 literacy bands — 67 EDA figures.
+**Stage 2 (complete):** DPR retrieval pipeline with literacy-conditioned band indexing — 7 figures.
+**Stage 3 (starting):** Health literacy adaptation module.
+
+Target venue: Journal of Biomedical Informatics — submission Aug 21 2026
 
 ---
 
