@@ -146,9 +146,9 @@ NCBI E-utilities provides programmatic access to 35M+ PubMed abstracts with no s
 - npj Digital Medicine: Nature portfolio, open access, high impact — possible future target if JBI rejects
 
 **Why JBI:**
-JBI publishes computational approaches to biomedical informatics without requiring clinical trial validation. ORACLE's literacy-conditioned RAG framing maps directly to JBI's scope. Target faculty Yue Guo (UIUC iSchool) publishes in JBI — venue alignment strengthens PhD application signal. Rolling submission — no fixed deadline pressure. JBI review time 4-8 weeks — first decision expected before Dec 1 Informatics application deadline if submitted Aug 21.
+JBI publishes computational approaches to biomedical informatics without requiring clinical trial validation. ORACLE's literacy-conditioned RAG framing maps directly to JBI's scope. Target faculty Yue Guo (UIUC iSchool) publishes in JBI — venue alignment strengthens PhD application signal. Rolling submission — no fixed deadline pressure. JBI review time 4-8 weeks — first decision expected before Dec 1 Informatics application deadline if submitted Sep 4.
 
-**Submission target:** Aug 21, 2026. arXiv preprint uploaded simultaneously.
+**Submission target:** Sep 4, 2026 (shifted 14 days — sick leave Jul 13-25). arXiv preprint uploaded simultaneously.
 
 ---
 
