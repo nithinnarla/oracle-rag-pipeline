@@ -17,7 +17,6 @@ Features: document_source, category, question_type, question_focus, question
 
 import pandas as pd
 import numpy as np
-import sys
 import os
 import warnings
 warnings.filterwarnings("ignore")

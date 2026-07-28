@@ -23,7 +23,6 @@ Answer format varies by source:
 import json
 import pandas as pd
 import numpy as np
-import urllib.request
 import sys
 import os
 import warnings

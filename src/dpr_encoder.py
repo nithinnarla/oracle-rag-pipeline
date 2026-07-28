@@ -27,7 +27,6 @@ Note: Literacy band embeddings are subsets of full corpus for per-band retrieval
 import pandas as pd
 import numpy as np
 import os
-import sys
 import warnings
 warnings.filterwarnings("ignore")
 

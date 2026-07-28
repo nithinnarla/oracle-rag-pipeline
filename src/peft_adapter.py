@@ -24,7 +24,6 @@ Script type: pipeline/infrastructure — no notebook, no figures
 """
 
 import os
-import sys
 import pandas as pd
 import numpy as np
 import warnings
