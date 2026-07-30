@@ -131,17 +131,18 @@ Full dependency list: `requirements.txt`
 - May 2026: Dataset corpus planned, loaders under development
 - June 2026: Stage 1 complete — corpus pipeline (37,076 records, 6 sources, 4 literacy bands); EDA complete (67 figures); FK-based literacy scoring
 - July 2026: Stage 2 complete — DPR encoder (768-dim embeddings); FK rule-based query router; literacy-conditioned retrieval pipeline; retrieval evaluation (20 queries, 7 figures)
-- August 2026: Stage 3 health literacy adaptation + Stage 4 generation pipeline + paper writing + submission JBI Sep 4 2026
+- July 2026: Stage 3 complete — health literacy adaptation (literacy_adapter.py); PEFT LoRA adapters per band (peft_adapter.py); medical jargon identifier 1,491 terms 5 figures (jargon_identifier.py)
+- August 2026: Stage 4 generation pipeline + paper writing + submission JBI Sep 4 2026
 
 ---
 
 ## Status
 
-🔬 Research in progress — Stage 2 complete, Stage 3 starting
+🔬 Research in progress — Stages 1-3 complete, Stage 4 starting
 
 **Stage 1 (complete):** Corpus pipeline — 37,076 records across 6 sources, 4 literacy bands — 67 EDA figures.
 **Stage 2 (complete):** DPR retrieval pipeline with literacy-conditioned band indexing — 7 figures.
-**Stage 3 (starting):** Health literacy adaptation module.
+**Stage 3 (complete):** Health literacy adaptation — literacy_adapter.py (PLABA injection, 38-term jargon substitution); peft_adapter.py (LoRA adapters 0.40% trainable params); jargon_identifier.py (1,491 medical terms, 5 figures).
 
 Target venue: Journal of Biomedical Informatics — submission Sep 4 2026
 
