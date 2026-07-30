@@ -203,3 +203,21 @@ Stage 2 routing is a best-effort FK approximation. The retrieval pipeline passes
 **Implication for retrieval_pipeline.py:** Must pass routing_band, fk_grade, routing_confidence, and full query to Stage 3. Stage 3 cannot assume routing is correct.
 
 **Implication for Stage 3 design:** Must include a literacy correction layer that operates on retrieved documents regardless of routing band. User-declared literacy level or session-level adaptation preferred over query-level FK classification.
+
+## Decision 12 — GPT-4o-mini as Stage 4 Generation Model
+
+**Decision:** Use `gpt-4o-mini` via OpenAI API as the primary generation model for Stage 4 literacy-conditioned response generation.
+
+**Alternatives considered:**
+- GPT-4o: highest quality but 10x cost — prohibitive at evaluation scale
+- Flan-T5-base: free, runs locally, but 250M parameters insufficient for health domain generation quality — literacy conditioning effect would be confounded by weak generation
+- Flan-T5-large: better but still not health-specialized — same confounding risk
+- BioGPT-Large: health domain fine-tuned but decoder-only, poor instruction following for summarization
+- Llama 3.1 8B: strong but requires 16GB RAM + GPU for inference at research scale
+
+**Why gpt-4o-mini:**
+Instruction-tuned, health domain capable, strong summarization quality at evaluation scale. Cost-efficient at ~$2-3 for full evaluation set. Same API key as HyDMIS GPT-4 semantic verification — single credential covers both papers. Allows clean attribution of literacy conditioning effect to retrieval architecture rather than generation quality. Production-deployable framing: gpt-4o-mini is a realistic production choice for health information systems, strengthening external validity of ORACLE's claims.
+
+**Cost estimate:** ~$2-3 for Stage 4 evaluation set (500-1000 queries across 4 literacy bands).
+
+**Comfort level:** High. gpt-4o-mini validated for summarization and health QA. Cost fixed and predictable. Same key already budgeted for HyDMIS (~$3-4).
