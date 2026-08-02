@@ -135,6 +135,32 @@ def score_readability(text: str) -> dict:
         return {'fk_grade': None, 'smog_grade': None, 'fk_reading_ease': None}
 
 
+
+def plot_fk_by_band(df, figures_dir):
+    """Plot FK grade by target literacy band."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    band_order = ['low', 'medium', 'high', 'clinical']
+    means = [df[df['target_band'] == b]['fk_grade'].mean() for b in band_order]
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    colors = ['#2ca25f', '#66c2a4', '#fc8d59', '#b30000']
+    bars = ax.bar(band_order, means, color=colors)
+    for bar, val in zip(bars, means):
+        ax.text(bar.get_x() + bar.get_width() / 2, val + 0.2, f"{val:.1f}",
+                ha='center', fontsize=10, fontweight='bold')
+    ax.set_ylabel("Flesch-Kincaid Grade Level")
+    ax.set_xlabel("Target Literacy Band")
+    ax.set_title("Stage 4 Generation -- FK Grade by Target Literacy Band (n=%d)" % len(df))
+    plt.tight_layout()
+    outpath = os.path.join(figures_dir, "fk_by_literacy_band.png")
+    plt.savefig(outpath, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  Figure saved: {outpath}")
+
+
 def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
     """
     Run Stage 4 generation pipeline.
@@ -227,6 +253,7 @@ def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
     df = pd.DataFrame(results)
     df.to_csv(RESULTS_PATH, index=False)
     print(f"\n  Results saved: {RESULTS_PATH}")
+    plot_fk_by_band(df, FIGURES_DIR)
     print(f"  Total tokens used: {total_tokens}")
     print(f"  Estimated cost: ~${total_tokens * 0.00000015:.4f}")
 
