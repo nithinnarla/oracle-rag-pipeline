@@ -23,7 +23,6 @@ Limitation: USMLE tests clinicians not patients. Used for retrieval
 quality evaluation only, not accessibility evaluation.
 """
 
-import pandas as pd
 from datasets import load_dataset
 
 

@@ -11,8 +11,6 @@ Label mapping: answer_idx = correct option (A/B/C/D)
 Two splits: train (10,178) + test (1,273)
 """
 
-import pandas as pd
-import numpy as np
 import sys
 import os
 import warnings

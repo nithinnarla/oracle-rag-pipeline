@@ -30,7 +30,6 @@ Script type: EDA/analysis — script + notebook + figures
 import os
 import re
 import pandas as pd
-import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

@@ -21,7 +21,6 @@ ORACLE uses PubMedQA to establish retrieval quality baseline before evaluating
 accessibility on Consumer Health QA and PLABA.
 """
 
-import pandas as pd
 from datasets import load_dataset
 
 

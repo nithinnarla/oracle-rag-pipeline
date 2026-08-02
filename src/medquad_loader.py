@@ -23,7 +23,6 @@ and MedQA which test clinical professional knowledge, MedQuAD tests the exact
 patient-facing health information access scenario ORACLE is designed to improve.
 """
 
-import pandas as pd
 from datasets import load_dataset
 
 

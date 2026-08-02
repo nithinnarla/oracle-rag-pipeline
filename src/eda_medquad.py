@@ -15,8 +15,6 @@ Label: answer (free text, mean=1,303 chars for non-null)
 Features: document_source, category, question_type, question_focus, question
 """
 
-import pandas as pd
-import numpy as np
 import os
 import warnings
 warnings.filterwarnings("ignore")

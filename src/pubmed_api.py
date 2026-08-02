@@ -145,7 +145,7 @@ def run_pipeline():
     print("=" * 52)
 
     print(f"\n--- Loading PubMedQA Seed PMIDs ---")
-    from pubmedqa_loader import load_pubmedqa_labeled, load_pubmedqa_artificial
+    from pubmedqa_loader import load_pubmedqa_labeled
     labeled = load_pubmedqa_labeled()
     labeled_df = labeled["data"]
     seed_pmids = labeled_df["pubid"].astype(str).tolist()

@@ -13,7 +13,6 @@ Consumer Health QA and PLABA handle patient accessibility.
 """
 
 import pandas as pd
-import numpy as np
 import sys
 import os
 import warnings

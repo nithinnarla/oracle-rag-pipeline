@@ -20,7 +20,6 @@ Answer format varies by source:
   bioasq: 2-option yes/no (A/B)
 """
 
-import json
 import pandas as pd
 import numpy as np
 import sys
