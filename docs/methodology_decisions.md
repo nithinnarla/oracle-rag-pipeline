@@ -21,7 +21,7 @@ The point of documenting decisions before writing code is to prevent the most co
 - SMOG Index: better for medical content, requires 30+ sentences — most QA records too short
 - Flesch Reading Ease (FRE): inverse of FK, same underlying formula, adds no information
 - Coleman-Liau: character-based, handles medical jargon differently — less validated than FK for health content
-- Human annotation: gold standard but infeasible at corpus scale (37,096 records)
+- Human annotation: gold standard but infeasible at corpus scale (37,076 records)
 - LLM-based readability scoring: GPT-4 can assess readability but adds API cost and latency to ingestion
 
 **Why FK:**
@@ -42,7 +42,7 @@ FK is the most widely validated readability formula in health communication rese
 - Exclude MedMCQA entirely: loses 21 medical subjects, largest clinical coverage dataset available
 
 **Why 20,000 stratified:**
-At 193,155 records MedMCQA was 89.9% of the retrieval corpus before capping. A paper framed as literacy-conditioned health RAG for patients whose retrieval index is 90% medical-entrance-exam trivia contradicts its own premise. Capping at 20,000 stratified by subject reduces MedMCQA from 89.9% to 42.4% of the corpus — majority but not dominating. Stratification preserves subject coverage while controlling corpus balance. Verified: final corpus 37,096 records across 6 sources, zero null answers, zero unknown FK, zero duplicates.
+At 193,155 records MedMCQA was 89.9% of the retrieval corpus before capping. A paper framed as literacy-conditioned health RAG for patients whose retrieval index is 90% medical-entrance-exam trivia contradicts its own premise. Capping at 20,000 stratified by subject reduces MedMCQA from 89.9% to 42.4% of the corpus — majority but not dominating. Stratification preserves subject coverage while controlling corpus balance. Verified: final corpus 37,076 records across 6 sources, zero null answers, zero unknown FK, zero duplicates.
 
 ---
 

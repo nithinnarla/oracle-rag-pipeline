@@ -10,9 +10,9 @@ Architecture:
 - Query encoder: facebook/dpr-question_encoder-single-nq-base
 - Embeddings saved as numpy arrays per literacy band
 
-Input: data/processed/oracle_corpus.csv (37,096 records)
+Input: data/processed/oracle_corpus.csv (37,076 records)
 Output: data/processed/embeddings/
-  - corpus_embeddings.npy — full corpus embeddings (37096, 768)
+  - corpus_embeddings.npy — full corpus embeddings (37076, 768)
   - corpus_ids.npy — record_id alignment
   - embeddings_low.npy — low literacy band embeddings
   - embeddings_medium.npy — medium literacy band embeddings

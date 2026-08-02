@@ -45,7 +45,7 @@ DPR — the dense retrieval backbone that makes modern RAG practical. Bi-encoder
 ### Biomedical QA Benchmarks
 
 **Jin et al. (2019) — PubMedQA: A Biomedical Research Question Answering Dataset (EMNLP)**
-211K biomedical research questions with yes/no/maybe answers grounded in PubMed abstracts. The standard biomedical QA benchmark. Critical limitation for ORACLE: PubMedQA assumes the user can read and interpret biomedical research. Questions are written by researchers, answered by researchers. Patient-facing QA is a different task entirely.
+273,518 biomedical research questions with yes/no/maybe answers grounded in PubMed abstracts (1,000 expert-labeled, 61,249 unlabeled, 211,269 artificially generated). The standard biomedical QA benchmark. Critical limitation for ORACLE: PubMedQA assumes the user can read and interpret biomedical research. Questions are written by researchers, answered by researchers. Patient-facing QA is a different task entirely.
 
 **Pal et al. (2022) — MedMCQA: Large-Scale Multi-Subject Multi-Choice Medical QA (CHIL)**
 194K medical school exam questions. Strong coverage of clinical knowledge. Same limitation — tests medical professional knowledge, not patient-facing health information accessibility. ORACLE uses MedMCQA as a retrieval evaluation baseline while acknowledging this scope limitation.
