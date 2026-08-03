@@ -195,6 +195,8 @@ All references as listed in literature_review.md and literature_analysis.md.
 
 **Known limitation:** FK grade is unreliable for short queries (fewer than 3 sentences). Single-sentence queries produce FK scores that may not reflect the reader's actual literacy level. Sample accuracy on 8 test queries: 4/8 (50%). This is a known open risk — see research_design_rationale.md.
 
+**Refinement (Aug 2 2026):** A larger, dedicated evaluation in retrieval_evaluation.py (20 test queries, 5 per literacy band, live-reproduced during today's ORACLE audit) gives a more precise picture than the 8-query spot-check above: routing accuracy is not uniform across bands -- low 80.0% (4/5), medium 60.0% (3/5), high 20.0% (1/5), clinical 40.0% (2/5), for an overall 50.0% (10/20) -- essentially identical to the earlier 8-query figure, but this aggregate masks a real and important skew: routing is much more reliable for low/medium-literacy queries (80%, 60%) than for high/clinical queries (20%, 40%). The blended percentage alone would wrongly suggest routing fails uniformly; it actually fails far more for exactly the more complex queries where correct routing matters most. Worth stating the per-band breakdown in the paper rather than a single blended percentage.
+
 **Word count gate tried and rejected:** A 20-word threshold defaulting short queries to medium was implemented but reduced accuracy to 2/8 (25%) because all test queries were under 20 words. Reverted to pure FK thresholds.
 
 **Architectural resolution — Stage 3 handles literacy correction:**
