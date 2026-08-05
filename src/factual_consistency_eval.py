@@ -36,6 +36,8 @@ import os
 import json
 import warnings
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 from openai import OpenAI
 
 warnings.filterwarnings("ignore")
@@ -43,6 +45,7 @@ warnings.filterwarnings("ignore")
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_PATH = os.path.join(REPO_ROOT, "data", "processed", "lay_summarizer_results.csv")
 OUTPUT_PATH = os.path.join(REPO_ROOT, "data", "processed", "factual_consistency_results.csv")
+FIGURES_DIR = os.path.join(REPO_ROOT, "figures", "stage4")
 MODEL = "gpt-4o-mini"
 
 client = OpenAI()
@@ -163,6 +166,30 @@ def run_factual_consistency_eval():
         else:
             print(f"  No elaboration claims detected across this sample")
     print(f"  Saved: {OUTPUT_PATH}")
+
+    os.makedirs(FIGURES_DIR, exist_ok=True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    data_to_plot = [
+        valid["simplification_score"].dropna().values,
+        valid["elaboration_score"].dropna().values,
+    ]
+    bp = ax.boxplot(data_to_plot, labels=["Simplification", "Elaboration"],
+                     patch_artist=True, widths=0.5)
+    for patch, color in zip(bp["boxes"], ["#4a90d9", "#e08214"]):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.7)
+    for i, d in enumerate(data_to_plot, start=1):
+        x = np.random.normal(i, 0.04, size=len(d))
+        ax.scatter(x, d, alpha=0.6, color="black", s=25, zorder=3)
+    ax.set_ylabel("Factual Consistency Score")
+    ax.set_title("Factual Consistency by Claim Type\n(Adapted PlainQAFact Methodology, GPT-4o-mini)")
+    ax.set_ylim(-0.05, 1.05)
+    ax.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    fig_path = os.path.join(FIGURES_DIR, "factual_consistency_by_claim_type.png")
+    plt.savefig(fig_path, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  Fig saved -- factual_consistency_by_claim_type.png")
 
     print("\n--- Factual Consistency Evaluation complete ---")
     print("  Reminder: adapted evaluation, not official PlainQAFact --")
