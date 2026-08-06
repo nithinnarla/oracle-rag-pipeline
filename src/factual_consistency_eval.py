@@ -3,7 +3,7 @@ ORACLE -- Stage 4: Factual Consistency Evaluation (Adapted from PlainQAFact)
 Phase 4 -- Stage 4: Evaluation metrics (Decision 7: PlainQAFact + APPLS)
 
 IMPORTANT -- READ BEFORE CITING: This is an ADAPTED evaluation, not the
-official PlainQAFact metric (You & Guo, 2026, arXiv 2503.08890, JBI).
+official PlainQAFact metric (You & Guo, 2025, arXiv 2503.08890, accepted JBI).
 The official pipeline requires Llama 3.1 8B Instruct locally (40GB+ GPU
 memory) and a separate LERC scoring model -- infeasible on this machine
 (Apple Silicon, no CUDA). Installing the official `plainqafact` pip package
@@ -23,10 +23,18 @@ from this script are NOT directly comparable to PlainQAFact's published
 benchmarks and must be labeled as an adapted evaluation, not the official
 metric, wherever reported.
 
-PLAN: the official PlainQAFact metric will be run separately, in an isolated
-cloud GPU environment (see docs/plainqafact_cloud_setup.md), on the same
-source_text/generated_summary pairs this script evaluates. The two scores
-will be compared as an internal validation check, not treated as identical.
+UPDATE (Aug 6 2026): the official PlainQAFact metric has since been run
+separately on a cloud GPU (RunPod, RTX PRO 6000), on the same 20 source_text/
+generated_summary pairs this script evaluates. Result: internal_mean~0.65,
+external_mean~0.26, overall_mean~0.33 -- substantially different from this
+script's ~0.96, NOT because either is broken, but because the two measure
+factual consistency against different ground truth (this script: the source
+abstract; official PlainQAFact: external knowledge-base retrieval, which
+struggles to find fact-specific matches for ORACLE's clinical-trial-specific
+claims). See methodology_decisions.md Decision 13 for the complete
+investigation, systematic evidence (234 claims), and what this means for
+reporting both scores in the paper -- they are not interchangeable and
+should not be presented as one validating the other.
 
 Pipeline/infrastructure script -- no notebook (single quantitative
 evaluation, matches methodology_decisions.md documentation pattern).
@@ -50,7 +58,7 @@ MODEL = "gpt-4o-mini"
 
 client = OpenAI()
 
-CONSISTENCY_PROMPT = """You are evaluating factual consistency between a scientific abstract (source) and a simplified plain-language summary (generated), adapting the PlainQAFact methodology (You & Guo, 2026).
+CONSISTENCY_PROMPT = """You are evaluating factual consistency between a scientific abstract (source) and a simplified plain-language summary (generated), adapting the PlainQAFact methodology (You & Guo, 2025).
 
 For the SUMMARY below, do the following:
 1. Identify each distinct factual claim in the summary.
