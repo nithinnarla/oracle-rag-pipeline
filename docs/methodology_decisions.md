@@ -106,7 +106,7 @@ ORACLE's contribution is literacy-conditioned retrieval — the claim that retri
 
 ---
 
-## Decision 7 — PlainQAFact + APPLS as Primary Evaluation Metrics
+## Decision 7: PlainQAFact + APPLS as Primary Evaluation Metrics
 
 **Decision:** Evaluate Stage 4 generation quality using PlainQAFact (factual consistency) and APPLS (plain language quality) as primary metrics alongside standard ROUGE and BERTScore.
 
@@ -117,7 +117,7 @@ ORACLE's contribution is literacy-conditioned retrieval — the claim that retri
 - MedQA accuracy: measures medical knowledge, not plain language accessibility
 
 **Why PlainQAFact + APPLS:**
-ORACLE's contribution is health accessibility — not just retrieval accuracy but generation quality for low-literacy users. PlainQAFact measures whether generated answers are factually consistent with retrieved context — critical for medical content where hallucination is harmful. APPLS measures plain language quality specifically — directly evaluates ORACLE's core claim that literacy-conditioned retrieval produces more accessible answers. Standard metrics (ROUGE, BERTScore) measure generation quality generally but not accessibility specifically. Both PlainQAFact and APPLS are validated for health communication contexts.
+ORACLE's contribution is health accessibility, not just retrieval accuracy but generation quality for low-literacy users. PlainQAFact measures whether generated answers are factually consistent with retrieved context, which is critical for medical content where hallucination is harmful. APPLS measures plain language quality specifically. It directly evaluates ORACLE's core claim that literacy-conditioned retrieval produces more accessible answers. Standard metrics (ROUGE, BERTScore) measure generation quality generally but not accessibility specifically. Both PlainQAFact and APPLS are validated for health communication contexts.
 
 ---
 
