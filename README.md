@@ -61,7 +61,7 @@ ORACLE is designed to surface all three.
 - LLM-based lay language summarization
 - Readability scoring (Flesch-Kincaid, SMOG Index)
 - Factual consistency verification via PlainQAFact methodology
-- APPLS metric evaluation for plain language quality
+- APPLS metric evaluation for plain language quality (see Decision 7 and Decision 14 in methodology_decisions.md for the metric suite justification)
 - Comprehension outcome measurement across literacy groups
 
 ---
