@@ -1,6 +1,6 @@
 """
-ORACLE — Stage 4: Literacy-Conditioned Response Generation
-Phase 4 — Stage 4: GPT-4o-mini generation with literacy conditioning
+ORACLE, Stage 4: Literacy-Conditioned Response Generation
+Phase 4, Stage 4: GPT-4o-mini generation with literacy conditioning
 
 Takes a medical query, retrieves relevant context via Stage 2 retrieval pipeline,
 and generates a literacy-conditioned response using gpt-4o-mini.
@@ -15,7 +15,7 @@ Architecture:
 Decision 12: gpt-4o-mini chosen for cost efficiency (~$2-3 for full eval set),
 instruction-following quality, and production-deployable framing.
 
-Pipeline/infrastructure script — no notebook.
+Pipeline/infrastructure script, no notebook.
 """
 
 import os
@@ -170,7 +170,7 @@ def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
         top_k: number of documents to retrieve per query
         dry_run: if True, skip API calls and simulate output
     """
-    # Default evaluation queries — 2 per literacy band = 8 total
+    # Default evaluation queries, 2 per literacy band = 8 total
     if queries is None:
         queries = [
             ("What is diabetes and how does it affect the body?", "low"),
@@ -183,7 +183,7 @@ def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
             ("Describe the pathophysiology of diabetic nephropathy.", "clinical"),
         ]
 
-    print("ORACLE — Stage 4: Literacy-Conditioned Response Generation")
+    print("ORACLE, Stage 4: Literacy-Conditioned Response Generation")
     print("=" * 60)
     print(f"  Model: gpt-4o-mini")
     print(f"  Mode: {'DRY RUN' if dry_run else 'LIVE'}")
@@ -194,15 +194,15 @@ def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
     results = []
     total_tokens = 0
 
-    # Pre-load DPR encoder once — avoids reloading on every query
+    # Pre-load DPR encoder once, avoids reloading on every query
     print("  Loading DPR encoder...")
     q_tokenizer, q_model = get_dpr_query_encoder()
     print("  DPR encoder ready\n")
 
     for i, (query, band) in enumerate(queries):
-        print(f"  [{i+1}/{len(queries)}] Band: {band} — {query[:60]}...")
+        print(f"  [{i+1}/{len(queries)}] Band: {band}, {query[:60]}...")
 
-        # Step 1 — Retrieve
+        # Step 1, Retrieve
         try:
             retrieval = retrieve(query, top_k=top_k, q_tokenizer=q_tokenizer, q_model=q_model)
             retrieved_docs = retrieval.get('retrieved', [])
@@ -212,7 +212,7 @@ def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
             retrieved_docs = []
             routing_band = band
 
-        # Step 2 — Generate
+        # Step 2, Generate
         if dry_run:
             generated = {
                 'text': f"[DRY RUN] Simulated response for {band} literacy band.",
@@ -226,10 +226,10 @@ def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
         if generated['error']:
             print(f"    Generation error: {generated['error']}")
 
-        # Step 3 — Score readability
+        # Step 3, Score readability
         readability = score_readability(generated['text'])
 
-        # Step 4 — Store result
+        # Step 4, Store result
         tokens = generated['usage'].get('total_tokens', 0)
         total_tokens += tokens
 

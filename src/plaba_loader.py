@@ -1,26 +1,26 @@
 """
-ORACLE — PLABA Dataset Loader
+ORACLE, PLABA Dataset Loader
 Optimized Retrieval Augmented Generation for Personalized Health Information Accessibility
 
-PLABA — 921 plain language adaptation instances (Attal et al., 2023)
-Source: OSF Repository — osf.io/rnpmf
+PLABA, 921 plain language adaptation instances (Attal et al., 2023)
+Source: OSF Repository, osf.io/rnpmf
 
 Splits:
 - train: 635 instances
 - val:   138 instances
 - test:  148 instances
 
-Note: Paper reports 750 abstracts — actual row count is 921 because
+Note: Paper reports 750 abstracts, actual row count is 921 because
 multiple adaptation versions exist per abstract. Each row represents
 one expert-created plain language adaptation of one PubMed abstract.
 
 Why PLABA for ORACLE:
-Gold standard plain language adaptation dataset — 75 health topics,
+Gold standard plain language adaptation dataset, 75 health topics,
 10 PubMed abstracts per topic, expert-created sentence-level adaptations
 from NLM annotators. The only dataset with paired professional and
 plain language versions of biomedical abstracts at sentence level.
 
-Used as ORACLE's primary plain language evaluation dataset — directly
+Used as ORACLE's primary plain language evaluation dataset, directly
 measures whether literacy-conditioned generation produces output
 comparable to expert human plain language adaptation.
 
@@ -66,17 +66,17 @@ def load_plaba_split(split: str = 'train') -> dict:
         'metadata': {
             'name': f'PLABA-{split}',
             'n_samples': len(df),
-            'purpose': 'Plain language adaptation evaluation — gold standard',
-            'paper': 'Attal et al. (2023) — PLABA, Scientific Data'
+            'purpose': 'Plain language adaptation evaluation, gold standard',
+            'paper': 'Attal et al. (2023), PLABA, Scientific Data'
         }
     }
 
 
 def load_plaba_all() -> dict:
     """
-    Load all PLABA splits — 921 total instances.
+    Load all PLABA splits, 921 total instances.
     """
-    print("Loading PLABA — all splits...")
+    print("Loading PLABA, all splits...")
     splits = {}
     total = 0
 
@@ -86,13 +86,13 @@ def load_plaba_all() -> dict:
         total += result['metadata']['n_samples']
 
     print(f"\nPLABA loaded: {total:,} total instances")
-    print(f"  Note: 750 unique abstracts across 75 topics — 921 rows due to multiple adaptation versions")
+    print(f"  Note: 750 unique abstracts across 75 topics, 921 rows due to multiple adaptation versions")
 
     splits['metadata'] = {
         'name': 'PLABA',
         'n_samples': total,
-        'source': 'OSF — osf.io/rnpmf',
-        'paper': 'Attal et al. (2023) — PLABA, Scientific Data'
+        'source': 'OSF, osf.io/rnpmf',
+        'paper': 'Attal et al. (2023), PLABA, Scientific Data'
     }
 
     return splits

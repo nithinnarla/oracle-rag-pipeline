@@ -1,6 +1,6 @@
 """
-ORACLE — DPR Encoder
-Phase 4 — Stage 1: Dense Passage Retrieval Encoding
+ORACLE, DPR Encoder
+Phase 4, Stage 1: Dense Passage Retrieval Encoding
 
 Encodes ORACLE retrieval corpus using Dense Passage Retrieval (DPR).
 Produces document embeddings per literacy band for literacy-conditioned retrieval.
@@ -12,15 +12,15 @@ Architecture:
 
 Input: data/processed/oracle_corpus.csv (37,076 records)
 Output: data/processed/embeddings/
-  - corpus_embeddings.npy — full corpus embeddings (37076, 768)
-  - corpus_ids.npy — record_id alignment
-  - embeddings_low.npy — low literacy band embeddings
-  - embeddings_medium.npy — medium literacy band embeddings
-  - embeddings_high.npy — high literacy band embeddings
+  - corpus_embeddings.npy, full corpus embeddings (37076, 768)
+  - corpus_ids.npy, record_id alignment
+  - embeddings_low.npy, low literacy band embeddings
+  - embeddings_medium.npy, medium literacy band embeddings
+  - embeddings_high.npy, high literacy band embeddings
   - band_ids_low.npy / band_ids_medium.npy / band_ids_high.npy
 
 Note: DPR context encoder produces 768-dim embeddings.
-Note: Full corpus encoding takes 10-20 minutes on CPU — run once and cache.
+Note: Full corpus encoding takes 10-20 minutes on CPU, run once and cache.
 Note: Literacy band embeddings are subsets of full corpus for per-band retrieval.
 """
 
@@ -139,7 +139,7 @@ def encode_query(query: str, tokenizer, model) -> np.ndarray:
 
 def run_dpr_encoder():
     """Main encoding pipeline."""
-    print("ORACLE Phase 4 — DPR Encoder")
+    print("ORACLE Phase 4, DPR Encoder")
     print("=" * 50)
 
     print("\n--- Loading Corpus ---")
@@ -154,8 +154,8 @@ def run_dpr_encoder():
     print("\n--- Loading DPR Encoders ---")
     ctx_tokenizer, ctx_model = get_dpr_context_encoder()
     q_tokenizer, q_model = get_dpr_query_encoder()
-    print("  Context encoder loaded ✓")
-    print("  Query encoder loaded ✓")
+    print("  Context encoder loaded ")
+    print("  Query encoder loaded ")
 
     print("\n--- Encoding Full Corpus ---")
     print(f"  Encoding {len(df):,} documents (batch_size=32)...")
@@ -176,7 +176,7 @@ def run_dpr_encoder():
         band_mask = df["literacy_band"] == band
         band_df = df[band_mask].reset_index(drop=True)
         if len(band_df) == 0:
-            print(f"  {band}: 0 records — skipping")
+            print(f"  {band}: 0 records, skipping")
             continue
         print(f"  Encoding {band} band: {len(band_df):,} records")
         band_texts = band_df["full_text"].tolist()

@@ -1,6 +1,6 @@
 """
-ORACLE — Health Literacy Adaptation Module
-Phase 4 — Stage 3: Literacy-Conditioned Response Preparation
+ORACLE, Health Literacy Adaptation Module
+Phase 4, Stage 3: Literacy-Conditioned Response Preparation
 
 Takes retrieval result from Stage 2 and applies literacy correction:
 1. Determines user's actual target literacy level (user-declared > FK routing)
@@ -10,8 +10,8 @@ Takes retrieval result from Stage 2 and applies literacy correction:
 5. Prepares adapted context bundle for Stage 4 generation
 
 Key architectural decisions (Decision 11):
-- FK routing is unreliable — Stage 3 MUST correct regardless of routing band
-- PLABA (source='plaba') is plain language gold standard — FK labels it clinical/high
+- FK routing is unreliable, Stage 3 MUST correct regardless of routing band
+- PLABA (source='plaba') is plain language gold standard, FK labels it clinical/high
   because FK measures sentence length not vocabulary difficulty
 - Source-based PLABA injection used instead of literacy_band selection
 - User-declared literacy level always overrides FK routing
@@ -20,7 +20,7 @@ Input: retrieval result dict from retrieval_pipeline.retrieve()
        + optional user_literacy_level (declared by user)
 Output: adapted content dict ready for Stage 4 generation
 
-Script type: pipeline/infrastructure — no notebook, no figures
+Script type: pipeline/infrastructure, no notebook, no figures
 """
 
 import os
@@ -221,7 +221,7 @@ def adapt_retrieved_content(retrieval_result, user_literacy_level=None):
 
 
 def run_literacy_adapter():
-    print("ORACLE Phase 4 — Stage 3: Health Literacy Adaptation Module")
+    print("ORACLE Phase 4, Stage 3: Health Literacy Adaptation Module")
     print("=" * 60)
     print("  Loading retrieval pipeline + DPR encoder...")
 
@@ -233,13 +233,13 @@ def run_literacy_adapter():
     from dpr_encoder import get_dpr_query_encoder
 
     q_tokenizer, q_model = get_dpr_query_encoder()
-    print("  DPR encoder loaded ✓")
+    print("  DPR encoder loaded ")
 
     test_cases = [
-        ('What causes high blood pressure?', 'low', 'Low literacy — user declared'),
-        ('How does insulin regulate blood sugar levels?', 'medium', 'Medium literacy — user declared'),
-        ('What are the contraindications of metformin in CKD?', None, 'No declaration — FK routing'),
-        ('Describe the pathophysiology of type 2 diabetes mellitus.', 'clinical', 'Clinical — user declared'),
+        ('What causes high blood pressure?', 'low', 'Low literacy, user declared'),
+        ('How does insulin regulate blood sugar levels?', 'medium', 'Medium literacy, user declared'),
+        ('What are the contraindications of metformin in CKD?', None, 'No declaration, FK routing'),
+        ('Describe the pathophysiology of type 2 diabetes mellitus.', 'clinical', 'Clinical, user declared'),
     ]
 
     for i, (query, user_level, description) in enumerate(test_cases, 1):

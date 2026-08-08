@@ -1,6 +1,6 @@
 """
-ORACLE — PubMed API Integration
-Phase 4 — Stage 1: Document Ingestion Pipeline
+ORACLE, PubMed API Integration
+Phase 4, Stage 1: Document Ingestion Pipeline
 
 Fetches biomedical abstracts from NCBI E-utilities API for ORACLE retrieval corpus.
 Uses PubMedQA PMIDs as seed set, then expands via MeSH term queries.

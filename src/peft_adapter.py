@@ -1,26 +1,26 @@
 """
-ORACLE — PEFT Adapter Stack Per Literacy Band
-Phase 4 — Stage 3: Literacy-Conditioned Retrieval Adaptation
+ORACLE, PEFT Adapter Stack Per Literacy Band
+Phase 4, Stage 3: Literacy-Conditioned Retrieval Adaptation
 
 Applies LoRA (Low-Rank Adaptation) adapters to DPR query encoder
-separately per literacy band — low, medium, high, clinical.
+separately per literacy band, low, medium, high, clinical.
 
 Architecture (Decision 6):
 - Base model: facebook/dpr-question_encoder-single-nq-base (shared weights)
 - LoRA adapters: r=8, alpha=16, dropout=0.1 per band
 - Training data: PLABA for low band; PubMed abstracts for clinical band
-- Shared base weights — only adapter parameters differ per band
+- Shared base weights, only adapter parameters differ per band
 - Enables literacy conditioning with manageable compute
 
 Why LoRA over full fine-tune:
-- Full fine-tune per band = 4x full model training — computationally prohibitive
+- Full fine-tune per band = 4x full model training, computationally prohibitive
 - LoRA adds ~0.1% trainable parameters vs full model
 - Shared base weights preserve DPR's pretrained semantic retrieval quality
 
-Input: oracle_corpus.csv — band-specific training pairs
+Input: oracle_corpus.csv, band-specific training pairs
 Output: saved adapter weights per band in models/peft_adapters/
 
-Script type: pipeline/infrastructure — no notebook, no figures
+Script type: pipeline/infrastructure, no notebook, no figures
 """
 
 import os
@@ -43,9 +43,9 @@ os.makedirs(ADAPTERS_DIR, exist_ok=True)
 MODEL_NAME = 'facebook/dpr-question_encoder-single-nq-base'
 BANDS = ['low', 'medium', 'high', 'clinical']
 
-# LoRA config — same hyperparameters across all bands
-# r=8: low-rank dimension — balances adaptation capacity vs parameter count
-# alpha=16: scaling factor — standard 2x r
+# LoRA config, same hyperparameters across all bands
+# r=8: low-rank dimension, balances adaptation capacity vs parameter count
+# alpha=16: scaling factor, standard 2x r
 # dropout=0.1: regularization
 LORA_CONFIG = LoraConfig(
     r=8,
@@ -132,7 +132,7 @@ def simulate_adapter_training(peft_model, band_df, band, tokenizer, n_steps=10):
         outputs = peft_model(**inputs)
         embeddings = outputs.pooler_output
 
-        # Contrastive-style loss proxy — minimize variance within band
+        # Contrastive-style loss proxy, minimize variance within band
         loss = embeddings.var(dim=0).mean()
         loss.backward()
         optimizer.step()
@@ -163,7 +163,7 @@ def save_adapter(peft_model, band):
 
 
 def run_peft_adapter():
-    print("ORACLE Phase 4 — Stage 3: PEFT Adapter Stack Per Literacy Band")
+    print("ORACLE Phase 4, Stage 3: PEFT Adapter Stack Per Literacy Band")
     print("=" * 65)
     print(f"  Base model: {MODEL_NAME}")
     print(f"  LoRA config: r={LORA_CONFIG.r}, alpha={LORA_CONFIG.lora_alpha}, "
@@ -182,7 +182,7 @@ def run_peft_adapter():
     total = sum(p.numel() for p in peft_model.parameters())
     print(f"  Trainable parameters: {trainable:,} / {total:,} "
           f"({trainable/total*100:.2f}%)")
-    print(f"  LoRA adds {trainable/total*100:.2f}% parameters — "
+    print(f"  LoRA adds {trainable/total*100:.2f}% parameters, "
           f"shared base weights preserved")
 
     print("\n--- Training LoRA Adapters Per Band ---")
@@ -193,7 +193,7 @@ def run_peft_adapter():
         print(f"    Corpus: {len(band_df):,} records "
               f"(sources: {', '.join(BAND_SOURCES[band])})")
 
-        # Reload fresh model for each band — separate adapter per band
+        # Reload fresh model for each band, separate adapter per band
         _, peft_model_band = build_lora_model()
 
         stats = simulate_adapter_training(
@@ -212,9 +212,9 @@ def run_peft_adapter():
     print(f"  Trainable params: {results['low']['trainable_params']:,} / "
           f"{results['low']['total_params']:,} "
           f"({results['low']['trainable_pct']:.2f}%) per adapter")
-    print(f"  Shared base DPR encoder — only adapter weights differ per band")
+    print(f"  Shared base DPR encoder, only adapter weights differ per band")
     print(f"  Adapters saved to models/peft_adapters/")
-    print(f"  Note: Simulation training — full training requires GPU compute")
+    print(f"  Note: Simulation training, full training requires GPU compute")
     print(f"  Stage 3 jargon identification next")
 
     return results

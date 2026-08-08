@@ -1,14 +1,14 @@
 """
-ORACLE — MedQuAD EDA
-Phase 4 — Exploratory Data Analysis
+ORACLE, MedQuAD EDA
+Phase 4, Exploratory Data Analysis
 Patient-Facing Health Information Domain
 
-EDA on MedQuAD — 47,441 medical QA pairs (Ben Abacha & Demner-Fushman, 2019).
-Source: HuggingFace lavita/MedQuAD — 12 NIH websites.
+EDA on MedQuAD, 47,441 medical QA pairs (Ben Abacha & Demner-Fushman, 2019).
+Source: HuggingFace lavita/MedQuAD, 12 NIH websites.
 Used as ORACLE's primary patient-facing health information accessibility evaluation.
 
 Key finding: 65.4% of records have no answer (31,034 null answers).
-Missingness is structural — ADAM (17,348) and MPlusDrugs (12,889) have 0% coverage.
+Missingness is structural, ADAM (17,348) and MPlusDrugs (12,889) have 0% coverage.
 Usable for RAG evaluation: 16,407 records with answers (34.6% of total).
 
 Label: answer (free text, mean=1,303 chars for non-null)
@@ -22,7 +22,7 @@ from datasets import load_dataset
 
 
 def run_eda():
-    print("ORACLE Phase 4 — MedQuAD EDA")
+    print("ORACLE Phase 4, MedQuAD EDA")
     print("=" * 50)
 
     dataset = load_dataset("lavita/MedQuAD")
@@ -85,7 +85,7 @@ def run_eda():
     print(f"  Usable records: {len(df_ans):,}")
     print(f"  Mean: {df_ans['ans_len'].mean():.0f} chars | Median: {df_ans['ans_len'].median():.0f}")
     print(f"  Min: {df_ans['ans_len'].min()} | Max: {df_ans['ans_len'].max()}")
-    print(f"  Note: Mean answer length {df_ans['ans_len'].mean():.0f} chars — long narrative answers")
+    print(f"  Note: Mean answer length {df_ans['ans_len'].mean():.0f} chars, long narrative answers")
     print(f"  ORACLE chunking strategy must handle long answers")
 
     print(f"\n--- Answer Coverage by Question Type (Top 10 by coverage) ---")
@@ -105,7 +105,7 @@ def run_eda():
     for src, subset in df_ans.groupby('document_source'):
         print(f"  {src:<30} mean={subset['ans_len'].mean():.0f} | median={subset['ans_len'].median():.0f} | n={len(subset):,}")
     print(f"  Overall:                       mean={df_ans['ans_len'].mean():.0f} | median={df_ans['ans_len'].median():.0f} | n={len(df_ans):,}")
-    print(f"  Note: answer length varies significantly by NIH source — affects ORACLE chunking strategy")
+    print(f"  Note: answer length varies significantly by NIH source, affects ORACLE chunking strategy")
 
     print(f"\n--- Missing Values ---")
     key_cols = ['document_source', 'category', 'question_type', 'question', 'answer', 'question_focus']
@@ -116,12 +116,12 @@ def run_eda():
 
     print(f"\n--- Key Observations ---")
     print(f"  Total records: {len(df):,} across {df['document_source'].nunique()} NIH sources")
-    print(f"  RAG-usable: {df['has_answer'].sum():,} ({df['has_answer'].mean():.1%}) — structural missingness not random")
+    print(f"  RAG-usable: {df['has_answer'].sum():,} ({df['has_answer'].mean():.1%}), structural missingness not random")
     print(f"  ADAM ({df[df['document_source']=='ADAM'].shape[0]:,}) + MPlusDrugs ({df[df['document_source']=='MPlusDrugs'].shape[0]:,}) + MPlusHerbsSupplements ({df[df['document_source']=='MPlusHerbsSupplements'].shape[0]:,}) = zero answer coverage + 5 GARD records = {(~df['has_answer']).sum():,} total missing")
-    print(f"  Drug category: 0% answer coverage — all drug QA pairs lack answers")
-    print(f"  Mean answer length: {df_ans['ans_len'].mean():.0f} chars — long narrative patient-facing answers")
-    print(f"  39 question types — most granular taxonomy across all ORACLE datasets")
-    print(f"  ORACLE uses MedQuAD as patient-facing accessibility benchmark — tests lay language retrieval")
+    print(f"  Drug category: 0% answer coverage, all drug QA pairs lack answers")
+    print(f"  Mean answer length: {df_ans['ans_len'].mean():.0f} chars, long narrative patient-facing answers")
+    print(f"  39 question types, most granular taxonomy across all ORACLE datasets")
+    print(f"  ORACLE uses MedQuAD as patient-facing accessibility benchmark, tests lay language retrieval")
 
     print(f"\n--- MedQuAD EDA complete ---")
     print(f"  RAG-usable subset: {df['has_answer'].sum():,} records ready for ORACLE evaluation")

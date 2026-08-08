@@ -1,9 +1,9 @@
 """
-ORACLE — MIRAGE Benchmark Loader
+ORACLE, MIRAGE Benchmark Loader
 Optimized Retrieval Augmented Generation for Personalized Health Information Accessibility
 
-MIRAGE — 7,663 medical QA questions (Xiong et al., 2024)
-Source: GitHub — Teddy-XiongGZ/MIRAGE (benchmark.json)
+MIRAGE, 7,663 medical QA questions (Xiong et al., 2024)
+Source: GitHub, Teddy-XiongGZ/MIRAGE (benchmark.json)
 
 Composition:
 - medqa:    1,273 questions
@@ -14,14 +14,14 @@ Composition:
 
 Why MIRAGE for ORACLE:
 MIRAGE is the first comprehensive RAG-specific evaluation benchmark for medicine.
-Unlike individual QA datasets, MIRAGE evaluates the full RAG pipeline —
+Unlike individual QA datasets, MIRAGE evaluates the full RAG pipeline.
 retrieval quality, generation accuracy, and faithfulness together.
-Used as ORACLE's primary RAG evaluation framework — directly tests whether
+Used as ORACLE's primary RAG evaluation framework, directly tests whether
 literacy-conditioned retrieval improves medical RAG performance.
 
 Note: MIRAGE compiles subsets from existing datasets (MedQA, MedMCQA,
 PubMedQA, BioASQ, MMLU-Med). Questions are curated for RAG evaluation
-specifically — question-only retrieval setting, no answer options provided
+specifically, question-only retrieval setting, no answer options provided
 during retrieval phase.
 """
 
@@ -35,7 +35,7 @@ MIRAGE_URL = "https://raw.githubusercontent.com/Teddy-XiongGZ/MIRAGE/main/benchm
 
 def load_mirage() -> dict:
     """
-    Load MIRAGE benchmark — 7,663 medical QA questions across 5 datasets.
+    Load MIRAGE benchmark, 7,663 medical QA questions across 5 datasets.
     Source: GitHub Teddy-XiongGZ/MIRAGE benchmark.json
     """
     print("Loading MIRAGE benchmark...")
@@ -69,8 +69,8 @@ def load_mirage() -> dict:
     splits['metadata'] = {
         'name': 'MIRAGE',
         'n_samples': total,
-        'source': 'GitHub — Teddy-XiongGZ/MIRAGE',
-        'paper': 'Xiong et al. (2024) — MIRAGE: Benchmarking RAG for Medicine, ACL Findings'
+        'source': 'GitHub, Teddy-XiongGZ/MIRAGE',
+        'paper': 'Xiong et al. (2024), MIRAGE: Benchmarking RAG for Medicine, ACL Findings'
     }
 
     return splits

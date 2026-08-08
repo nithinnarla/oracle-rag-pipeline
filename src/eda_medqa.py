@@ -1,10 +1,10 @@
 """
-ORACLE — MedQA USMLE EDA
-Phase 4 — Exploratory Data Analysis
+ORACLE, MedQA USMLE EDA
+Phase 4, Exploratory Data Analysis
 Clinical QA Domain
 
-EDA on MedQA USMLE dataset — 11,451 clinical QA instances (Jin et al., 2021).
-USMLE board exam questions — hardest biomedical QA benchmark.
+EDA on MedQA USMLE dataset, 11,451 clinical QA instances (Jin et al., 2021).
+USMLE board exam questions, hardest biomedical QA benchmark.
 Used as ORACLE's clinical retrieval quality ceiling evaluation.
 
 Label mapping: answer_idx = correct option (A/B/C/D)
@@ -20,7 +20,7 @@ from medqa_loader import load_medqa_all
 
 
 def run_eda():
-    print("ORACLE Phase 4 — MedQA USMLE EDA")
+    print("ORACLE Phase 4, MedQA USMLE EDA")
     print("=" * 50)
 
     result = load_medqa_all()
@@ -51,7 +51,7 @@ def run_eda():
     label_counts = df['label'].value_counts().sort_index()
     for label, count in label_counts.items():
         print(f"  Option {label}: {count:,} ({count/len(df):.1%})")
-    print(f"  Note: Near-balanced — slight B bias ({label_counts['B']/len(df):.1%})")
+    print(f"  Note: Near-balanced, slight B bias ({label_counts['B']/len(df):.1%})")
 
     print(f"\n--- USMLE Step Distribution ---")
     step_counts = df['meta_info'].value_counts()
@@ -61,7 +61,7 @@ def run_eda():
     print(f"\n--- Question Length Distribution ---")
     print(f"  Mean: {df['q_len'].mean():.0f} chars | Median: {df['q_len'].median():.0f}")
     print(f"  Min: {df['q_len'].min()} | Max: {df['q_len'].max()}")
-    print(f"  Note: Much longer than MedMCQA (mean 79) — full clinical scenarios")
+    print(f"  Note: Much longer than MedMCQA (mean 79), full clinical scenarios")
     for opt in ['A','B','C','D']:
         mean_len = df[df['label']==opt]['q_len'].mean()
         print(f"  Option {opt} mean q_len: {mean_len:.0f}")
@@ -96,11 +96,11 @@ def run_eda():
 
     print(f"\n--- Key Observations ---")
     print(f"  Total records: {result['metadata']['n_samples']:,}")
-    print(f"  Mean question length: {df['q_len'].mean():.0f} chars — full clinical scenarios")
-    print(f"  Near-balanced answer distribution — well-designed exam")
-    print(f"  USMLE Steps: {list(df['meta_info'].unique())} — tests different clinical knowledge levels")
+    print(f"  Mean question length: {df['q_len'].mean():.0f} chars, full clinical scenarios")
+    print(f"  Near-balanced answer distribution, well-designed exam")
+    print(f"  USMLE Steps: {list(df['meta_info'].unique())}, tests different clinical knowledge levels")
     print(f"  MetaMap phrases: mean {df['n_phrases'].mean():.1f} clinical entities per question")
-    print(f"  ORACLE uses MedQA as retrieval quality ceiling — hardest benchmark")
+    print(f"  ORACLE uses MedQA as retrieval quality ceiling, hardest benchmark")
 
     print(f"\n--- MedQA USMLE EDA complete ---")
     print(f"  Ready for ORACLE Stage 1 retrieval pipeline")

@@ -1,6 +1,6 @@
 """
-ORACLE — Retrieval Pipeline
-Phase 4 — Stage 2: Literacy-Conditioned Dense Retrieval
+ORACLE, Retrieval Pipeline
+Phase 4, Stage 2: Literacy-Conditioned Dense Retrieval
 
 End-to-end retrieval pipeline for literacy-conditioned health RAG.
 Given a user query, routes to the correct literacy band index and
@@ -20,7 +20,7 @@ Stage 3 requirement (per methodology_decisions.md Decision 11):
 Input: user query (string), top_k (int, default 5)
 Output: dict with retrieved documents + routing metadata
 
-Pipeline/infrastructure script — no notebook.
+Pipeline/infrastructure script, no notebook.
 """
 
 import numpy as np
@@ -82,29 +82,29 @@ def retrieve(query: str,
         - retrieved: list of top-k documents with scores
         - metadata: for Stage 3 literacy correction
     """
-    # Step 1 — Classify query literacy band
+    # Step 1, Classify query literacy band
     routing = classify_query(query)
     band = band_override if band_override else routing['band']
 
-    # Step 2 — Load band embeddings
+    # Step 2, Load band embeddings
     embeddings, doc_ids = get_band_embeddings(band)
 
-    # Step 3 — Encode query (load encoder if not pre-loaded)
+    # Step 3, Encode query (load encoder if not pre-loaded)
     if q_tokenizer is None or q_model is None:
         q_tokenizer, q_model = get_dpr_query_encoder()
     query_vec = encode_query(query, q_tokenizer, q_model)
 
-    # Step 4 — Compute similarity
+    # Step 4, Compute similarity
     scores = cosine_similarity_batch(query_vec, embeddings)
 
-    # Step 5 — Get top-k indices
+    # Step 5, Get top-k indices
     top_k_actual = min(top_k, len(scores))
     top_indices = np.argsort(scores)[::-1][:top_k_actual]
 
-    # Step 6 — Load corpus for document text (cached at module level)
+    # Step 6, Load corpus for document text (cached at module level)
     corpus_indexed = _get_corpus()
 
-    # Step 7 — Build results
+    # Step 7, Build results
     retrieved = []
     for rank, idx in enumerate(top_indices):
         doc_id = str(doc_ids[idx])
@@ -154,19 +154,19 @@ def retrieve(query: str,
 
 def run_retrieval_pipeline():
     """Validate retrieval pipeline on sample health queries."""
-    print("ORACLE Phase 4 — Retrieval Pipeline")
+    print("ORACLE Phase 4, Retrieval Pipeline")
     print("=" * 45)
 
     print("\n--- Pipeline Components ---")
-    print("  1. literacy_classifier.classify_query() — FK-based band routing")
-    print("  2. literacy_classifier.get_band_embeddings() — load band index")
-    print("  3. dpr_encoder.encode_query() — DPR query encoding (768-dim)")
-    print("  4. cosine_similarity_batch() — similarity search")
-    print("  5. corpus lookup — retrieve document text + metadata")
+    print("  1. literacy_classifier.classify_query(), FK-based band routing")
+    print("  2. literacy_classifier.get_band_embeddings(), load band index")
+    print("  3. dpr_encoder.encode_query(), DPR query encoding (768-dim)")
+    print("  4. cosine_similarity_batch(), similarity search")
+    print("  5. corpus lookup, retrieve document text + metadata")
 
     print("\n--- Loading Query Encoder ---")
     q_tokenizer, q_model = get_dpr_query_encoder()
-    print("  DPR query encoder loaded ✓")
+    print("  DPR query encoder loaded ")
 
     print("\n--- Sample Retrievals ---")
     test_queries = [

@@ -1,17 +1,17 @@
 """
-ORACLE — PLABA EDA
-Phase 4 — Exploratory Data Analysis
+ORACLE, PLABA EDA
+Phase 4, Exploratory Data Analysis
 Plain Language Adaptation Domain
 
-EDA on PLABA — 921 plain language adaptation instances (Attal et al., 2023).
-Source: OSF Repository — osf.io/rnpmf
-Gold standard plain language adaptation dataset — 75 health topics,
+EDA on PLABA, 921 plain language adaptation instances (Attal et al., 2023).
+Source: OSF Repository, osf.io/rnpmf
+Gold standard plain language adaptation dataset, 75 health topics,
 750 PubMed abstracts, expert-created sentence-level adaptations from NLM annotators.
 
 Used as ORACLE's primary plain language evaluation dataset.
 Two adaptation types:
-- Type C: sentence-level adaptation (627, 68.1%) — preserves structure
-- Type B: summary-level adaptation (294, 31.9%) — restructures completely
+- Type C: sentence-level adaptation (627, 68.1%), preserves structure
+- Type B: summary-level adaptation (294, 31.9%), restructures completely
 
 Label: target_text (expert plain language adaptation)
 Features: question (topic), pmid, input_text (professional), Question_Type
@@ -28,7 +28,7 @@ from plaba_loader import load_plaba_all
 
 
 def run_eda():
-    print("ORACLE Phase 4 — PLABA EDA")
+    print("ORACLE Phase 4, PLABA EDA")
     print("=" * 50)
 
     result = load_plaba_all()
@@ -92,7 +92,7 @@ def run_eda():
     print(f"  Word ratio: mean={df['word_ratio'].mean():.3f} | median={df['word_ratio'].median():.3f}")
     for qt, subset in df.groupby('Question_Type'):
         print(f"  Type {qt}: char_ratio={subset['compression_ratio'].mean():.3f} | word_ratio={subset['word_ratio'].mean():.3f}")
-    print(f"  Note: ratio ~1.0 — plain language adaptations preserve length, not compress")
+    print(f"  Note: ratio ~1.0, plain language adaptations preserve length, not compress")
     print(f"  ORACLE generation must produce full-length plain language, not summaries")
 
     print(f"\n--- Topics Distribution ---")
@@ -107,7 +107,7 @@ def run_eda():
     print(f"  Shorter adaptations: {(diff < 0).sum():,} ({(diff < 0).mean():.1%})")
     print(f"  Longer adaptations: {(diff > 0).sum():,} ({(diff > 0).mean():.1%})")
     print(f"  Same length (±50 chars): {(diff.abs() < 50).sum():,} ({(diff.abs() < 50).mean():.1%})")
-    print(f"  Note: Plain language does not mean shorter — expert adaptors maintain coverage")
+    print(f"  Note: Plain language does not mean shorter, expert adaptors maintain coverage")
 
 
     print(f"\n--- Adaptation Direction Analysis ---")
@@ -156,14 +156,14 @@ def run_eda():
     for col in ['question', 'pmid', 'input_text', 'Question_Type', 'target_text']:
         nulls = df[col].isnull().sum()
         print(f"  {col:<20} {nulls:,} ({nulls/len(df):.1%})")
-    print(f"  Note: No missing values — PLABA is clean gold standard dataset")
+    print(f"  Note: No missing values, PLABA is clean gold standard dataset")
 
     print(f"\n--- Key Observations ---")
-    print(f"  Total: {len(df):,} instances — 750 unique abstracts across 75 health topics")
-    print(f"  Type C (68.1%): sentence-level — preserves structure, simplifies vocabulary")
-    print(f"  Type B (31.9%): summary-level — restructures and reorganizes content")
-    print(f"  Compression ratio ~1.0 — plain language = full-length rewrite, not summary")
-    print(f"  Mean 12.3 records per topic — multiple adaptation versions per abstract")
+    print(f"  Total: {len(df):,} instances, 750 unique abstracts across 75 health topics")
+    print(f"  Type C (68.1%): sentence-level, preserves structure, simplifies vocabulary")
+    print(f"  Type B (31.9%): summary-level, restructures and reorganizes content")
+    print(f"  Compression ratio ~1.0, plain language = full-length rewrite, not summary")
+    print(f"  Mean 12.3 records per topic, multiple adaptation versions per abstract")
     print(f"  ORACLE uses PLABA as gold standard plain language evaluation benchmark")
     print(f"  Only dataset with paired professional + plain language at sentence level")
 

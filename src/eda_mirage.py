@@ -1,9 +1,9 @@
 """
-ORACLE — MIRAGE Benchmark EDA
-Phase 4 — Exploratory Data Analysis
+ORACLE, MIRAGE Benchmark EDA
+Phase 4, Exploratory Data Analysis
 RAG Evaluation Domain
 
-EDA on MIRAGE benchmark — 7,663 medical QA questions (Xiong et al., 2024).
+EDA on MIRAGE benchmark, 7,663 medical QA questions (Xiong et al., 2024).
 Compiled from 5 source datasets for RAG-specific evaluation.
 Used as ORACLE's primary RAG pipeline evaluation framework.
 
@@ -31,7 +31,7 @@ from mirage_loader import load_mirage
 
 
 def run_eda():
-    print("ORACLE Phase 4 — MIRAGE Benchmark EDA")
+    print("ORACLE Phase 4, MIRAGE Benchmark EDA")
     print("=" * 50)
 
     result = load_mirage()
@@ -99,7 +99,7 @@ def run_eda():
             has_pmid = subset['PMID'].apply(lambda x: isinstance(x, list) and len(x) > 0).sum()
             print(f"  {src:<12} PMID coverage: {has_pmid:,}/{len(subset):,} ({has_pmid/len(subset):.1%})")
     non_pmid = [s for s in df['source'].unique() if s not in pmid_sources]
-    print(f"  {', '.join(non_pmid)}: no PMID — closed-book QA format")
+    print(f"  {', '.join(non_pmid)}: no PMID, closed-book QA format")
 
     print(f"\n--- RAG Difficulty Proxy (Question Length) ---")
     print(f"  Shortest questions = less retrieval context needed")
@@ -119,7 +119,7 @@ def run_eda():
     print(f"  Overall:     mean={df['q_words'].mean():.1f} | median={df['q_words'].median():.0f}")
     medqa_words = df[df['source']=='medqa']['q_words'].mean()
     bioasq_words = df[df['source']=='bioasq']['q_words'].mean()
-    print(f"  Note: medqa mean {medqa_words:.0f} words vs bioasq mean {bioasq_words:.0f} words — clinical scenarios vs factual queries")
+    print(f"  Note: medqa mean {medqa_words:.0f} words vs bioasq mean {bioasq_words:.0f} words, clinical scenarios vs factual queries")
 
     print(f"\n--- Option Text Length by Source ---")
     for src, subset in df.groupby('source'):
@@ -144,9 +144,9 @@ def run_eda():
     print(f"  Total records: {len(df):,} across 5 source datasets")
     print(f"  medmcqa dominates: {source_counts.get('medmcqa',0):,} questions ({source_counts.get('medmcqa',0)/len(df):.1%})")
     print(f"  Three answer formats: binary (bioasq), three-way (pubmedqa), four-way (medqa/medmcqa/mmlu)")
-    print(f"  PMID available for bioasq + pubmedqa — enables retrieval ground truth validation")
-    print(f"  Mean question length: {df['q_len'].mean():.0f} chars — varies widely by source")
-    print(f"  ORACLE uses MIRAGE as end-to-end RAG evaluation — tests full pipeline not just retrieval")
+    print(f"  PMID available for bioasq + pubmedqa, enables retrieval ground truth validation")
+    print(f"  Mean question length: {df['q_len'].mean():.0f} chars, varies widely by source")
+    print(f"  ORACLE uses MIRAGE as end-to-end RAG evaluation, tests full pipeline not just retrieval")
     print(f"  RAG-specific design: question-only retrieval setting, no options during retrieval phase")
 
     print(f"\n--- MIRAGE EDA complete ---")

@@ -1,9 +1,9 @@
 """
-ORACLE — MedMCQA Dataset Loader
+ORACLE, MedMCQA Dataset Loader
 Optimized Retrieval Augmented Generation for Personalized Health Information Accessibility
 
-MedMCQA — 193,155 medical QA instances (Pal et al., 2022)
-Source: HuggingFace — openlifescienceai/medmcqa
+MedMCQA, 193,155 medical QA instances (Pal et al., 2022)
+Source: HuggingFace, openlifescienceai/medmcqa
 
 Splits:
 - train:      182,822 instances
@@ -13,7 +13,7 @@ Splits:
 Why MedMCQA for ORACLE:
 Large-scale medical school exam questions covering 2,400+ healthcare topics
 across 21 medical subjects. Used as ORACLE's broad medical QA retrieval
-evaluation benchmark — tests whether literacy-conditioned retrieval surfaces
+evaluation benchmark, tests whether literacy-conditioned retrieval surfaces
 relevant medical knowledge before accessibility adaptation.
 
 Limitation: Medical school exam questions written for clinical professionals.
@@ -49,7 +49,7 @@ def load_medmcqa(split: str = "train") -> dict:
         'name': f'MedMCQA-{split}',
         'n_samples': len(X),
         'purpose': 'Medical QA retrieval evaluation baseline',
-        'paper': 'Pal et al. (2022) — MedMCQA, CHIL'
+        'paper': 'Pal et al. (2022), MedMCQA, CHIL'
     }
 
     return {'data': X, 'labels': y, 'metadata': metadata}
@@ -57,9 +57,9 @@ def load_medmcqa(split: str = "train") -> dict:
 
 def load_medmcqa_all() -> dict:
     """
-    Load all MedMCQA splits — 193,155 total records.
+    Load all MedMCQA splits, 193,155 total records.
     """
-    print("Loading MedMCQA — all splits...")
+    print("Loading MedMCQA, all splits...")
     dataset = load_dataset("openlifescienceai/medmcqa")
 
     splits = {}
@@ -82,8 +82,8 @@ def load_medmcqa_all() -> dict:
     splits['metadata'] = {
         'name': 'MedMCQA',
         'n_samples': total,
-        'source': 'HuggingFace — openlifescienceai/medmcqa',
-        'paper': 'Pal et al. (2022) — MedMCQA, CHIL'
+        'source': 'HuggingFace, openlifescienceai/medmcqa',
+        'paper': 'Pal et al. (2022), MedMCQA, CHIL'
     }
 
     return splits

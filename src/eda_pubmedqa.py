@@ -1,10 +1,10 @@
 """
-ORACLE — PubMedQA EDA
-Phase 4 — Exploratory Data Analysis
+ORACLE, PubMedQA EDA
+Phase 4, Exploratory Data Analysis
 Biomedical QA Domain
 
-EDA on PubMedQA labeled split — 1,000 expert-annotated biomedical QA instances.
-Jin et al. (2019) — PubMedQA, EMNLP.
+EDA on PubMedQA labeled split, 1,000 expert-annotated biomedical QA instances.
+Jin et al. (2019), PubMedQA, EMNLP.
 Questions answerable from PubMed abstracts with yes/no/maybe labels.
 
 ORACLE uses PubMedQA to establish retrieval quality baseline.
@@ -25,7 +25,7 @@ LABEL_COLORS = {"yes": "#5cb85c", "no": "#d9534f", "maybe": "#f0ad4e"}
 
 
 def run_eda():
-    print("ORACLE Phase 4 — PubMedQA EDA")
+    print("ORACLE Phase 4, PubMedQA EDA")
     print("=" * 50)
 
     labeled = load_pubmedqa_labeled()
@@ -48,7 +48,7 @@ def run_eda():
         count = (df["label"] == label).sum()
         pct = count / len(df)
         print(f"  {label:<8}: {count:,} ({pct:.1%})")
-    print(f"  Note: Yes-biased dataset (55.2%) — most biomedical hypotheses confirmed")
+    print(f"  Note: Yes-biased dataset (55.2%), most biomedical hypotheses confirmed")
 
     print(f"\n--- Question Length Distribution ---")
     print(f"  Mean: {df['q_len'].mean():.1f} chars")
@@ -115,13 +115,13 @@ def run_eda():
     free_acc = (df["reasoning_free"] == df["label"]).mean()
     print(f"  Reasoning required accuracy: {req_acc:.1%}")
     print(f"  Reasoning free accuracy:     {free_acc:.1%}")
-    print(f"  Note: Reasoning free (91.6%) >> required (78.1%) — ORACLE must beat 91.6%")
+    print(f"  Note: Reasoning free (91.6%) >> required (78.1%), ORACLE must beat 91.6%")
     for label in ["yes","no","maybe"]:
         subset = df[df["label"]==label]
         req = (subset["reasoning_req"] == label).mean()
         free = (subset["reasoning_free"] == label).mean()
         print(f"  {label:<8} req={req:.1%} | free={free:.1%}")
-    print(f"  Note: Maybe label hardest — req 47.3%, free 71.8%")
+    print(f"  Note: Maybe label hardest, req 47.3%, free 71.8%")
 
 
     print(f"\n--- Reasoning Agreement Analysis ---")
@@ -139,7 +139,7 @@ def run_eda():
             print(f"  Reasoning agreement: {agree/total:.1%} ({agree:,}/{total:,})")
             print(f"  Reasoning disagreement: {(total-agree)/total:.1%}")
         else:
-            print(f"  Reasoning predictions processed — see notebook for confusion matrix")
+            print(f"  Reasoning predictions processed, see notebook for confusion matrix")
     except Exception as e:
         print(f"  Reasoning analysis: {e}")
 
@@ -149,7 +149,7 @@ def run_eda():
     print(f"  Mean question length: {df['q_len'].mean():.0f} chars")
     print(f"  Mean context length: {df['ctx_len'].mean():.0f} chars")
     print(f"  Mean answer length: {df['ans_len'].mean():.0f} chars")
-    print(f"  Note: Research-facing questions — not patient-facing")
+    print(f"  Note: Research-facing questions, not patient-facing")
     print(f"  Note: ORACLE baseline before Consumer Health QA evaluation")
     print(f"  Note: MeSH terms enable topic-stratified retrieval evaluation")
 

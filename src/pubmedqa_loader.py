@@ -1,22 +1,22 @@
 """
-ORACLE — PubMedQA Dataset Loader
+ORACLE, PubMedQA Dataset Loader
 Optimized Retrieval Augmented Generation for Personalized Health Information Accessibility
 
-PubMedQA — 273,518 biomedical QA instances (Jin et al., 2019)
-Source: HuggingFace — qiaojin/PubMedQA
+PubMedQA, 273,518 biomedical QA instances (Jin et al., 2019)
+Source: HuggingFace, qiaojin/PubMedQA
 
 Three configurations:
-- pqa_labeled:     1,000 expert-annotated instances — gold standard evaluation
-- pqa_unlabeled:  61,249 instances — retrieval corpus expansion
-- pqa_artificial: 211,269 instances — machine-generated training data
+- pqa_labeled:     1,000 expert-annotated instances, gold standard evaluation
+- pqa_unlabeled:  61,249 instances, retrieval corpus expansion
+- pqa_artificial: 211,269 instances, machine-generated training data
 
 Why PubMedQA for ORACLE:
 PubMedQA is the standard biomedical QA benchmark. Questions are answerable
 from provided PubMed abstracts with yes/no/maybe labels. ORACLE uses all
-three splits — labeled for evaluation, unlabeled and artificial for retrieval
+three splits, labeled for evaluation, unlabeled and artificial for retrieval
 corpus and training pipeline.
 
-Limitation: Questions written by researchers for researchers — not patient-facing.
+Limitation: Questions written by researchers for researchers, not patient-facing.
 ORACLE uses PubMedQA to establish retrieval quality baseline before evaluating
 accessibility on Consumer Health QA and PLABA.
 """
@@ -36,8 +36,8 @@ def load_pubmedqa_labeled() -> dict:
         'metadata': {
             'name': 'PubMedQA-labeled',
             'n_samples': len(df),
-            'purpose': 'Gold standard evaluation — expert annotated',
-            'paper': 'Jin et al. (2019) — PubMedQA, EMNLP'
+            'purpose': 'Gold standard evaluation, expert annotated',
+            'paper': 'Jin et al. (2019), PubMedQA, EMNLP'
         }
     }
 
@@ -53,7 +53,7 @@ def load_pubmedqa_unlabeled() -> dict:
             'name': 'PubMedQA-unlabeled',
             'n_samples': len(df),
             'purpose': 'Retrieval corpus expansion',
-            'paper': 'Jin et al. (2019) — PubMedQA, EMNLP'
+            'paper': 'Jin et al. (2019), PubMedQA, EMNLP'
         }
     }
 
@@ -70,8 +70,8 @@ def load_pubmedqa_artificial() -> dict:
         'metadata': {
             'name': 'PubMedQA-artificial',
             'n_samples': len(df),
-            'purpose': 'Training pipeline — machine generated labels',
-            'paper': 'Jin et al. (2019) — PubMedQA, EMNLP'
+            'purpose': 'Training pipeline, machine generated labels',
+            'paper': 'Jin et al. (2019), PubMedQA, EMNLP'
         }
     }
 
@@ -97,8 +97,8 @@ def load_pubmedqa_all() -> dict:
         'metadata': {
             'name': 'PubMedQA',
             'n_samples': total,
-            'source': 'HuggingFace — qiaojin/PubMedQA',
-            'paper': 'Jin et al. (2019) — PubMedQA, EMNLP'
+            'source': 'HuggingFace, qiaojin/PubMedQA',
+            'paper': 'Jin et al. (2019), PubMedQA, EMNLP'
         }
     }
 

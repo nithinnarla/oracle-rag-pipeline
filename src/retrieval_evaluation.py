@@ -1,15 +1,15 @@
 """
-ORACLE — Retrieval Pipeline Evaluation
-Phase 4 — Stage 2: Literacy-Conditioned Dense Retrieval Evaluation
+ORACLE, Retrieval Pipeline Evaluation
+Phase 4, Stage 2: Literacy-Conditioned Dense Retrieval Evaluation
 
 Evaluates retrieval quality across literacy bands using:
 1. Cosine similarity score distributions per literacy band
 2. Band routing accuracy on test queries
 3. Source distribution of retrieved documents per band
-4. FK grade alignment — do retrieved docs match query literacy band?
-5. Top-k score decay — how scores change with rank
+4. FK grade alignment, do retrieved docs match query literacy band?
+5. Top-k score decay, how scores change with rank
 
-No ground truth labels available — evaluation uses proxy metrics:
+No ground truth labels available, evaluation uses proxy metrics:
 - Retrieval score as relevance proxy
 - FK grade consistency as literacy alignment proxy
 - Source diversity as coverage proxy
@@ -40,7 +40,7 @@ CORPUS_PATH = os.path.join(REPO_ROOT, 'data', 'processed', 'oracle_corpus.csv')
 FIGURES_DIR = os.path.join(REPO_ROOT, 'figures', 'stage2')
 os.makedirs(FIGURES_DIR, exist_ok=True)
 
-# Test queries per literacy band — 5 per band = 20 total
+# Test queries per literacy band, 5 per band = 20 total
 TEST_QUERIES = {
     'low': [
         "What causes high blood pressure?",
@@ -77,7 +77,7 @@ BAND_COLORS = {'low': '#2ecc71', 'medium': '#3498db', 'high': '#e67e22', 'clinic
 
 
 def run_retrieval_evaluation():
-    print("ORACLE Phase 4 — Retrieval Pipeline Evaluation")
+    print("ORACLE Phase 4, Retrieval Pipeline Evaluation")
     print("=" * 55)
 
     print("\n--- Loading Resources ---")
@@ -85,7 +85,7 @@ def run_retrieval_evaluation():
     q_tokenizer, q_model = get_dpr_query_encoder()
     print(f"  Corpus: {len(df):,} records")
     print(f"  Test queries: {sum(len(v) for v in TEST_QUERIES.values())} total (5 per band)")
-    print(f"  DPR query encoder loaded ✓")
+    print(f"  DPR query encoder loaded ")
 
     print("\n--- Running Retrieval Evaluation ---")
     all_results = {}
@@ -95,7 +95,7 @@ def run_retrieval_evaluation():
             result = retrieve(query, top_k=10,
                               q_tokenizer=q_tokenizer, q_model=q_model)
             all_results[band].append(result)
-        print(f"  {band}: {len(queries)} queries retrieved ✓")
+        print(f"  {band}: {len(queries)} queries retrieved ")
 
     print("\n--- Computing Metrics ---")
 
@@ -142,7 +142,7 @@ def run_retrieval_evaluation():
               f"min={np.min(scores):.4f} "
               f"max={np.max(scores):.4f}")
 
-    # Figure 1 — Score distributions per band (box plot)
+    # Figure 1, Score distributions per band (box plot)
     fig, ax = plt.subplots(figsize=(12, 6))
     data = [score_by_band[b] for b in BAND_ORDER]
     bp = ax.boxplot(data, labels=BAND_ORDER, patch_artist=True)
@@ -159,7 +159,7 @@ def run_retrieval_evaluation():
     plt.close()
     print("  Fig 1 saved -- eval_score_distribution.png")
 
-    # Figure 2 — Band routing accuracy
+    # Figure 2, Band routing accuracy
     fig, ax = plt.subplots(figsize=(10, 5))
     accs = [routing_correct[b]/routing_total[b] for b in BAND_ORDER]
     colors = ['#2ecc71' if a >= 0.6 else '#e74c3c' for a in accs]
@@ -179,7 +179,7 @@ def run_retrieval_evaluation():
     plt.close()
     print("  Fig 2 saved -- eval_routing_accuracy.png")
 
-    # Figure 3 — Source distribution per band (stacked bar)
+    # Figure 3, Source distribution per band (stacked bar)
     all_sources = set()
     for band in BAND_ORDER:
         all_sources.update(source_counts[band].keys())
@@ -208,7 +208,7 @@ def run_retrieval_evaluation():
     plt.close()
     print("  Fig 3 saved -- eval_source_distribution.png")
 
-    # Figure 4 — FK grade distribution of retrieved docs per band
+    # Figure 4, FK grade distribution of retrieved docs per band
     fig, ax = plt.subplots(figsize=(12, 6))
     for band in BAND_ORDER:
         if fk_by_band[band]:
@@ -225,7 +225,7 @@ def run_retrieval_evaluation():
     plt.close()
     print("  Fig 4 saved -- eval_fk_distribution.png")
 
-    # Figure 5 — Top-k score decay
+    # Figure 5, Top-k score decay
     fig, ax = plt.subplots(figsize=(12, 6))
     for band in BAND_ORDER:
         mean_scores = [np.mean(top_k_scores[band][k]) for k in range(1, 11)]
@@ -244,7 +244,7 @@ def run_retrieval_evaluation():
     print("  Fig 5 saved -- eval_topk_decay.png")
 
 
-    # Figure 6 — Routing confusion matrix
+    # Figure 6, Routing confusion matrix
     confusion = np.zeros((4, 4))
     band_idx = {b: i for i, b in enumerate(BAND_ORDER)}
     for band, results in all_results.items():
@@ -271,7 +271,7 @@ def run_retrieval_evaluation():
     plt.close()
     print("  Fig 6 saved -- eval_routing_confusion.png")
 
-    # Figure 7 — Mean retrieval score per source per band
+    # Figure 7, Mean retrieval score per source per band
     source_scores = {band: {} for band in BAND_ORDER}
     for band, results in all_results.items():
         for result in results:
@@ -304,7 +304,7 @@ def run_retrieval_evaluation():
     print(f"\n--- Retrieval Evaluation complete ---")
     print(f"  7 figures saved to figures/stage2/")
     print(f"  20 test queries (5 per band), top-10 retrieved each")
-    print(f"  FK routing limitation confirmed — clinical/high queries misrouted")
+    print(f"  FK routing limitation confirmed, clinical/high queries misrouted")
     print(f"  Retrieval scores consistent across bands (~0.65-0.75)")
     print(f"  Stage 3 literacy correction required for routing errors")
 

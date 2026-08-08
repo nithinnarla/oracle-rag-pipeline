@@ -1,6 +1,6 @@
 """
-ORACLE — Lay Language Summarization
-Phase 4 — Stage 4: LLM-based plain language summarization
+ORACLE, Lay Language Summarization
+Phase 4, Stage 4: LLM-based plain language summarization
 
 Takes medical abstracts from PLABA dataset and generates plain language
 summaries using gpt-4o-mini, then scores readability using FK + SMOG
@@ -10,7 +10,7 @@ Data structure note: load_plaba_all() returns {'train','val','test','metadata'},
 each split is {'data': DataFrame[question,pmid,input_text,Question_Type],
 'labels': Series named target_text, same index as data}.
 
-Pipeline/infrastructure script — no notebook.
+Pipeline/infrastructure script, no notebook.
 """
 
 import os
@@ -126,11 +126,11 @@ def plot_fk_comparison(df_results, figures_dir):
 
 
 def run_lay_summarizer(n_samples: int = 20, dry_run: bool = False, split: str = 'train'):
-    print("ORACLE — Lay Language Summarization")
+    print("ORACLE, Lay Language Summarization")
     print("=" * 60)
     print(f"  Model: gpt-4o-mini")
     print(f"  Mode: {'DRY RUN' if dry_run else 'LIVE'}")
-    print(f"  Dataset: PLABA ({split} split — expert plain language adaptations)")
+    print(f"  Dataset: PLABA ({split} split, expert plain language adaptations)")
     print(f"  Samples requested: {n_samples}")
     print()
 
@@ -158,7 +158,7 @@ def run_lay_summarizer(n_samples: int = 20, dry_run: bool = False, split: str = 
         expert = str(row['target_text'])
         qtype = str(row['Question_Type'])
 
-        print(f"  [{i+1}/{len(df_sample)}] Type {qtype} — {source[:60]}...")
+        print(f"  [{i+1}/{len(df_sample)}] Type {qtype}, {source[:60]}...")
 
         source_scores = score_readability(source)
 

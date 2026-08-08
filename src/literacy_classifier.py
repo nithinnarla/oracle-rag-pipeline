@@ -1,13 +1,13 @@
 """
-ORACLE — Literacy Query Router
-Phase 4 — Stage 2: Literacy-Conditioned Dense Retrieval
+ORACLE, Literacy Query Router
+Phase 4, Stage 2: Literacy-Conditioned Dense Retrieval
 
 Routes user queries to the correct DPR embedding index based on
 Flesch-Kincaid readability grade of the query text.
 
 Architecture decision: Rule-based FK thresholds rather than ML classifier.
 ML classifier trained on corpus documents achieved 100% accuracy due to
-circular feature-label relationship — FK grade used both to create literacy
+circular feature-label relationship, FK grade used both to create literacy
 band labels and as the primary classifier feature. Rule-based routing is
 more honest, interpretable, and generalizes correctly to user queries.
 
@@ -118,11 +118,11 @@ def get_band_embeddings(band: str) -> tuple:
 
 def run_literacy_classifier():
     """Validate rule-based router on sample queries and corpus statistics."""
-    print("ORACLE Phase 4 — Literacy Query Router (Rule-based FK Thresholds)")
+    print("ORACLE Phase 4, Literacy Query Router (Rule-based FK Thresholds)")
     print("=" * 65)
 
     print("\n--- Architecture Decision ---")
-    print("  Rule-based FK thresholds — not ML classifier")
+    print("  Rule-based FK thresholds, not ML classifier")
     print("  Reason: ML classifier on corpus achieves 100% accuracy due to")
     print("  circular feature-label relationship (FK used to create labels)")
     print("  Rule-based routing is correct, interpretable, and generalizes")
@@ -147,9 +147,9 @@ def run_literacy_classifier():
         ids_path = os.path.join(EMBEDDINGS_DIR, f"band_ids_{band}.npy")
         if os.path.exists(emb_path):
             emb = np.load(emb_path)
-            print(f"  {band:<10} embeddings: {emb.shape} ✓")
+            print(f"  {band:<10} embeddings: {emb.shape} ")
         else:
-            print(f"  {band:<10} embeddings: MISSING — run dpr_encoder.py")
+            print(f"  {band:<10} embeddings: MISSING, run dpr_encoder.py")
 
     print("\n--- Sample Query Classification ---")
     test_queries = [
@@ -167,7 +167,7 @@ def run_literacy_classifier():
     for query, expected in test_queries:
         result = classify_query(query)
         pred = result['band']
-        match = "✓" if pred == expected else "✗"
+        match = "" if pred == expected else ""
         correct += (pred == expected)
         print(f"  {match} [{expected}→{pred}] FK={result['fk_grade']:5.1f} "
               f"margin={result.get('margin', 0):4.1f}: {query[:55]}...")
