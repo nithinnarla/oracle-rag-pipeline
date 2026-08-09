@@ -1,19 +1,19 @@
 """
-ORACLE -- Text Preprocessor
-Phase 4 -- Stage 1: Document Ingestion Pipeline
+ORACLE - Text Preprocessor
+Phase 4 - Stage 1: Document Ingestion Pipeline
 
 Preprocesses all 6 ORACLE datasets into a unified format for RAG ingestion.
 Applies text cleaning, normalization, and literacy pre-scoring (Flesch-Kincaid).
 Saves unified corpus to data/processed/oracle_corpus.csv for Stage 1 ingestion.
 
 Six datasets:
-- MedQA USMLE (11,451 records) -- clinical reasoning questions
-- MedMCQA (182,822 records) -- medical entrance exam questions
-- MedQuAD (16,407 RAG-usable records) -- patient-facing QA pairs
-- MIRAGE (7,663 records) -- benchmark evaluation questions
-- PLABA (921 records) -- plain language adaptations
-- PubMedQA (1,000 labeled records) -- biomedical research QA
-- PubMed abstracts (412 records) -- clinical professional abstracts
+- MedQA USMLE (11,451 records) - clinical reasoning questions
+- MedMCQA (182,822 records) - medical entrance exam questions
+- MedQuAD (16,407 RAG-usable records) - patient-facing QA pairs
+- MIRAGE (7,663 records) - benchmark evaluation questions
+- PLABA (921 records) - plain language adaptations
+- PubMedQA (1,000 labeled records) - biomedical research QA
+- PubMed abstracts (412 records) - clinical professional abstracts
 """
 
 import pandas as pd
@@ -71,22 +71,22 @@ def assign_literacy_band(fk_grade: float) -> str:
     if np.isnan(fk_grade):
         return "unknown"
     if fk_grade <= 6:
-        return "low"       # Grade 6 and below -- plain language
+        return "low"       # Grade 6 and below - plain language
     elif fk_grade <= 10:
-        return "medium"    # Grades 7-10 -- general public
+        return "medium"    # Grades 7-10 - general public
     elif fk_grade <= 14:
-        return "high"      # Grades 11-14 -- educated layperson
+        return "high"      # Grades 11-14 - educated layperson
     else:
-        return "clinical"  # Grade 15+ -- clinical professional
+        return "clinical"  # Grade 15+ - clinical professional
 
 
 def process_medqa(record_id_offset: int = 0) -> pd.DataFrame:
-    """Process MedQA USMLE dataset -- answer_idx pulled from labels sibling key, mapped to resolved option text."""
+    """Process MedQA USMLE dataset - answer_idx pulled from labels sibling key, mapped to resolved option text."""
     print("  Loading MedQA USMLE...")
     from medqa_loader import load_medqa_all
     d = load_medqa_all()
     # MedQA uses split structure: d['train']['data'] (features) + d['train']['labels'] (answer_idx)
-    # labels is a sibling key the preprocessor previously never read -- answer_idx exists, was just unreachable
+    # labels is a sibling key the preprocessor previously never read - answer_idx exists, was just unreachable
     dfs = []
     for split_name in ['train', 'test']:
         if split_name in d and 'data' in d[split_name]:
@@ -137,7 +137,7 @@ MEDMCQA_CAP = 20000  # capped to prevent single-source domination of retrieval c
 
 
 def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
-    """Process MedMCQA dataset -- capped and stratified by subject."""
+    """Process MedMCQA dataset - capped and stratified by subject."""
     print("  Loading MedMCQA...")
     from medmcqa_loader import load_medmcqa_all
     d = load_medmcqa_all()
@@ -152,7 +152,7 @@ def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
     # Stratified cap by subject_name to preserve diversity across 21 medical subjects
     # while preventing MedMCQA from dominating the retrieval corpus
     if "subject_name" not in df.columns:
-        print(f"    WARNING: subject_name column missing -- MedMCQA cap NOT applied, {len(df):,} records uncapped")
+        print(f"    WARNING: subject_name column missing - MedMCQA cap NOT applied, {len(df):,} records uncapped")
     if len(df) > MEDMCQA_CAP and "subject_name" in df.columns:
         frac = MEDMCQA_CAP / len(df)
         df = df.groupby("subject_name", group_keys=False).apply(
@@ -173,7 +173,7 @@ def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
         full_text = f"{question} {options_text}"
         explanation = clean_text(str(row.get("exp", "")))
         scores = score_literacy(question)
-        # Use explanation as answer -- cop (correct option index) not in loader output
+        # Use explanation as answer - cop (correct option index) not in loader output
         explanation = clean_text(str(row.get("exp", "")))
         records.append({
             "record_id": f"medmcqa_{record_id_offset + idx}",
@@ -194,14 +194,14 @@ def process_medmcqa(record_id_offset: int = 0) -> pd.DataFrame:
 
 
 def process_medquad(record_id_offset: int = 0) -> pd.DataFrame:
-    """Process MedQuAD dataset -- RAG-usable subset only."""
+    """Process MedQuAD dataset - RAG-usable subset only."""
     print("  Loading MedQuAD...")
     from medquad_loader import load_medquad
     d = load_medquad()
     # MedQuAD has 'data' key directly
     df = d["data"] if isinstance(d, dict) and "data" in d else d
     # RAG-usable: records with non-null answers
-    # MedQuAD has no answer column in HuggingFace version -- questions only
+    # MedQuAD has no answer column in HuggingFace version - questions only
     records = []
     for idx, row in df.iterrows():
         question = clean_text(str(row.get("question", "")))
@@ -352,7 +352,7 @@ def process_pubmed_abstracts(record_id_offset: int = 0) -> pd.DataFrame:
     print("  Loading PubMed abstracts...")
     path = "data/processed/pubmed_abstracts.csv"
     if not os.path.exists(path):
-        print("    WARNING: pubmed_abstracts.csv not found -- skipping")
+        print("    WARNING: pubmed_abstracts.csv not found - skipping")
         return pd.DataFrame()
     df = pd.read_csv(path)
     records = []
@@ -381,7 +381,7 @@ def process_pubmed_abstracts(record_id_offset: int = 0) -> pd.DataFrame:
 
 
 def run_preprocessor():
-    print("ORACLE Phase 4 -- Stage 1: Text Preprocessor")
+    print("ORACLE Phase 4 - Stage 1: Text Preprocessor")
     print("=" * 48)
 
     print("\n--- Loading and Preprocessing Datasets ---")
@@ -391,7 +391,7 @@ def run_preprocessor():
     for name, processor in [
         ("MedQA", process_medqa),
         ("MedMCQA", process_medmcqa),
-        # MedQuAD excluded from retrieval corpus -- HuggingFace version has no answers
+        # MedQuAD excluded from retrieval corpus - HuggingFace version has no answers
         # Questions-only data not suitable for RAG retrieval documents
         # To be re-added tonight with full XML parser from abachaa/MedQuAD GitHub
         # ("MedQuAD", process_medquad),
@@ -444,8 +444,8 @@ def run_preprocessor():
     print(f"  Clinical band (FK 15+): {clinical:,} records ({clinical/len(corpus)*100:.1f}%)")
     print(f"  Low band (FK <=6): {low:,} records ({low/len(corpus)*100:.1f}%)")
     print(f"  MedQA FK grade confirms USMLE clinical professional level")
-    print(f"  MedQuAD patient-facing QA has lowest FK grade -- plain language target")
-    print(f"  MedQuAD excluded from retrieval -- questions-only in HuggingFace version, to be re-added with XML parser")
+    print(f"  MedQuAD patient-facing QA has lowest FK grade - plain language target")
+    print(f"  MedQuAD excluded from retrieval - questions-only in HuggingFace version, to be re-added with XML parser")
     print(f"  PLABA plain language adaptations confirm literacy reduction pipeline")
 
     print("\n--- Saving Corpus to Disk ---")
@@ -453,7 +453,7 @@ def run_preprocessor():
     print(f"  Saved {len(corpus):,} records to {ORACLE_CORPUS_PATH}")
 
     print("\n--- Text Preprocessor complete ---")
-    print(f"  Unified ORACLE corpus ready for dpr_encoder.py -- Stage 1 ingestion")
+    print(f"  Unified ORACLE corpus ready for dpr_encoder.py - Stage 1 ingestion")
     return corpus
 
 

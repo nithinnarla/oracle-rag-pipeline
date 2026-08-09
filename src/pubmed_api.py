@@ -141,7 +141,7 @@ def fetch_pmids_batch(pmids, desc=""):
 
 
 def run_pipeline():
-    print("ORACLE Phase 4 -- Stage 1: PubMed API Integration")
+    print("ORACLE Phase 4 - Stage 1: PubMed API Integration")
     print("=" * 52)
 
     print(f"\n--- Loading PubMedQA Seed PMIDs ---")
@@ -154,10 +154,10 @@ def run_pipeline():
     print(f"\n--- Verifying NCBI API Connectivity ---")
     test_pmids, total = esearch("health literacy patient education", retmax=5)
     if test_pmids:
-        print(f"  NCBI API: Connected -- test query returned {len(test_pmids)} PMIDs")
+        print(f"  NCBI API: Connected - test query returned {len(test_pmids)} PMIDs")
     else:
-        print(f"  NCBI API: Connection failed or rate limited -- check network")
-        print(f"  Note: Running in offline mode -- using PubMedQA embedded contexts only")
+        print(f"  NCBI API: Connection failed or rate limited - check network")
+        print(f"  Note: Running in offline mode - using PubMedQA embedded contexts only")
         return
 
     print(f"\n--- Fetching Seed PMID Abstracts ---")
@@ -193,7 +193,7 @@ def run_pipeline():
         print(f"  Mean abstract length: {df['abstract_length'].mean():.0f} chars")
         print(f"  Mean word count: {df['word_count'].mean():.0f} words")
         print(f"  Abstracts with MeSH terms: {(df['mesh_terms'].str.len() > 0).sum():,}")
-        print(f"  Year range: {df['year'].min()} -- {df['year'].max()}")
+        print(f"  Year range: {df['year'].min()} - {df['year'].max()}")
         wc = df["word_count"]
         print(f"  Word count distribution:")
         print(f"    <50 words (very short): {(wc<50).sum():,}")
@@ -201,7 +201,7 @@ def run_pipeline():
         print(f"    150-300 words (standard): {((wc>=150)&(wc<300)).sum():,}")
         print(f"    >300 words (long): {(wc>=300).sum():,}")
     else:
-        print(f"  No abstracts retrieved -- API may be unavailable")
+        print(f"  No abstracts retrieved - API may be unavailable")
 
     print(f"\n--- Readability Pre-scoring ---")
     if all_results and len(df) > 0:
@@ -214,18 +214,18 @@ def run_pipeline():
             print(f"  Sample FRE (n=50): mean={np.mean(fre_scores):.1f} std={np.std(fre_scores):.1f}")
             print(f"  Expected: FK ~12-16 for biomedical abstracts (clinical professional level)")
         except ImportError:
-            print(f"  textstat not available -- readability scoring deferred to Stage 1 pipeline")
+            print(f"  textstat not available - readability scoring deferred to Stage 1 pipeline")
     else:
-        print(f"  Readability scoring skipped -- no abstracts retrieved")
+        print(f"  Readability scoring skipped - no abstracts retrieved")
 
     print(f"\n--- Key Findings ---")
-    print(f"  PubMed E-utilities API verified -- rate limit: 3 req/sec without API key")
+    print(f"  PubMed E-utilities API verified - rate limit: 3 req/sec without API key")
     print(f"  Seed PMIDs from PubMedQA: {len(seed_pmids)} (labeled split)")
     print(f"  MeSH query expansion: {len(mesh_queries)} queries covering health literacy + clinical NLP")
     print(f"  XML parsing pipeline: title + abstract + journal + year + MeSH terms")
     print(f"  Readability pre-scoring: FK grade + FRE on abstract text")
     print(f"  Stage 1 integration: abstracts feed literacy-conditioned ingestion pipeline")
-    print(f"  Note: Full 35M+ PubMed corpus requires bulk download via FTP -- API used for seed set")
+    print(f"  Note: Full 35M+ PubMed corpus requires bulk download via FTP - API used for seed set")
 
     print(f"\n--- Saving Corpus to Disk ---")
     if all_results and len(df) > 0:
@@ -235,10 +235,10 @@ def run_pipeline():
         print(f"  Saved {len(df):,} abstracts to {output_path}")
         print(f"  Columns: {list(df.columns)}")
     else:
-        print(f"  No abstracts to save -- API unavailable")
+        print(f"  No abstracts to save - API unavailable")
 
     print(f"\n--- PubMed API Pipeline complete ---")
-    print(f"  Ready for text_preprocessor.py -- Stage 1 literacy scoring at ingestion time")
+    print(f"  Ready for text_preprocessor.py - Stage 1 literacy scoring at ingestion time")
 
 
 if __name__ == "__main__":

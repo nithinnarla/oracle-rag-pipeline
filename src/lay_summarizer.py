@@ -97,7 +97,7 @@ def plot_fk_comparison(df_results, figures_dir):
         ax.text(bar.get_x() + bar.get_width() / 2, val + 0.2, f"{val:.1f}",
                 ha='center', fontsize=10, fontweight='bold')
     ax.set_ylabel("Flesch-Kincaid Grade Level")
-    ax.set_title("FK Grade -- Source vs Generated vs Expert (n=%d)" % len(df_results))
+    ax.set_title("FK Grade - Source vs Generated vs Expert (n=%d)" % len(df_results))
     ax.axhline(8, color='red', linestyle='--', alpha=0.4, label='8th grade target')
     ax.legend(loc='upper right', fontsize=8)
 

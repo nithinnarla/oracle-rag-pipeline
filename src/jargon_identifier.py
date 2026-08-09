@@ -209,7 +209,7 @@ def run_jargon_identifier():
     ax.set_yticks(range(len(top20)))
     ax.set_yticklabels(top20['term'], fontsize=10)
     ax.set_xlabel('Total frequency in corpus')
-    ax.set_title('ORACLE, Top 20 Medical Jargon Candidates\n'
+    ax.set_title('ORACLE - Top 20 Medical Jargon Candidates\n'
                  '(Red=high jargon score >0.5, Orange=medium >0.2, Blue=lower)',
                  fontsize=12)
     ax.invert_yaxis()
@@ -222,7 +222,7 @@ def run_jargon_identifier():
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_top20_candidates.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 1 saved -- jargon_top20_candidates.png")
+    print("  Fig 1 saved - jargon_top20_candidates.png")
 
     # Figure 2, Band distribution heatmap for top 20 terms
     heat_data = top20[['clinical', 'high', 'medium', 'low']].values
@@ -238,13 +238,13 @@ def run_jargon_identifier():
             ax.text(j, i, str(val), ha='center', va='center', fontsize=8,
                     color='white' if val > heat_data.max() * 0.6 else 'black')
     plt.colorbar(im, ax=ax, label='Term frequency')
-    ax.set_title('Medical Jargon, Frequency by Literacy Band\n'
+    ax.set_title('Medical Jargon - Frequency by Literacy Band\n'
                  'Top 20 candidates by jargon score', fontsize=12)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_band_heatmap.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 2 saved -- jargon_band_heatmap.png")
+    print("  Fig 2 saved - jargon_band_heatmap.png")
 
     # Figure 3, Jargon score distribution
     fig, ax = plt.subplots(figsize=(10, 5))
@@ -256,7 +256,7 @@ def run_jargon_identifier():
                label='Medium jargon threshold (0.2)')
     ax.set_xlabel('Jargon Score (clinical/high - low/medium gap)')
     ax.set_ylabel('Number of terms')
-    ax.set_title('ORACLE, Medical Jargon Score Distribution\n'
+    ax.set_title('ORACLE - Medical Jargon Score Distribution\n'
                  'Higher score = more clinical, less plain language = stronger candidate',
                  fontsize=12)
     ax.legend(fontsize=9)
@@ -264,7 +264,7 @@ def run_jargon_identifier():
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_score_distribution.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 3 saved -- jargon_score_distribution.png")
+    print("  Fig 3 saved - jargon_score_distribution.png")
 
 
     # Figure 4, Jargon term count by source
@@ -290,14 +290,14 @@ def run_jargon_identifier():
     axes[1].set_ylabel('Total jargon term occurrences')
     axes[1].tick_params(axis='x', rotation=15)
 
-    plt.suptitle('ORACLE, Jargon Distribution by Source\n'
+    plt.suptitle('ORACLE - Jargon Distribution by Source\n'
                  'PLABA (plain language) expected to show lowest jargon density',
                  fontsize=12)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_source_distribution.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 4 saved -- jargon_source_distribution.png")
+    print("  Fig 4 saved - jargon_source_distribution.png")
 
 
     # Figure 5, FK grade vs jargon density per source
@@ -324,7 +324,7 @@ def run_jargon_identifier():
 
     ax.set_xlabel('Mean FK Grade (sentence length proxy)', fontsize=12)
     ax.set_ylabel('Mean Jargon Terms per Record', fontsize=12)
-    ax.set_title('ORACLE, FK Grade vs Medical Jargon Density by Source\n'
+    ax.set_title('ORACLE - FK Grade vs Medical Jargon Density by Source\n'
                  'Key finding: PLABA has low FK but non-zero jargon, FK ≠ vocabulary difficulty',
                  fontsize=12)
     ax.grid(True, alpha=0.3)
@@ -332,7 +332,7 @@ def run_jargon_identifier():
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_fk_vs_jargon_scatter.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 5 saved -- jargon_fk_vs_jargon_scatter.png")
+    print("  Fig 5 saved - jargon_fk_vs_jargon_scatter.png")
 
     print(f"\n--- Jargon Identifier complete ---")
     print(f"  {len(total_counts):,} unique medical terms identified in corpus")

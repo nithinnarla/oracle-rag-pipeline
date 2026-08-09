@@ -157,7 +157,7 @@ def run_retrieval_evaluation():
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_score_distribution.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 1 saved -- eval_score_distribution.png")
+    print("  Fig 1 saved - eval_score_distribution.png")
 
     # Figure 2, Band routing accuracy
     fig, ax = plt.subplots(figsize=(10, 5))
@@ -177,7 +177,7 @@ def run_retrieval_evaluation():
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_routing_accuracy.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 2 saved -- eval_routing_accuracy.png")
+    print("  Fig 2 saved - eval_routing_accuracy.png")
 
     # Figure 3, Source distribution per band (stacked bar)
     all_sources = set()
@@ -206,7 +206,7 @@ def run_retrieval_evaluation():
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_source_distribution.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 3 saved -- eval_source_distribution.png")
+    print("  Fig 3 saved - eval_source_distribution.png")
 
     # Figure 4, FK grade distribution of retrieved docs per band
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -223,7 +223,7 @@ def run_retrieval_evaluation():
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_fk_distribution.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 4 saved -- eval_fk_distribution.png")
+    print("  Fig 4 saved - eval_fk_distribution.png")
 
     # Figure 5, Top-k score decay
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -241,7 +241,7 @@ def run_retrieval_evaluation():
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_topk_decay.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 5 saved -- eval_topk_decay.png")
+    print("  Fig 5 saved - eval_topk_decay.png")
 
 
     # Figure 6, Routing confusion matrix
@@ -269,7 +269,7 @@ def run_retrieval_evaluation():
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_routing_confusion.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 6 saved -- eval_routing_confusion.png")
+    print("  Fig 6 saved - eval_routing_confusion.png")
 
     # Figure 7, Mean retrieval score per source per band
     source_scores = {band: {} for band in BAND_ORDER}
@@ -299,7 +299,7 @@ def run_retrieval_evaluation():
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_source_score_heatmap.png'),
                 dpi=150, bbox_inches='tight')
     plt.close()
-    print("  Fig 7 saved -- eval_source_score_heatmap.png")
+    print("  Fig 7 saved - eval_source_score_heatmap.png")
 
     print(f"\n--- Retrieval Evaluation complete ---")
     print(f"  7 figures saved to figures/stage2/")

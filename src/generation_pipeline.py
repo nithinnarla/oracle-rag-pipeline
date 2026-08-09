@@ -153,7 +153,7 @@ def plot_fk_by_band(df, figures_dir):
                 ha='center', fontsize=10, fontweight='bold')
     ax.set_ylabel("Flesch-Kincaid Grade Level")
     ax.set_xlabel("Target Literacy Band")
-    ax.set_title("Stage 4 Generation -- FK Grade by Target Literacy Band (n=%d)" % len(df))
+    ax.set_title("Stage 4 Generation - FK Grade by Target Literacy Band (n=%d)" % len(df))
     plt.tight_layout()
     outpath = os.path.join(figures_dir, "fk_by_literacy_band.png")
     plt.savefig(outpath, dpi=150, bbox_inches="tight")
