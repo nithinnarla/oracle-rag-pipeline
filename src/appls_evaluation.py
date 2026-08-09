@@ -1,11 +1,12 @@
 """
 ORACLE APPLS Option 2 - Metric Sensitivity Evaluation
 Tests whether ORACLE's metrics (FK, ROUGE-L, BERTScore) are sensitive
-to informativeness (delete_sentence) and coherence (coherent) perturbations
-on ORACLE's own PLABA test split.
+to informativeness (delete_sentence), coherence (coherent), and
+simplification (simplification) perturbations on ORACLE's own PLABA test split.
 
 Decision 15: Empirical upgrade of Decision 14 citation-based justification.
-Results: ROUGE-L and BERTScore sensitive to both criteria; FK correctly insensitive.
+3 of 4 APPLS criteria covered empirically. Faithfulness covered by Decision 13
+PlainQAFact evaluation.
 """
 import os
 import sys
@@ -49,6 +50,7 @@ def run_evaluation():
     tasks = [
         ('delete_sentence_plaba_test_perturbation.csv', 'perturbed_sentence_percentage', 'delete_sentence', 'Informativeness'),
         ('coherent_plaba_test_perturbation.csv', 'perturbed_percentage', 'coherent', 'Coherence'),
+        ('simplification_plaba_test_perturbation.csv', 'perturbed_chunk_percentage', 'simplification', 'Simplification'),
     ]
 
     all_data = {}
@@ -96,16 +98,21 @@ def run_evaluation():
             'n_rows': len(df)
         })
 
-    # Figure 1: ROUGE-L and BERTScore sensitivity curves
-    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+    task_labels = {
+        'delete_sentence': 'Informativeness - Sentence Deletion',
+        'coherent': 'Coherence - Sentence Reordering',
+        'simplification': 'Simplification - Lexical Substitution',
+    }
+    task_list = list(task_labels.items())
+
+    # Figure 1: ROUGE-L and BERTScore sensitivity curves (3x2 grid)
+    fig, axes = plt.subplots(3, 2, figsize=(12, 12))
     fig.suptitle('ORACLE APPLS - ROUGE-L and BERTScore Sensitivity to Perturbations', fontsize=13, fontweight='bold')
 
     metric_pairs = [('rouge', 'ROUGE-L'), ('bert', 'BERTScore')]
-    task_list = [('delete_sentence', 'Informativeness - Sentence Deletion'),
-                 ('coherent', 'Coherence - Sentence Reordering')]
 
-    for col, (metric_key, metric_name) in enumerate(metric_pairs):
-        for row, (task, task_label) in enumerate(task_list):
+    for row, (task, task_label) in enumerate(task_list):
+        for col, (metric_key, metric_name) in enumerate(metric_pairs):
             ax = axes[row][col]
             d = all_data[task]
             pct = d['pct_sample'] if metric_key == 'bert' else d['pct']
@@ -125,9 +132,9 @@ def run_evaluation():
     plt.close()
     print(f'\nFigure saved: {outpath}')
 
-    # Figure 2: FK Grade sensitivity curves (showing non-sensitivity)
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
-    fig.suptitle('ORACLE APPLS - FK Grade Non-Sensitivity to Structural Perturbations', fontsize=13, fontweight='bold')
+    # Figure 2: FK Grade sensitivity curves (1x3 grid)
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+    fig.suptitle('ORACLE APPLS - FK Grade Sensitivity to Perturbations', fontsize=13, fontweight='bold')
 
     for col, (task, task_label) in enumerate(task_list):
         ax = axes[col]
@@ -136,7 +143,8 @@ def run_evaluation():
         ax.scatter(d['pct'], d['fk'], alpha=0.1, s=5, color='orange')
         ax.plot(bin_x, bin_y, 'r-', linewidth=2, label='Bin mean')
         r_val = results[[r['task'] for r in results].index(task)]['fk_corr']
-        ax.set_title(f'FK Grade - {task_label}\n(Spearman r={r_val:.3f}, not sensitive)', fontsize=10)
+        sensitive = 'SENSITIVE' if abs(r_val) > 0.3 else 'not sensitive'
+        ax.set_title(f'FK Grade - {task_label}\n(Spearman r={r_val:.3f}, {sensitive})', fontsize=10)
         ax.set_xlabel('Perturbation %', fontsize=9)
         ax.set_ylabel('FK Grade', fontsize=9)
         ax.legend(fontsize=8)

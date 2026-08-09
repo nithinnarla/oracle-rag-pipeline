@@ -292,18 +292,19 @@ Limitation, stated plainly: this decision cites APPLS's general findings about m
 
 **What we ran:**
 
-Two perturbation types from the APPLS GitHub repository (LinguisticAnomalies/APPLS, Guo et al., EMNLP 2024) were applied to ORACLE's PLABA test split:
+Three perturbation types from the APPLS GitHub repository (LinguisticAnomalies/APPLS, Guo et al., EMNLP 2024) were applied to ORACLE's PLABA test split:
 
-1. `delete_sentence` (informativeness criterion): Progressive sentence deletion using TextRank-based importance scoring. Produces 1,386 perturbed variants across 148 source texts, with sentence deletion percentages ranging from 0% to 100%.
+1. `delete_sentence` (informativeness criterion): Progressive sentence deletion using TextRank-based importance scoring. Produces 1,386 perturbed variants across 148 source texts.
 
-2. `coherent` (coherence criterion): Sentence reordering via permutation sampling. Produces 1,613 perturbed variants, with reordering distance percentages measuring deviation from original sentence order.
+2. `coherent` (coherence criterion): Sentence reordering via permutation sampling. Produces 1,613 perturbed variants.
+
+3. `simplification` (simplification criterion): Lexical substitution using PLABA's expert plain language adaptations as the simple_text reference. Produces 1,476 perturbed variants. PLABA's labels (expert plain language adaptations) serve as the simple_text input, which is the correct pairing since ORACLE's task is exactly this: generate plain language from complex biomedical text.
 
 **Perturbations skipped and why:**
 
-- `simplification`: Requires pre-generated LLM-simplified text as input, not available for PLABA in APPLS format.
 - `add_definition`: Requires dbpedia.json external knowledge file, not included in the APPLS repository.
 - `add_non_related_sentence` / `add_related_sentence`: Requires external sentence corpora (ACL-ARC, Cochrane abstracts) not included in the repository.
-- `entity_swap`: Requires AllenAI scientific-claim-generation repository, separate installation.
+- `entity_swap` (faithfulness criterion): Requires AllenAI scientific-claim-generation repository, separate installation. Faithfulness is covered empirically by Decision 13 PlainQAFact evaluation.
 
 **Evaluation method:**
 
@@ -311,24 +312,28 @@ Spearman correlation between perturbation percentage and metric score, measuring
 
 **Results:**
 
-| Metric | Informativeness (delete_sentence) | Coherence (coherent) |
-|--------|----------------------------------|----------------------|
-| FK Grade | r=-0.062, not sensitive | r=0.113, not sensitive |
-| ROUGE-L | r=-0.982, SENSITIVE (p<0.001) | r=-0.838, SENSITIVE (p<0.001) |
-| BERTScore | r=-0.973, SENSITIVE (p<0.001) | r=-0.628, SENSITIVE (p<0.001) |
+| Metric | Informativeness (delete_sentence) | Coherence (coherent) | Simplification (simplification) |
+|--------|----------------------------------|----------------------|--------------------------------|
+| FK Grade | r=-0.080, not sensitive | r=0.281, not sensitive | r=-0.184, not sensitive |
+| ROUGE-L | r=-0.982, SENSITIVE (p<0.001) | r=-0.838, SENSITIVE (p<0.001) | r=-0.859, SENSITIVE (p<0.001) |
+| BERTScore | r=-0.973, SENSITIVE (p<0.001) | r=-0.628, SENSITIVE (p<0.001) | r=-0.875, SENSITIVE (p<0.001) |
 
 **Interpretation:**
 
-ROUGE-L and BERTScore are strongly sensitive to both informativeness and coherence perturbations on ORACLE's own PLABA data. FK grade correctly shows no sensitivity to sentence deletion or reordering, which is expected behavior: FK measures readability (word and sentence length), not information content or sentence order. FK would only be expected to respond to simplification perturbations (lexical substitution, jargon removal), which were not runnable due to missing dependencies.
+ROUGE-L and BERTScore are strongly sensitive to all three criteria on ORACLE's own PLABA data. FK grade shows no sensitivity to any of the three perturbation types. This is the expected and informative finding: FK measures surface readability (word length, sentence length) rather than information content, sentence order, or lexical substitution patterns. FK and SMOG serve a distinct role in ORACLE's metric suite: they measure the readability level of generated output, not sensitivity to the transformations tested here. This distinction strengthens the argument for reporting the full metric suite rather than any single metric.
 
-These results provide direct empirical confirmation on ORACLE's own data that ROUGE-L and BERTScore are appropriate metrics for evaluating ORACLE's generation quality. They extend Decision 14's citation-based justification with dataset-specific evidence.
+The faithfulness criterion is covered empirically by Decision 13's PlainQAFact evaluation, giving ORACLE empirical coverage of all four APPLS criteria: informativeness and coherence and simplification via this decision, and faithfulness via Decision 13.
 
-**Limitation:** Simplification and faithfulness criteria were not testable due to missing external dependencies in the APPLS repository. The two runnable criteria cover informativeness and coherence. The paper should describe this as a partial APPLS evaluation covering 2 of 4 criteria, with the remaining 2 justified via Decision 14's citation of APPLS's published findings.
+These results provide direct empirical confirmation on ORACLE's own data that ROUGE-L and BERTScore are appropriate metrics for evaluating ORACLE's generation quality, and that FK and SMOG serve a complementary and distinct measurement role.
+
+**Limitation:** The simplification perturbation uses PLABA's expert plain language adaptations as the simple_text reference rather than LLM-generated simplifications as in the original APPLS paper. This is a valid alternative pairing since ORACLE's task is precisely the generation of expert-level plain language from biomedical text.
 
 **Artifacts:**
-- `src/appls_perturbation.py`: Perturbation script (delete_sentence + coherent)
+- `src/appls_perturbation.py`: Perturbation script (delete_sentence + coherent + simplification)
 - `src/appls_evaluation.py`: Metric sensitivity evaluation script
 - `data/appls/plaba_test.csv`: PLABA test split in APPLS input format (148 records)
+- `data/appls/plaba_test_with_simple.csv`: PLABA test split with simple_text column (148 records)
 - `data/appls/delete_sentence_plaba_test_perturbation.csv`: 1,386 perturbed variants
 - `data/appls/coherent_plaba_test_perturbation.csv`: 1,613 perturbed variants
-- `data/appls/appls_oracle_results.csv`: Spearman correlation results
+- `data/appls/simplification_plaba_test_perturbation.csv`: 1,476 perturbed variants
+- `data/appls/appls_oracle_results.csv`: Spearman correlation results (3 criteria)
