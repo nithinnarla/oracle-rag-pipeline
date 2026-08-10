@@ -337,3 +337,29 @@ These results provide direct empirical confirmation on ORACLE's own data that RO
 - `data/appls/coherent_plaba_test_perturbation.csv`: 1,613 perturbed variants
 - `data/appls/simplification_plaba_test_perturbation.csv`: 1,476 perturbed variants
 - `data/appls/appls_oracle_results.csv`: Spearman correlation results (3 criteria)
+
+---
+
+## Decision 16: Cross-Dataset Evaluation Design and Routing-Readability Finding
+
+**Decision:** Evaluate ORACLE's full retrieve-generate pipeline across all six corpus sources (medmcqa, medqa, mirage, plaba, pubmed, pubmedqa) rather than the fixed 20-query test set used in Stage 2 retrieval evaluation, to establish whether generation quality and literacy-band routing accuracy generalize across dataset types.
+
+**Date:** Aug 10 2026
+
+**Method:** For each source and each of its populated literacy bands, 5 queries were sampled (random_state=42) and passed through retrieval (top_k=5) then generation (gpt-4o-mini, temperature=0.3, seed=42). 144 total generations across 6 sources. PLABA uses `full_text` (the source abstract) as the query rather than `question`, since PLABA's question column contains only a PMID index, not free text; this was caught during a dry run when all 921 PLABA queries were silently filtered by the minimum-length check.
+
+For every query where the FK-based router assigned an incorrect band, a second, paired generation was run using the correct target band with identical retrieved documents (condition: `upper_bound`). This isolates the effect of band-prompt choice from retrieval quality, since both runs share the same retrieved context and differ only in the literacy-band instruction given to the generator.
+
+**Headline result:** FK reduction is negative across every source (system output is harder to read than the source text in every case), ranging from -1.78 (mirage) to -5.17 (pubmed). Band routing accuracy varies sharply by source: 100% (medmcqa, plaba), 75% (medqa), 43-44% (pubmedqa, pubmed), 25% (mirage).
+
+**Routing-readability finding, with significance testing:** Paired Wilcoxon signed-rank tests (n=38 paired queries, misrouted-band vs correct-band-forced) show that correct band routing significantly improves FK reduction (wrong=-3.71, upper_bound=-2.31, p=0.032) but does not significantly change ROUGE-L (p=0.53) or BERTScore (p=0.61). This is not a null result to explain away; it is mechanistically expected given the design: the band prompt controls surface style (vocabulary, sentence length) and is exactly what FK measures, while retrieved content is fixed identically across both conditions, so content-level metrics (ROUGE-L, BERTScore) have no channel through which the band prompt could move them. The correct claim is bounded and specific: routing accuracy governs readability outcomes, not content relevance or faithfulness. This is a stronger, more falsifiable claim than an unbounded "routing accuracy matters," and the paper should state it this way rather than implying routing fixes generation quality generally.
+
+**BERTScore added to evaluation suite:** ROUGE-L alone is uninformative for multiple-choice-derived sources (medqa ROUGE-L=0.031, mirage=0.048) where the reference answer is a short letter or phrase and ORACLE generates a full explanatory paragraph; low lexical overlap there is expected and not a quality signal. BERTScore (medqa=0.803, mirage=0.798) shows these generations are in fact semantically on-topic despite near-zero n-gram overlap, consistent with Decision 15's empirical validation that BERTScore is the more informative semantic metric for this pipeline's outputs.
+
+**Limitation, stated plainly:** Sample size is 5 queries per source per band (n=144 total, n=38 for the paired routing comparison). This is a pilot-scale run; Aug 11-12 expand PubMedQA/MedMCQA and MIRAGE/MedQuAD/PLABA evaluation with larger samples, and the aggregation on Aug 13 should report whether the FK-reduction and routing-accuracy patterns found here hold at scale. Results here should be read as directional and statistically testable, not as final production numbers.
+
+**Artifacts:**
+- `src/cross_dataset_eval.py`: retrieval + generation pipeline across all sources, actual and upper_bound conditions, BERTScore scoring
+- `src/cross_dataset_figures.py`: four figures, including paired Wilcoxon significance in the routing-impact comparison
+- `data/processed/cross_dataset_results.csv`: 144 records, both conditions, all metrics
+- `figures/stage4/cross_dataset_fk_comparison.png`, `cross_dataset_routing_rouge.png`, `cross_dataset_fk_by_band.png`, `cross_dataset_routing_impact.png`
