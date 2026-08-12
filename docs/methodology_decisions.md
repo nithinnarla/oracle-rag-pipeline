@@ -363,3 +363,5 @@ For every query where the FK-based router assigned an incorrect band, a second, 
 - `src/cross_dataset_figures.py`: four figures, including paired Wilcoxon significance in the routing-impact comparison
 - `data/processed/cross_dataset_results.csv`: 144 records, both conditions, all metrics
 - `figures/stage4/cross_dataset_fk_comparison.png`, `cross_dataset_routing_rouge.png`, `cross_dataset_fk_by_band.png`, `cross_dataset_routing_impact.png`
+
+**Update Aug 11 2026, scale-up of medmcqa and pubmedqa to n=25/band (from pilot n=5/band, capped at each band's actual pool size):** Paired set expanded from n=38 to n=71 misrouted queries. FK Reduction significance strengthened from p=0.032 to p=0.0094 (wrong=-3.991, upper_bound=-2.698). ROUGE-L (p=0.848) and BERTScore (p=0.977) remain non-significant, replicating the original finding that correct-band routing affects readability specifically, not semantic content or faithfulness. This result no longer carries the "thin sample" caveat from the original pilot and is stated as a confirmed finding, not a directional pilot observation.

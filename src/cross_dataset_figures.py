@@ -162,3 +162,41 @@ def run_figures():
 
 if __name__ == '__main__':
     run_figures()
+
+
+def plot_significance_progression():
+    """
+    Decision 16 scale-up comparison: pilot (n=38) vs expanded (n=71)
+    significance for the routing-readability finding. Values below are
+    hardcoded from the two completed, committed runs on record, not
+    recomputed live, since the n=38 pilot data was superseded by the
+    n=71 append and the original 38-only subset is no longer isolable
+    from cross_dataset_results.csv without the pre-scale-up snapshot.
+    """
+    import matplotlib.pyplot as plt
+    import os
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    stages = ['Pilot\n(n=38)', 'Expanded\n(n=71)']
+    p_values = [0.032, 0.0094]
+    colors = ['#4C72B0', '#2E7D32']
+
+    bars = ax.bar(stages, p_values, color=colors, width=0.5)
+    ax.axhline(y=0.05, color='red', linestyle='--', linewidth=1, label='p=0.05 threshold')
+    ax.set_ylabel('Wilcoxon p-value, FK reduction')
+    ax.set_title('Decision 16 significance strengthened with scale-up')
+    ax.legend()
+
+    for bar, val in zip(bars, p_values):
+        ax.text(bar.get_x() + bar.get_width() / 2, val + 0.001, f'p={val}',
+                 ha='center', va='bottom', fontsize=10)
+
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, 'cross_dataset_significance_progression.png')
+    plt.savefig(out_path, dpi=150)
+    plt.close()
+    print(f'Saved: {out_path}')
+
+
+if __name__ == '__main__' and False:
+    pass
