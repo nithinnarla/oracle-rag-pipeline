@@ -246,8 +246,8 @@ data/processed/embeddings/
 data/processed/*.npy
 
 # Processed corpus — regenerate with text_preprocessor.py
-data/processed/oracle_corpus.csv
-data/processed/pubmed_abstracts.csv
+# oracle_corpus.csv and pubmed_abstracts.csv contain PubMed abstract text
+# (publisher copyright, not ours to redistribute) -- do not track these two
 data/processed/literacy_classifier.pkl
 data/processed/literacy_classifier_report.txt
 
