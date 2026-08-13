@@ -160,43 +160,68 @@ def run_figures():
 
     print('\nAll 4 figures saved to figures/stage4/')
 
-if __name__ == '__main__':
-    run_figures()
 
-
-def plot_significance_progression():
+def plot_misroute_significance():
     """
-    Decision 16 scale-up comparison: pilot (n=38) vs expanded (n=71)
-    significance for the routing-readability finding. Values below are
-    hardcoded from the two completed, committed runs on record, not
-    recomputed live, since the n=38 pilot data was superseded by the
-    n=71 append and the original 38-only subset is no longer isolable
-    from cross_dataset_results.csv without the pre-scale-up snapshot.
+    Wrong-band vs upper-bound (correct-band) generation, paired Wilcoxon
+    test, computed live from the current cross_dataset_results.csv.
+    Replaces the earlier plot_significance_progression(), which reported
+    hardcoded p=0.032 (n=38) -> p=0.0094 (n=71) as a "strengthening"
+    trend; that snapshot pair was not reproducible from this file, and
+    at the current n the FK-reduction result has moved back toward the
+    threshold (p~0.049) rather than continuing to strengthen. Reporting
+    the real current numbers instead of a stale, unreproducible pair.
     """
-    import matplotlib.pyplot as plt
-    import os
+    df = pd.read_csv(os.path.join(REPO_ROOT, 'data', 'processed', 'cross_dataset_results.csv'))
+    actual = df[df['condition'] == 'actual']
+    wrong = actual[actual['band_match'] == False].copy()
+    upper = df[df['condition'] == 'upper_bound'].copy()
+    wrong_p = wrong.set_index(['source', 'query'])
+    upper_p = upper.set_index(['source', 'query'])
+    paired = wrong_p.join(upper_p, lsuffix='_wrong', rsuffix='_upper', how='inner')
 
-    fig, ax = plt.subplots(figsize=(7, 5))
-    stages = ['Pilot\n(n=38)', 'Expanded\n(n=71)']
-    p_values = [0.032, 0.0094]
-    colors = ['#4C72B0', '#2E7D32']
+    metrics = [
+        ('fk_reduction', 'FK Reduction'),
+        ('rouge_l', 'ROUGE-L'),
+        ('bertscore', 'BERTScore'),
+    ]
 
-    bars = ax.bar(stages, p_values, color=colors, width=0.5)
-    ax.axhline(y=0.05, color='red', linestyle='--', linewidth=1, label='p=0.05 threshold')
-    ax.set_ylabel('Wilcoxon p-value, FK reduction')
-    ax.set_title('Decision 16 significance strengthened with scale-up')
-    ax.legend()
+    results = []
+    for col, label in metrics:
+        a = paired[col + '_wrong'].dropna()
+        b = paired[col + '_upper'].dropna()
+        common = a.index.intersection(b.index)
+        a, b = a.loc[common], b.loc[common]
+        stat, p = wilcoxon(a, b)
+        results.append({
+            'metric': label, 'n': len(a),
+            'wrong_mean': a.mean(), 'upper_mean': b.mean(), 'p': p
+        })
+        sig = 'significant' if p < 0.05 else 'not significant'
+        print(f"{label}: n={len(a)}, wrong_mean={a.mean():.4f}, "
+              f"upper_mean={b.mean():.4f}, p={p:.5f} ({sig})")
 
-    for bar, val in zip(bars, p_values):
-        ax.text(bar.get_x() + bar.get_width() / 2, val + 0.001, f'p={val}',
-                 ha='center', va='bottom', fontsize=10)
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.axis('off')
+    table_data = [[r['metric'], r['n'], f"{r['wrong_mean']:.4f}",
+                   f"{r['upper_mean']:.4f}", f"{r['p']:.4f}",
+                   'sig.' if r['p'] < 0.05 else 'n.s.'] for r in results]
+    col_labels = ['Metric', 'n', 'Wrong band', 'Correct band', 'p (Wilcoxon)', '']
+    tbl = ax.table(cellText=table_data, colLabels=col_labels, loc='center', cellLoc='center')
+    tbl.auto_set_font_size(False)
+    tbl.set_fontsize(10)
+    tbl.scale(1, 2)
+    ax.set_title('Misrouted vs Correct-Band Generation\n(current data, n=%d paired queries)' % len(paired),
+                 fontsize=12, fontweight='bold', pad=20)
 
     plt.tight_layout()
-    out_path = os.path.join(FIGURES_DIR, 'cross_dataset_significance_progression.png')
-    plt.savefig(out_path, dpi=150)
+    out_path = os.path.join(FIGURES_DIR, 'cross_dataset_misroute_significance.png')
+    plt.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close()
     print(f'Saved: {out_path}')
+    return results
 
 
-if __name__ == '__main__' and False:
-    pass
+if __name__ == '__main__':
+    run_figures()
+    plot_misroute_significance()

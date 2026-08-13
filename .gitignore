@@ -250,4 +250,10 @@ data/processed/oracle_corpus.csv
 data/processed/pubmed_abstracts.csv
 data/processed/literacy_classifier.pkl
 data/processed/literacy_classifier_report.txt
+
+# Cross-dataset eval results — cited in methodology_decisions.md, keep tracked
+data/processed/cross_dataset_results.csv
+
+# APPLS results — cited in methodology_decisions.md, keep tracked
+data/appls/appls_oracle_results.csv
 models/
