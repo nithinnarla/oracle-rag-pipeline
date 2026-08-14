@@ -100,3 +100,30 @@ def plot_ablation(actual, stats):
 if __name__ == "__main__":
     actual, stats = run_ablation()
     plot_ablation(actual, stats)
+
+
+def plot_source_breakdown(actual):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    flipped = actual[actual["band_match"] != actual["band_match_question_only"]]
+    total_by_source = actual["source"].value_counts()
+    flip_by_source = flipped["source"].value_counts()
+    rate = (flip_by_source / total_by_source * 100).fillna(0.0).sort_values(ascending=False)
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    colors = ["#C44E52" if v > 20 else "#DD8452" if v > 5 else "#4C72B0" for v in rate.values]
+    bars = ax.bar(rate.index, rate.values, color=colors)
+    ax.set_title("Routing disagreement rate by source\n(full_text FK vs question-only FK)")
+    ax.set_ylabel("Flip rate (%)")
+    ax.set_xlabel("Source")
+    for bar, val in zip(bars, rate.values):
+        ax.text(bar.get_x() + bar.get_width() / 2, val + 1, f"{val:.1f}%", ha="center")
+    plt.tight_layout()
+
+    out_path = os.path.join(FIGURES_DIR, "fk_ablation_flip_rate_by_source.png")
+    plt.savefig(out_path, dpi=150)
+    plt.close()
+    print(f"Saved: {out_path}")
+    return rate
