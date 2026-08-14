@@ -127,3 +127,72 @@ def plot_source_breakdown(actual):
     plt.close()
     print(f"Saved: {out_path}")
     return rate
+
+
+def run_publication_extensions(actual):
+    """
+    Three additions to move this from a documented finding to a
+    publication-ready result: (1) test the length-mechanism hypothesis
+    directly rather than infer it from two data points, (2) check
+    whether flipped records actually show worse generation quality,
+    closing the real question Decision 1/3 asked (retrieval quality,
+    not just routing correctness), (3) confirm source concentration
+    is statistically real, not small-sample noise.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from scipy.stats import pointbiserialr, mannwhitneyu, chi2_contingency
+
+    flipped = actual["band_match"] != actual["band_match_question_only"]
+    actual = actual.copy()
+    actual["flipped"] = flipped
+    actual["query_word_count"] = actual["query"].str.split().str.len()
+
+    print("=== 1. Flip rate vs query length ===")
+    corr, p_corr = pointbiserialr(actual["flipped"].astype(int), actual["query_word_count"])
+    print(f"Point-biserial correlation (flipped vs word count): r={corr:.3f}, p={p_corr:.4f}")
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    ax.scatter(actual.loc[~actual["flipped"], "query_word_count"],
+               [0] * (~actual["flipped"]).sum(), alpha=0.3, s=20, color="#4C72B0", label="Stable")
+    ax.scatter(actual.loc[actual["flipped"], "query_word_count"],
+               [1] * actual["flipped"].sum(), alpha=0.5, s=20, color="#C44E52", label="Flipped")
+    ax.set_yticks([0, 1])
+    ax.set_yticklabels(["Stable", "Flipped"])
+    ax.set_xlabel("Query word count")
+    ax.set_title(f"Flip status vs query length\n(r={corr:.3f}, p={p_corr:.4f})")
+    ax.legend()
+    plt.tight_layout()
+    out1 = os.path.join(FIGURES_DIR, "fk_ablation_length_correlation.png")
+    plt.savefig(out1, dpi=150)
+    plt.close()
+    print(f"Saved: {out1}")
+
+    print("\n=== 2. Generation quality: flipped vs stable ===")
+    flip_fk = actual.loc[actual["flipped"], "fk_reduction"].dropna()
+    stable_fk = actual.loc[~actual["flipped"], "fk_reduction"].dropna()
+    stat_fk, p_fk = mannwhitneyu(flip_fk, stable_fk, alternative="two-sided")
+    print(f"FK reduction: flipped mean={flip_fk.mean():.3f} (n={len(flip_fk)}), "
+          f"stable mean={stable_fk.mean():.3f} (n={len(stable_fk)}), "
+          f"Mann-Whitney p={p_fk:.4f}")
+
+    flip_rouge = actual.loc[actual["flipped"], "rouge_l"].dropna()
+    stable_rouge = actual.loc[~actual["flipped"], "rouge_l"].dropna()
+    stat_r, p_r = mannwhitneyu(flip_rouge, stable_rouge, alternative="two-sided")
+    print(f"ROUGE-L: flipped mean={flip_rouge.mean():.3f} (n={len(flip_rouge)}), "
+          f"stable mean={stable_rouge.mean():.3f} (n={len(stable_rouge)}), "
+          f"Mann-Whitney p={p_r:.4f}")
+
+    print("\n=== 3. Source concentration: chi-square test ===")
+    contingency = pd.crosstab(actual["source"], actual["flipped"])
+    chi2, p_chi, dof, expected = chi2_contingency(contingency)
+    print(f"Chi-square: chi2={chi2:.2f}, dof={dof}, p={p_chi:.6f}")
+    print(contingency)
+
+    return {
+        "length_corr": corr, "length_corr_p": p_corr,
+        "fk_flip_mean": flip_fk.mean(), "fk_stable_mean": stable_fk.mean(), "fk_p": p_fk,
+        "rouge_flip_mean": flip_rouge.mean(), "rouge_stable_mean": stable_rouge.mean(), "rouge_p": p_r,
+        "chi2": chi2, "chi2_p": p_chi
+    }

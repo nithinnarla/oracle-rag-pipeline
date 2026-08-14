@@ -408,3 +408,13 @@ The paper should report the current numbers (p=0.049/0.179/0.072, n=121-124) as 
 **Addendum, Aug 14 2026, source-level breakdown.** The 17.4% aggregate disagreement rate is not uniform across sources. Flip rate by source: plaba 58.3% (42/72), medqa 42.0% (42/100), mirage 6.0% (6/100), medmcqa 1.0% (1/100), pubmed 0.0% (0/75), pubmedqa 0.0% (0/76). Disagreement concentrates almost entirely in plaba and medqa, plausibly because both have long, dense source text (plaba: full PubMed abstracts; medqa: extended USMLE clinical vignettes), making FK more sensitive to whether the answer is included. pubmed and pubmedqa show zero disagreement across a combined 151 records, confirmed directly (not a masked zero from a division artifact). Practical implication for the paper: the full_text-vs-question-only limitation should be scoped to plaba and medqa specifically, not stated as a uniform 1-in-6 risk across the full corpus.
 
 **Artifacts (updated):** `figures/stage4/fk_ablation_flip_rate_by_source.png` added alongside the original two artifacts.
+
+**Publication-strength extensions, Aug 14 2026.**
+
+*Length mechanism, confirmed directly.* Point-biserial correlation between flip status and query word count: r=0.519, p<0.0001 (n=523). The length hypothesis is not inferred from source-level comparison alone; it holds at the individual-query level across the full dataset.
+
+*Generation quality, flipped vs stable, honest result.* Flipped records show FK reduction of -2.595 (n=91) versus -3.268 for stable records (n=410), Mann-Whitney p=0.0527, borderline. ROUGE-L shows no meaningful difference (flipped 0.151, stable 0.131, p=0.9036). There is no evidence that FK-choice-driven misrouting produces worse generation quality by these two metrics; if anything the direction is opposite to the intuitive expectation, though the FK result does not clear conventional significance. This should be reported plainly rather than interpreted as confirming harm from misrouting, since the data does not support that conclusion.
+
+*Source concentration, confirmed statistically real.* Chi-square test of independence between source and flip status: chi2=185.61, dof=5, p<0.000001. The concentration in plaba and medqa (and near-total absence in pubmed/pubmedqa) is not a small-sample artifact.
+
+**Artifacts (updated):** `figures/stage4/fk_ablation_length_correlation.png` added.
