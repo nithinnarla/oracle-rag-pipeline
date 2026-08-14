@@ -386,3 +386,21 @@ The paper should report the current numbers (p=0.049/0.179/0.072, n=121-124) as 
 **Note, Aug 13 2026 — duplicate row removal in cross_dataset_results.csv.** 3 duplicate source/query/condition/band pairs found, all plaba/medium/actual (6 rows). Each pair is two separate stochastic generations of the same input query, not a copy error -- fk_grade, rouge_l, and bertscore differ slightly between the two rows in each pair, confirming independent re-generation. First occurrence kept per pair; 3 rows dropped. Dataset: 706 -> 703 rows.
 
 **Note, Aug 13 2026 — null fk_generated rows, root cause confirmed.** 25 rows (medmcqa: 13, mirage: 12) have null fk_generated, all with valid generated_text, rouge_l, and bertscore. Root cause, confirmed by direct inspection of `score_readability()` in generation_pipeline.py: the function requires >=30 words before computing Flesch-Kincaid grade, returning None below that threshold rather than an unreliable estimate. This is an intentional guard, not a bug -- FK and SMOG are calibrated for passages, not single short sentences, and a computed grade on e.g. a 7-word factual answer would not be a meaningful reading-level estimate. Affected rows are concentrated in medmcqa and mirage, consistent with those sources occasionally producing terse single-sentence factual answers. These 25 rows are correctly excluded from FK-based aggregates (mean, Wilcoxon) via pandas' default NaN handling; they remain fully valid for rouge_l and bertscore analysis.
+
+## Decision 18: FK Ablation, Full-Text vs Question-Only (Closes Open Risk from Decision 1/3)
+
+**Background:** Decision 1/3 flagged that ORACLE's corpus computes FK readability scores on concatenated question+answer text (full_text), not on the query alone, and noted this was unvalidated against retrieval quality.
+
+**Method:** For all 523 records in the actual-condition cross-dataset evaluation set, recomputed literacy-band assignment using `classify_query()` (the real production classifier) on question text alone, and compared against the routing decision that used full_text FK at corpus build time.
+
+**Result:** 82.6% agreement (432/523), 17.4% disagreement (91/523). Of the disagreements, 80 records were correctly routed under full_text FK but would be incorrectly routed under question-only FK; only 11 went the other direction, a roughly 7-to-1 asymmetry, not random disagreement.
+
+**Contributing factor confirmed:** disagreeing records sit closer to a band threshold on average (mean margin 1.55) than agreeing records (mean margin 1.98), consistent with boundary-adjacent queries being more sensitive to which text is scored.
+
+**Open, not yet confirmed:** the directional skew itself (why correct-to-wrong dominates over wrong-to-correct) is not fully explained by margin alone. A plausible mechanism is that appending answer text systematically shifts FK scores in one direction (e.g., via changed average sentence/word length), but this has not been directly tested. Flagged for future work rather than asserted as confirmed.
+
+**Practical conclusion:** full_text FK is not neutral relative to question-only FK, it measurably changes routing correctness for roughly 1 in 6 queries in this evaluation set, concentrated among boundary-adjacent cases. This should be stated as a limitation in the paper, not treated as a validated design choice.
+
+**Artifacts:** `src/fk_ablation.py`, `docs/fk_ablation_results.csv`, `figures/stage4/fk_ablation_full_text_vs_question_only.png`
+
+**Note, Aug 14 2026, confirming current significance number.** Independently recomputed on the CSV as it exists today, after medqa and pubmed were added at n=25/band (703 total rows): FK reduction p=0.0018, n=177. ROUGE-L p=0.6398, BERTScore p=0.9374, n=180, both non-significant. This confirms the finding strengthened again beyond the Aug 12 correction's p=0.049/n=124 snapshot, as the dataset grew further; the Aug 12 note remains an accurate record of that intermediate state, not an error. This is the current number as of this entry and should be treated as authoritative unless a later dated note supersedes it.
