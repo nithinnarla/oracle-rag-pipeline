@@ -33,7 +33,7 @@ def run_eda():
     def opt_len(opts, key):
         try:
             return len(str(opts.get(key, '')))
-        except:
+        except AttributeError:
             return 0
 
     for opt in ['A','B','C','D']:
