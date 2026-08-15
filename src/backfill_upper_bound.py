@@ -1,7 +1,8 @@
 """
-Backfill upper_bound rows for misrouted queries added in tonight's
-medmcqa/pubmedqa scale-up. Extends the paired set for Decision 16's
-Wilcoxon significance test beyond yesterday's n=38.
+Backfill upper_bound rows for misrouted queries in cross_dataset_results.csv.
+General-purpose and idempotent, already_paired guards against re-backfilling
+rows already done, so this is safe to rerun after any scale-up pass adds
+new data.
 """
 import os
 import sys

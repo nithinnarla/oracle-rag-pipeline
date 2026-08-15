@@ -2,7 +2,7 @@
 ORACLE Cross-Dataset Evaluation - Figure Generation
 Phase 4, Stage 4: Cross-dataset evaluation figures
 
-Four figures:
+Five figures:
 1. cross_dataset_fk_comparison.png - FK source vs generated per source (2x3 grid)
 2. cross_dataset_routing_rouge.png - Band routing accuracy + ROUGE-L side by side
 3. cross_dataset_fk_by_band.png - FK reduction by literacy band heatmap
@@ -10,6 +10,8 @@ Four figures:
    Wilcoxon significance annotated (FK reduction significant, ROUGE-L and
    BERTScore not significant, since correct retrieved context is held fixed
    across both conditions and only the band prompt differs)
+5. cross_dataset_misroute_significance.png - same wrong-band vs upper-bound
+   comparison as a summary table, computed live rather than hardcoded
 
 Stage 4 figures saved to figures/stage4/
 """

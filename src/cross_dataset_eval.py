@@ -14,7 +14,10 @@ Two conditions per query:
 Metrics per query: FK grade, SMOG, ROUGE-L, BERTScore, FK reduction vs source.
 
 Sources evaluated: medmcqa, medqa, mirage, plaba, pubmed, pubmedqa
-Sample size: up to 5 queries per source per band
+Sample size: up to 5 queries per source per band (original pilot design;
+see scale_up_medmcqa_pubmedqa.py, scale_up_mirage_plaba.py, and
+scale_up_medqa_pubmed.py for the later scale-up passes that extended
+this same output file to n=25/band across all sources)
 
 Decision 16: Cross-dataset evaluation design
 """

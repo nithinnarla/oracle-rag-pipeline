@@ -14,10 +14,8 @@ Input: data/processed/oracle_corpus.csv (37,076 records)
 Output: data/processed/embeddings/
   - corpus_embeddings.npy, full corpus embeddings (37076, 768)
   - corpus_ids.npy, record_id alignment
-  - embeddings_low.npy, low literacy band embeddings
-  - embeddings_medium.npy, medium literacy band embeddings
-  - embeddings_high.npy, high literacy band embeddings
-  - band_ids_low.npy / band_ids_medium.npy / band_ids_high.npy
+  - embeddings_low.npy, embeddings_medium.npy, embeddings_high.npy, embeddings_clinical.npy
+  - band_ids_low.npy / band_ids_medium.npy / band_ids_high.npy / band_ids_clinical.npy
 
 Note: DPR context encoder produces 768-dim embeddings.
 Note: Full corpus encoding takes 10-20 minutes on CPU, run once and cache.
@@ -201,7 +199,7 @@ def run_dpr_encoder():
 
     print("\n--- DPR Encoder complete ---")
     print(f"  Full corpus: {corpus_embeddings.shape} embeddings saved")
-    print(f"  Per-band embeddings saved for low/medium/high literacy")
+    print(f"  Per-band embeddings saved for low/medium/high/clinical literacy")
     print(f"  Embeddings dir: {EMBEDDINGS_DIR}")
     print(f"  Ready for literacy_classifier.py and retrieval_pipeline.py")
 
