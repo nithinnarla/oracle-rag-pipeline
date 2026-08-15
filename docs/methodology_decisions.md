@@ -74,6 +74,8 @@ ORACLE's retrieval context is the full QA pair, both question and answer are ret
 **Why excluded:**
 The HuggingFace MedQuAD dataset (hf-datasets version) contains only questions with null answer fields, 47,441 records with no retrievable content. Including null-answer records would contaminate the retrieval corpus with empty context. Re-parsing from the original XML at abachaa/MedQuAD is the correct approach but was not implemented before corpus finalization. MedQuAD re-addition is documented as a future work item, if original XML is parsed before Stage 3, it will be added with a corpus update commit.
 
+**Correction, Aug 14 2026, this decision was based on an incomplete check.** Full-repo script audit found eda_medquad.py's own analysis directly contradicts the claim above: the HuggingFace dataset genuinely has an answer column, and 16,407 of 47,441 records (34.6%) have real, non-null answers. Missingness is structural, concentrated entirely in three sources (ADAM, MPlusDrugs, MPlusHerbsSupplements have 0% coverage), not universal. medquad_loader.py's own code already correctly pulls y = df[answer], confirming the column exists and is usable. The original null-contamination concern was real for 65.4% of the dataset but does not apply to the 16,407-record RAG-usable subset, which was never actually tested before this exclusion decision was made. Re-evaluating inclusion of this subset is a separate, deliberate decision, not resolved by this correction alone, tracked in the schedule as a gate item before ORACLE outline writing begins.
+
 ---
 
 ## Decision 5, DPR Over BM25 or Hybrid Retrieval
