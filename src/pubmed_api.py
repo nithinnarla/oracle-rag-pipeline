@@ -229,8 +229,9 @@ def run_pipeline():
 
     print(f"\n--- Saving Corpus to Disk ---")
     if all_results and len(df) > 0:
-        os.makedirs("data/processed", exist_ok=True)
-        output_path = "data/processed/pubmed_abstracts.csv"
+        REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        os.makedirs(os.path.join(REPO_ROOT, "data", "processed"), exist_ok=True)
+        output_path = os.path.join(REPO_ROOT, "data", "processed", "pubmed_abstracts.csv")
         df.to_csv(output_path, index=False)
         print(f"  Saved {len(df):,} abstracts to {output_path}")
         print(f"  Columns: {list(df.columns)}")

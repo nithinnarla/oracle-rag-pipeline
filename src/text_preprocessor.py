@@ -6,14 +6,18 @@ Preprocesses all 6 ORACLE datasets into a unified format for RAG ingestion.
 Applies text cleaning, normalization, and literacy pre-scoring (Flesch-Kincaid).
 Saves unified corpus to data/processed/oracle_corpus.csv for Stage 1 ingestion.
 
-Six datasets:
-- MedQA USMLE (11,451 records) - clinical reasoning questions
-- MedMCQA (182,822 records) - medical entrance exam questions
-- MedQuAD (16,407 RAG-usable records) - patient-facing QA pairs
-- MIRAGE (7,663 records) - benchmark evaluation questions
-- PLABA (921 records) - plain language adaptations
+Six datasets in final corpus (MIN_TEXT_LENGTH=20 filter applied to all):
+- MedMCQA (15,732 records) - medical entrance exam questions, capped from
+  189,366 raw via MEDMCQA_CAP to prevent single-source domination
+- MedQA USMLE (11,431 records) - clinical reasoning questions
+- MIRAGE (7,580 records) - benchmark evaluation questions
 - PubMedQA (1,000 labeled records) - biomedical research QA
+- PLABA (921 records) - plain language adaptations
 - PubMed abstracts (412 records) - clinical professional abstracts
+
+MedQuAD excluded: loader exists (medquad_loader.py, 47,441 records) but
+HuggingFace source has no answer column, questions-only. See Decision 17
+in methodology_decisions.md.
 """
 
 import pandas as pd
@@ -27,9 +31,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import textstat
 
-os.makedirs("data/processed", exist_ok=True)
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.makedirs(os.path.join(REPO_ROOT, "data", "processed"), exist_ok=True)
 
-ORACLE_CORPUS_PATH = "data/processed/oracle_corpus.csv"
+ORACLE_CORPUS_PATH = os.path.join(REPO_ROOT, "data", "processed", "oracle_corpus.csv")
 MIN_TEXT_LENGTH = 20  # minimum characters to include a record
 
 
@@ -350,7 +355,7 @@ def process_pubmedqa(record_id_offset: int = 0) -> pd.DataFrame:
 def process_pubmed_abstracts(record_id_offset: int = 0) -> pd.DataFrame:
     """Process PubMed abstracts from pubmed_api.py output."""
     print("  Loading PubMed abstracts...")
-    path = "data/processed/pubmed_abstracts.csv"
+    path = os.path.join(REPO_ROOT, "data", "processed", "pubmed_abstracts.csv")
     if not os.path.exists(path):
         print("    WARNING: pubmed_abstracts.csv not found - skipping")
         return pd.DataFrame()
