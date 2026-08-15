@@ -9,7 +9,8 @@ Questions answerable from PubMed abstracts with yes/no/maybe labels.
 
 ORACLE uses PubMedQA to establish retrieval quality baseline.
 Limitation: Research-facing questions, not patient-facing.
-Consumer Health QA and PLABA handle patient accessibility.
+PLABA and MedQuAD (patient-facing, see Decision 4 correction) handle
+patient accessibility.
 """
 
 import pandas as pd
@@ -150,7 +151,7 @@ def run_eda():
     print(f"  Mean context length: {df['ctx_len'].mean():.0f} chars")
     print(f"  Mean answer length: {df['ans_len'].mean():.0f} chars")
     print(f"  Note: Research-facing questions, not patient-facing")
-    print(f"  Note: ORACLE baseline before Consumer Health QA evaluation")
+    print(f"  Note: ORACLE baseline before MedQuAD patient-facing evaluation")
     print(f"  Note: MeSH terms enable topic-stratified retrieval evaluation")
 
     print(f"\n--- PubMedQA EDA complete ---")

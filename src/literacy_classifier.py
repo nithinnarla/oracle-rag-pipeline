@@ -12,10 +12,10 @@ band labels and as the primary classifier feature. Rule-based routing is
 more honest, interpretable, and generalizes correctly to user queries.
 
 Band thresholds (from text_preprocessor.py):
-- low:      FK ≤ 6  (plain language, patient-facing)
-- medium:   FK 7-10 (general public)
-- high:     FK 11-14 (health professional)
-- clinical: FK 15+  (clinical professional)
+- low:      FK <= 6  (plain language, patient-facing)
+- medium:   6 < FK <= 10 (general public)
+- high:     10 < FK <= 14 (health professional)
+- clinical: FK > 14 (clinical professional)
 
 Input: user query text (string)
 Output: literacy band prediction + FK grade + routing to correct embeddings

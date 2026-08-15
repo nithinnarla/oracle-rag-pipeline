@@ -269,5 +269,5 @@ def run_stage4(queries: list = None, top_k: int = 5, dry_run: bool = False):
 
 
 if __name__ == "__main__":
-    # Run dry run first to verify pipeline
+    # Live run - real API calls, real cost
     run_stage4(dry_run=False)

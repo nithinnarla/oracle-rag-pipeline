@@ -18,7 +18,9 @@ Why LoRA over full fine-tune:
 - Shared base weights preserve DPR's pretrained semantic retrieval quality
 
 Input: oracle_corpus.csv, band-specific training pairs
-Output: saved adapter weights per band in models/peft_adapters/
+Output: saved adapter weights per band in models/peft_adapters/, these are
+architecture-validated only, NOT meaningfully trained. See run_peft_adapter()
+final summary for why.
 
 Script type: pipeline/infrastructure, no notebook, no figures
 """
@@ -207,14 +209,17 @@ def run_peft_adapter():
               f"Reduction: {stats['loss_reduction']:.1f}%")
         print(f"    Saved: {adapter_path}")
 
-    print(f"\n--- PEFT Adapter Stack complete ---")
-    print(f"  4 LoRA adapters trained and saved (one per literacy band)")
+    print(f"\n--- PEFT Adapter Architecture Validation complete ---")
+    print(f"  4 adapter architectures validated and saved (one per literacy band)")
     print(f"  Trainable params: {results['low']['trainable_params']:,} / "
           f"{results['low']['total_params']:,} "
           f"({results['low']['trainable_pct']:.2f}%) per adapter")
     print(f"  Shared base DPR encoder, only adapter weights differ per band")
-    print(f"  Adapters saved to models/peft_adapters/")
-    print(f"  Note: Simulation training, full training requires GPU compute")
+    print(f"  Adapters saved to models/peft_adapters/, architecture-validated, NOT")
+    print(f"  meaningfully trained (loss proxy minimizes embedding variance, not a")
+    print(f"  real retrieval objective). Real training requires GPU compute and a")
+    print(f"  genuine contrastive loss with positive/negative pairs. Do not use")
+    print(f"  these saved weights as trained adapters.")
     print(f"  Stage 3 jargon identification next")
 
     return results

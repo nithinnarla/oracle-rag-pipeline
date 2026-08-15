@@ -19,10 +19,12 @@ Methodology:
   (high delta = term appears in clinical docs but not plain language = jargon candidate)
 
 Output:
-- figures/stage3/jargon_frequency_distribution.png
+- figures/stage3/jargon_top20_candidates.png
 - figures/stage3/jargon_band_heatmap.png
-- figures/stage3/jargon_top50_candidates.png
-- data/processed/jargon_candidates.csv
+- figures/stage3/jargon_score_distribution.png
+- figures/stage3/jargon_source_distribution.png
+- figures/stage3/jargon_fk_vs_jargon_scatter.png
+- data/processed/jargon_candidates.csv (top 50 candidates)
 
 Script type: EDA/analysis, script + notebook + figures
 """
