@@ -132,7 +132,12 @@ Full dependency list: `requirements.txt`
 - June 2026: Stage 1 complete, corpus pipeline (37,076 records, 6 sources, 4 literacy bands); EDA complete (67 figures); FK-based literacy scoring
 - July 2026: Stage 2 complete, DPR encoder (768-dim embeddings); FK rule-based query router; literacy-conditioned retrieval pipeline; retrieval evaluation (20 queries, 7 figures)
 - July 2026: Stage 3 complete, health literacy adaptation (literacy_adapter.py); PEFT LoRA adapters per band (peft_adapter.py); medical jargon identifier 1,491 terms 5 figures (jargon_identifier.py)
-- August 2026: Stage 4 complete, gpt-4o-mini generation pipeline (generation_pipeline.py, FK grade increases low(6.3)→medium(11.6)→high(15.1)→clinical(16.1)); lay language summarizer (lay_summarizer.py, PLABA abstracts source FK 14.9→generated FK 8.4 vs expert FK 13.5, 1 figure); generation-level literacy conditioning confirmed, retrieval-level conditioning still unreliable for low band (see known limitation below); pre-paper audit Aug 13; paper writing starts Aug 14; submission JBI Sep 22 2026
+- August 2026: Stage 4 complete
+  - gpt-4o-mini generation pipeline (generation_pipeline.py): FK grade increases low(6.3)→medium(11.6)→high(15.1)→clinical(16.1)
+  - Lay language summarizer (lay_summarizer.py): PLABA abstracts source FK 14.9→generated FK 8.4 vs expert FK 13.5, 1 figure
+  - Generation-level literacy conditioning confirmed; retrieval-level conditioning still unreliable for low band (see known limitation below)
+  - Pre-paper audit Aug 13; paper writing begins Aug 14
+- September 2026: Paper outline and draft not yet started, targeting Sep 22 submission to JBI
 
 ---
 
