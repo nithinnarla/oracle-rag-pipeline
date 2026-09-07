@@ -132,7 +132,7 @@ Full dependency list: `requirements.txt`
 - June 2026: Stage 1 complete, corpus pipeline (37,076 records, 6 sources, 4 literacy bands); EDA complete (67 figures); FK-based literacy scoring
 - July 2026: Stage 2 complete, DPR encoder (768-dim embeddings); FK rule-based query router; literacy-conditioned retrieval pipeline; retrieval evaluation (20 queries, 7 figures)
 - July 2026: Stage 3 complete, health literacy adaptation (literacy_adapter.py); PEFT LoRA adapters per band (peft_adapter.py); medical jargon identifier 1,491 terms 5 figures (jargon_identifier.py)
-- August 2026: Stage 4 complete, gpt-4o-mini generation pipeline (generation_pipeline.py, FK grade increases low(6.3)→medium(11.6)→high(15.1)→clinical(16.1)); lay language summarizer (lay_summarizer.py, PLABA abstracts source FK 14.9→generated FK 8.4 vs expert FK 13.5, 1 figure); generation-level literacy conditioning confirmed, retrieval-level conditioning still unreliable for low band (see known limitation below); pre-paper audit Aug 13; paper writing starts Aug 14; submission JBI Sep 4 2026
+- August 2026: Stage 4 complete, gpt-4o-mini generation pipeline (generation_pipeline.py, FK grade increases low(6.3)→medium(11.6)→high(15.1)→clinical(16.1)); lay language summarizer (lay_summarizer.py, PLABA abstracts source FK 14.9→generated FK 8.4 vs expert FK 13.5, 1 figure); generation-level literacy conditioning confirmed, retrieval-level conditioning still unreliable for low band (see known limitation below); pre-paper audit Aug 13; paper writing starts Aug 14; submission JBI Sep 22 2026
 
 ---
 
@@ -151,7 +151,7 @@ Full dependency list: `requirements.txt`
 - **Lay language summarizer:** PLABA abstracts rewritten by gpt-4o-mini score FK 8.4 mean vs. source 14.9 and expert PLABA adaptations 13.5 mean -- generated text notably simpler than the expert baseline. 1 figure.
 - **Factual consistency (Aug 4 2026):** evaluated via an adapted GPT-4o-mini methodology, not the official PlainQAFact metric (see Decision 13 for why). Result: ~0.96 overall consistency, with elaboration claims (0.856-0.862) notably less consistent than simplification claims (0.972-0.980) -- matching PlainQAFact's own documented finding that elaborative explanations are more hallucination-prone. Official PlainQAFact metric: complete, all 20 records, run twice for stability (internal_mean ~0.65, external_mean ~0.26, overall_mean ~0.33). Diverges substantially from the adapted result (~0.96) -- confirmed both mechanistically (direct retrieval test) and systematically (64.1% of 192 external claims scored below 0.3, vs. only 21.4% of 42 internal claims) to reflect a genuine domain mismatch, not a pipeline error: PlainQAFact's Textbooks knowledge base covers foundational medical education content, not the clinical-trial-specific claims in ORACLE's PLABA source texts, so retrieval surfaces topically-similar but factually-non-matching passages. StatPearls (the other half of the combined knowledge base) verified separately as genuinely functional and more precise for the same query type, but does not fully compensate. See Decision 13 for the complete investigation, both runs' numbers, and what this means for reporting both scores. 2 figures.
 
-Target venue: Journal of Biomedical Informatics, submission Sep 4 2026
+Target venue: Journal of Biomedical Informatics, submission Sep 22 2026
 
 ---
 
