@@ -136,7 +136,7 @@ Full dependency list: `requirements.txt`
   - gpt-4o-mini generation pipeline (generation_pipeline.py): FK grade increases low(6.3)→medium(11.6)→high(15.1)→clinical(16.1)
   - Lay language summarizer (lay_summarizer.py): PLABA abstracts source FK 14.9→generated FK 8.4 vs expert FK 13.5, 1 figure
   - Generation-level literacy conditioning confirmed; retrieval-level conditioning still unreliable for low band (see known limitation below)
-  - Pre-paper audit Aug 13; paper writing begins Aug 14
+  - Pre-paper audit Aug 13
 - September 2026: Paper outline and draft not yet started, targeting Sep 22 submission to JBI
 
 ---
