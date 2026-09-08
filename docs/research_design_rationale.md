@@ -31,7 +31,7 @@ The honest constraint this framing imposes: I need a controlled comparison, whic
 
 The standard approach is to retrieve first, then assess readability of retrieved content. I rejected this because it means the retrieval step has already committed to a document that may be inappropriate for the user, and then the system has to either serve it anyway or discard it and retrieve again.
 
-Literacy scoring at ingestion time means every document in the corpus has a readability label before any query arrives. When a query comes in with an estimated literacy band, the retrieval step can weight candidates by both semantic similarity and readability appropriateness simultaneously. This is architecturally different from post-hoc simplification and it is why ORACLE avoids the factuality-accessibility inversion that Guo et al. (2025) documented, simpler documents are retrieved rather than complex documents rewritten.
+Literacy scoring at ingestion time means every document in the corpus has a readability label before any query arrives. When a query comes in with an estimated literacy band, the retrieval step can weight candidates by both semantic similarity and readability appropriateness simultaneously. This is architecturally different from post-hoc simplification and it is why ORACLE avoids the factuality-accessibility inversion that You & Guo (2025) documented, simpler documents are retrieved rather than complex documents rewritten.
 
 The implementation cost is front-loaded: scoring 35M+ PubMed abstracts at ingestion time is expensive. The payoff is cleaner retrieval semantics at query time and a corpus that can be queried by literacy band directly.
 
@@ -53,7 +53,7 @@ The honest limitation: adapter stacks require labeled examples from each literac
 
 **Stage 4, Why comprehension outcome measurement and not just readability scores**
 
-Flesch-Kincaid and SMOG are proxy metrics. They measure surface features of text, sentence length, syllable count, as proxies for actual comprehension difficulty. Guo et al. (2025) showed that readability scores remain stable after model updates while actual user comprehension drops. If ORACLE's evaluation relies only on FK and SMOG, it will miss exactly the failure mode it was designed to address.
+Flesch-Kincaid and SMOG are proxy metrics. They measure surface features of text, sentence length, syllable count, as proxies for actual comprehension difficulty. You & Guo (2025) showed that readability scores remain stable after model updates while actual user comprehension drops. If ORACLE's evaluation relies only on FK and SMOG, it will miss exactly the failure mode it was designed to address.
 
 PlainQAFact measures factual consistency specifically in plain language outputs, catching the hallucinations introduced by simplification. APPLS measures plain language quality across multiple dimensions rather than just readability. Downstream task success rate, can a user at a specific literacy level correctly answer comprehension questions about the output, is the ultimate ground truth metric.
 
@@ -105,7 +105,7 @@ Included because reviewers expect them and because they provide a surface-level 
 
 **PlainQAFact factual consistency score**
 
-Guo et al. (2025). Built specifically to catch hallucinations introduced by plain language simplification. Without PlainQAFact, ORACLE has no way to demonstrate that literacy-conditioned retrieval avoids the factuality-accessibility inversion that post-hoc simplification produces.
+You & Guo (2025). Built specifically to catch hallucinations introduced by plain language simplification. Without PlainQAFact, ORACLE has no way to demonstrate that literacy-conditioned retrieval avoids the factuality-accessibility inversion that post-hoc simplification produces.
 
 **APPLS plain language evaluation metrics**
 
@@ -121,7 +121,7 @@ The ultimate ground truth. Simulated via MedQuAD and PLABA QA pairs. It is a pro
 
 **Post-hoc simplification instead of literacy-conditioned retrieval**
 
-Every existing system does this. Guo et al. (2025) documented why it fails. I am not building another system that does post-hoc simplification and hoping the failure mode does not appear in evaluation. The architecture choice is the paper's core contribution.
+Every existing system does this. You & Guo (2025) documented why it fails. I am not building another system that does post-hoc simplification and hoping the failure mode does not appear in evaluation. The architecture choice is the paper's core contribution.
 
 **Single literacy band instead of discrete band classification**
 
@@ -161,7 +161,7 @@ Did not anticipate that MedMCQA (182,822 raw records) would outscale every other
 
 **Answer field quality -- literal null-string bug**
 
-MedMCQA's answer field (mapped from the exp/explanation column, since the correct-option index is not present in the loader output) contained records where exp was missing. The code used row.get("exp", "") to read it, which only returns the default value when the key itself is absent from the row -- if the key exists but the value is NaN, str(nan) produces the literal three-character string "nan", which passed initial null/empty checks undetected. 2,306 records had the literal string "nan" as their stored answer before this was caught. Quality filter now explicitly checks for the string tokens "nan" and "none" in addition to true null/empty. Combined with dropping records with unscoreable literacy (no FK grade assignable), final corpus after quality filtering: 37,076 records, zero null answers, zero unassigned literacy bands.
+MedMCQA's answer field (mapped from the exp/explanation column, since the correct-option index is not present in the loader output) contained records where exp was missing. The code used row.get("exp", "") to read it, which only returns the default value when the key itself is absent from the row -- if the key exists but the value is NaN, str(nan) produces the literal three-character string "nan", which passed initial null/empty checks undetected. 2,306 records had the literal string "nan" as their stored answer before this was caught. Quality filter now explicitly checks for the string tokens "nan" and "none" in addition to true null/empty. Combined with dropping records with unscoreable literacy (no FK grade assignable), corpus after this quality filtering pass: 37,076 records, zero null answers, zero unassigned literacy bands. Correction, Sep 7 2026: further refinement after this entry brought the corpus to its current 36,664 records across 5 sources, confirmed directly from data/processed/oracle_corpus.csv; 37,076 reflects this specific filtering step's own result, not the corpus's current state.
 
 **Retrieval content for exam-format sources (MedQA, MedMCQA, MIRAGE) -- open architectural risk**
 

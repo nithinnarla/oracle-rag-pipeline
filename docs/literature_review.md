@@ -58,7 +58,7 @@ The most important recent benchmark paper for ORACLE. MIRAGE is the first compre
 
 ### Plain Language and Health Literacy
 
-**Guo et al. (2025), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization (arXiv)**
+**You & Guo (2025), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization (arXiv)**
 The paper that anchored ORACLE's design. PlainQAFact documents what I observed in production, factual consistency degrades when generating plain language summaries of biomedical content. The simplification process introduces errors. The paper proposes a retrieval-augmented evaluation framework to catch these errors. What it does not address: the upstream retrieval problem. PlainQAFact evaluates plain language generation quality; ORACLE conditions retrieval on literacy before generation begins.
 
 **Guo et al. (2024), Personalized Jargon Identification for Enhanced Interdisciplinary Communication (NAACL)**
@@ -161,7 +161,7 @@ MIRAGE measures factual accuracy. APPLS measures plain language quality. No benc
 - Pal et al. (2022), MedMCQA: Large-Scale Multi-Subject Multi-Choice Medical QA, CHIL
 - Jin et al. (2021), MedQA: USMLE Dataset, Applied Sciences
 - Xiong et al. (2024), MIRAGE: Benchmarking RAG for Medicine, ACL Findings
-- Guo et al. (2025), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization, arXiv
+- You & Guo (2025), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization, arXiv
 - Guo et al. (2024), Personalized Jargon Identification for Enhanced Interdisciplinary Communication, NAACL
 - Guo et al. (2024), APPLS: Evaluating Evaluation Metrics for Plain Language Summarization, EMNLP
 - Attal et al. (2023), PLABA: A Dataset for Plain Language Adaptation of Biomedical Abstracts, Scientific Data
