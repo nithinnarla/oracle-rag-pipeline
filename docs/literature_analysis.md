@@ -8,16 +8,16 @@
 **Verified dataset pipeline at time of analysis:**
 - PubMedQA: 273,518 records (Jin et al. 2019)
 - MedMCQA: 193,155 records (Pal et al. 2022)
-- MedQA USMLE: 11,451 records, 4-options version (Jin et al. 2021)
+- MedQA USMLE: 12,723 records, 4-options version (Jin et al. 2021)
 - MIRAGE: 7,663 records (Xiong et al. 2024)
-- MedQuAD: 47,441 records, replaces Consumer Health QA, same NLM/NIH group (Ben Abacha & Demner-Fushman 2019)
+- MedQuAD: 47,457 records, replaces Consumer Health QA, same NLM/NIH group (Ben Abacha & Demner-Fushman 2019)
 - PLABA: 921 records across 75 health topics (Attal et al. 2023)
 - MIMIC-III: pending PhysioNet credentialed access (Johnson et al. 2016)
 - PubMed Abstracts: 35M+ pending API integration (Phase 4)
 
-**Confirmed verified total: 534,149 records across 6 datasets independently checked for usability during the research process.**
+**Confirmed verified total: 535,437 records across 6 datasets independently checked for usability during the research process.**
 
-**Correction, Sep 7 2026:** this figure describes datasets verified as usable, not the composition of ORACLE's actual working retrieval corpus. The corpus itself, confirmed directly from data/processed/oracle_corpus.csv, contains 36,664 records across 5 sources (medmcqa 15,732, medqa 11,431, mirage 7,580, pubmedqa 1,000, plaba 921). MedQuAD's 47,441 records above are verified as usable but are not present in the corpus (see methodology_decisions.md Decision 4/17). PubMedQA's corpus contribution is limited to its 1,000-record expert-labeled subset, not the full 273,518. The paper should state the 36,664/5-source figure as the corpus description, and the 534,149 figure, if used at all, only in the context of describing the broader dataset verification effort. See figures/corpus_composition.png for the per-source breakdown.
+**Correction, Sep 7 2026:** this figure describes datasets verified as usable, not the composition of ORACLE's actual working retrieval corpus. The corpus itself, confirmed directly from data/processed/oracle_corpus.csv, contains 36,664 records across 5 sources (medmcqa 15,732, medqa 11,431, mirage 7,580, pubmedqa 1,000, plaba 921). MedQuAD's 47,457 records above are verified as usable but are not present in the corpus (see methodology_decisions.md Decision 4/17). PubMedQA's corpus contribution is limited to its 1,000-record expert-labeled subset, not the full 273,518. The paper should state the 36,664/5-source figure as the corpus description, and the 535,437 figure, if used at all, only in the context of describing the broader dataset verification effort. See figures/corpus_composition.png for the per-source breakdown.
 
 ---
 
@@ -34,7 +34,7 @@
 | Pal et al., MedMCQA | 2022 | CHIL | Dataset | Clinical QA benchmark |
 | Jin et al., MedQA | 2021 | Applied Sciences | Dataset | USMLE clinical benchmark |
 | Xiong et al., MIRAGE | 2024 | ACL Findings | Benchmark | RAG medical evaluation |
-| You & Guo, PlainQAFact | 2025 | arXiv | Evaluation | Plain language factuality |
+| You & Guo, PlainQAFact | 2026 | JBI | Evaluation | Plain language factuality |
 | Guo et al., Jargon | 2024 | NAACL | Method | Personalized jargon ID |
 | Guo et al., APPLS | 2024 | EMNLP | Evaluation | Plain language metrics |
 | Attal et al., PLABA | 2023 | Scientific Data | Dataset | Plain language gold standard |
@@ -123,7 +123,7 @@ MIMIC-III discharge summaries represent the hardest accessibility challenge, cli
 **Dataset coverage of gaps at time of analysis:**
 - Gap 1, addressed by pipeline design; no existing dataset covers it
 - Gap 2, addressed by MIRAGE (7,663) + comprehension metrics
-- Gap 3, addressed by MedQuAD (47,441) + PLABA (921)
+- Gap 3, addressed by MedQuAD (47,457) + PLABA (921)
 - Gap 4, addressed by pipeline design + all 6 verified datasets
 - Gap 5, addressed by MIMIC-III (pending) + PLABA (921)
 
@@ -161,7 +161,7 @@ The Guo et al. series at UIUC (2024-2025) represents the most systematic recent 
 
 The fix is upstream. Literacy-conditioned retrieval changes what gets retrieved based on who is asking, not just what they are asking. If a low-literacy user is identified, the retrieval step should surface MedQuAD answers written by NIH for health consumers and PLABA adaptations written for general audiences, not PubMed abstracts written for researchers. The generation step then starts from content appropriate for the audience, reducing the simplification burden and the associated error rate simultaneously.
 
-Three design choices follow from this analysis. First, literacy conditioning must be applied at the query encoder level, changing the representation used for retrieval, not filtering outputs afterward. Second, per-literacy-band PEFT adapters rather than a single generation model, different literacy bands require systematically different generation policies. Third, evaluation must include comprehension outcome measurement, APPLS shows text-level metrics are insufficient, and 534,149 verified records across six datasets (see correction, line 20, on corpus vs. verification-total scope) still leave the accessibility evaluation gap completely open.
+Three design choices follow from this analysis. First, literacy conditioning must be applied at the query encoder level, changing the representation used for retrieval, not filtering outputs afterward. Second, per-literacy-band PEFT adapters rather than a single generation model, different literacy bands require systematically different generation policies. Third, evaluation must include comprehension outcome measurement, APPLS shows text-level metrics are insufficient, and 535,437 verified records across six datasets (see correction, line 20, on corpus vs. verification-total scope) still leave the accessibility evaluation gap completely open.
 
 ---
 
@@ -191,7 +191,7 @@ ORACLE's Stage 4 evaluation includes downstream task success rate by literacy gr
 
 ```
 ORACLE Knowledge Map, June 2026
-Verified: 534,149 records across 6 datasets (verification total, not corpus composition; see correction above)
+Verified: 535,437 records across 6 datasets (verification total, not corpus composition; see correction above)
 
 RAG ARCHITECTURE CLUSTER
 └── Literacy-agnostic retrieval is the core architectural gap
@@ -205,7 +205,7 @@ RAG ARCHITECTURE CLUSTER
 BIOMEDICAL BENCHMARK CLUSTER
 ├── Jin et al. 2019, PubMedQA 273,518 records
 ├── Pal et al. 2022, MedMCQA 193,155 records
-├── Jin et al. 2021, MedQA 11,451 records
+├── Jin et al. 2021, MedQA 12,723 records
 └── Xiong et al. 2024, MIRAGE 7,663 records
     ├── best available RAG medical benchmark
     └── no accessibility evaluation → ORACLE GAP 2
@@ -219,7 +219,7 @@ PLAIN LANGUAGE CLUSTER (Guo et al. UIUC series)
     └── ORACLE upstream retrieval conditioning
 
 PATIENT-FACING DATASET CLUSTER
-├── MedQuAD 47,441 records (NIH, 12 websites)
+├── MedQuAD 47,457 records (NIH, 12 websites)
 │   └── replaces Consumer Health QA, same NLM/NIH group
 └── MIMIC-III pending PhysioNet
     └── discharge summaries, hardest accessibility challenge
@@ -254,5 +254,5 @@ Every major RAG system, from Lewis et al. (2020) to MIRAGE (2024), retrieves the
 **Point 2, Simplification as post-processing is the wrong fix for the right problem:**
 The plain language NLP community has spent years building better simplification models. PlainQAFact (2025) shows those models introduce factual errors. The problem is not that simplification models are inadequate, it is that rewriting content written for a different audience is architecturally the wrong approach. ORACLE moves literacy conditioning upstream into retrieval. The generation step starts from content already appropriate for the audience, eliminating the source of simplification errors rather than trying to reduce them.
 
-**Point 3, 534,149 verified records (verification total, see correction above) and no existing system evaluates accessibility across any of them:**
-PubMedQA, MedMCQA, MedQA, and MIRAGE collectively represent the strongest available biomedical QA evaluation. None of them measure whether a patient at a specific literacy level understood the output. MedQuAD and PLABA represent real patient-facing content, 47,441 NIH QA pairs and 921 expert plain language adaptations. ORACLE is the first system that evaluates across all of these simultaneously with comprehension outcome measurement as the primary metric. The gap is not a niche corner case, it is the difference between evaluating whether the system knows medicine and evaluating whether the system helps patients.
+**Point 3, 535,437 verified records (verification total, see correction above) and no existing system evaluates accessibility across any of them:**
+PubMedQA, MedMCQA, MedQA, and MIRAGE collectively represent the strongest available biomedical QA evaluation. None of them measure whether a patient at a specific literacy level understood the output. MedQuAD and PLABA represent real patient-facing content, 47,457 NIH QA pairs and 921 expert plain language adaptations. ORACLE is the first system that evaluates across all of these simultaneously with comprehension outcome measurement as the primary metric. The gap is not a niche corner case, it is the difference between evaluating whether the system knows medicine and evaluating whether the system helps patients.

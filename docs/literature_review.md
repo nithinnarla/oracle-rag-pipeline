@@ -58,7 +58,7 @@ The most important recent benchmark paper for ORACLE. MIRAGE is the first compre
 
 ### Plain Language and Health Literacy
 
-**You & Guo (2025), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization (arXiv)**
+**You & Guo (2026), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization (Journal of Biomedical Informatics)**
 The paper that anchored ORACLE's design. PlainQAFact documents what I observed in production, factual consistency degrades when generating plain language summaries of biomedical content. The simplification process introduces errors. The paper proposes a retrieval-augmented evaluation framework to catch these errors. What it does not address: the upstream retrieval problem. PlainQAFact evaluates plain language generation quality; ORACLE conditions retrieval on literacy before generation begins.
 
 **Guo et al. (2024), Personalized Jargon Identification for Enhanced Interdisciplinary Communication (NAACL)**
@@ -70,8 +70,8 @@ Meta-evaluation of plain language metrics, which metrics actually predict whethe
 **Attal et al. (2023), PLABA: A Dataset for Plain Language Adaptation of Biomedical Abstracts (Scientific Data)**
 750+ biomedical abstracts with expert plain language adaptations. Small dataset, high quality. The critical dataset for ORACLE's Stage 4 evaluation, it has gold-standard plain language references that allow factual consistency verification. Limitation: 750 examples is a small evaluation set. ORACLE uses PLABA for evaluation, not training.
 
-**Ben Abacha & Demner-Fushman (2019), MedQuAD: A Manually Curated Question-Answer Dataset (BMC Bioinformatics)**
-47,441 patient-facing QA pairs from 12 NIH websites including MedlinePlus, NIDDK, NCI, and GARD. Questions written by health consumers, answers written for health consumers. Initially planned as Consumer Health QA (Ben Abacha et al. 2020), during dataset verification May 2026, MedQuAD was identified as the appropriate downloadable resource from the same NLM/NIH research group. More comprehensive, better documented, and directly relevant to ORACLE's health information accessibility evaluation.
+**Ben Abacha & Demner-Fushman (2019), A Question-Entailment Approach to Question Answering (BMC Bioinformatics), introduces the MedQuAD dataset**
+47,457 patient-facing QA pairs from 12 NIH websites including MedlinePlus, NIDDK, NCI, and GARD. Questions written by health consumers, answers written for health consumers. Initially planned as Consumer Health QA (Ben Abacha et al. 2020), during dataset verification May 2026, MedQuAD was identified as the appropriate downloadable resource from the same NLM/NIH research group. More comprehensive, better documented, and directly relevant to ORACLE's health information accessibility evaluation.
 
 ### Clinical Text and MIMIC-III
 
@@ -161,11 +161,11 @@ MIRAGE measures factual accuracy. APPLS measures plain language quality. No benc
 - Pal et al. (2022), MedMCQA: Large-Scale Multi-Subject Multi-Choice Medical QA, CHIL
 - Jin et al. (2021), MedQA: USMLE Dataset, Applied Sciences
 - Xiong et al. (2024), MIRAGE: Benchmarking RAG for Medicine, ACL Findings
-- You & Guo (2025), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization, arXiv
+- You & Guo (2026), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization, Journal of Biomedical Informatics
 - Guo et al. (2024), Personalized Jargon Identification for Enhanced Interdisciplinary Communication, NAACL
 - Guo et al. (2024), APPLS: Evaluating Evaluation Metrics for Plain Language Summarization, EMNLP
 - Attal et al. (2023), PLABA: A Dataset for Plain Language Adaptation of Biomedical Abstracts, Scientific Data
-- Ben Abacha & Demner-Fushman (2019), MedQuAD: A Manually Curated Question-Answer Dataset, BMC Bioinformatics
+- Ben Abacha & Demner-Fushman (2019), A Question-Entailment Approach to Question Answering, BMC Bioinformatics (introduces MedQuAD)
 - Johnson et al. (2016), MIMIC-III Clinical Database, Scientific Data
 - Nutbeam (2000), Health Literacy as a Public Health Goal, Health Promotion International
 - Baker (2006), The Meaning and Measure of Health Literacy, Journal of General Internal Medicine
