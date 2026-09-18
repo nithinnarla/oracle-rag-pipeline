@@ -12,7 +12,7 @@ Current substitution table: 38 terms in literacy_adapter.py
 Target: identify top 50 additional candidates ranked by frequency
 
 Methodology:
-- Tokenize full_text across all 37,076 corpus records
+- Tokenize full_text across all 36,664 corpus records
 - Filter against medical term lexicon (UMLS-derived patterns)
 - Compute frequency per term per literacy band
 - Rank by clinical/high band frequency minus low/medium frequency
@@ -222,7 +222,7 @@ def run_jargon_identifier():
     ax.legend(handles=legend, fontsize=9)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_top20_candidates.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 1 saved - jargon_top20_candidates.png")
 
@@ -244,7 +244,7 @@ def run_jargon_identifier():
                  'Top 20 candidates by jargon score', fontsize=12)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_band_heatmap.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 2 saved - jargon_band_heatmap.png")
 
@@ -264,7 +264,7 @@ def run_jargon_identifier():
     ax.legend(fontsize=9)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_score_distribution.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 3 saved - jargon_score_distribution.png")
 
@@ -297,7 +297,7 @@ def run_jargon_identifier():
                  fontsize=12)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_source_distribution.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 4 saved - jargon_source_distribution.png")
 
@@ -332,7 +332,7 @@ def run_jargon_identifier():
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'jargon_fk_vs_jargon_scatter.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 5 saved - jargon_fk_vs_jargon_scatter.png")
 

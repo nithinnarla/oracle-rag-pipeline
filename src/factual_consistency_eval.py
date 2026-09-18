@@ -46,7 +46,6 @@ import warnings
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from openai import OpenAI
 
 warnings.filterwarnings("ignore")
 
@@ -56,7 +55,17 @@ OUTPUT_PATH = os.path.join(REPO_ROOT, "data", "processed", "factual_consistency_
 FIGURES_DIR = os.path.join(REPO_ROOT, "figures", "stage4")
 MODEL = "gpt-4o-mini"
 
-client = OpenAI()
+_client = None
+
+
+def get_client():
+    """Built on first use, so --figures-only can import this module without
+    an API key present."""
+    global _client
+    if _client is None:
+        from openai import OpenAI
+        _client = OpenAI()
+    return _client
 
 CONSISTENCY_PROMPT = """You are evaluating factual consistency between a scientific abstract (source) and a simplified plain-language summary (generated), adapting the PlainQAFact methodology (You & Guo, 2025).
 
@@ -89,7 +98,7 @@ Return ONLY the JSON object, no other text."""
 def score_pair(source_text: str, generated_summary: str) -> dict:
     """Score one source/summary pair using the adapted methodology."""
     try:
-        response = client.chat.completions.create(
+        response = get_client().chat.completions.create(
             model=MODEL,
             messages=[{"role": "user", "content": CONSISTENCY_PROMPT.format(
                 source=source_text, summary=generated_summary
@@ -161,11 +170,24 @@ def run_factual_consistency_eval():
     combined = pd.concat([df.reset_index(drop=True), results_df], axis=1)
     combined.to_csv(OUTPUT_PATH, index=False)
 
+    summarise_and_plot(combined)
+
+    print("\n--- Factual Consistency Evaluation complete ---")
+    print("  Reminder: adapted evaluation, not official PlainQAFact --")
+    print("  see cloud GPU setup plan for the validated metric.")
+
+    return combined
+
+
+
+def summarise_and_plot(combined):
+    """Reporting and figure, split out so the figure can be redrawn from the
+    saved scores without re-calling the API."""
     n_errors = combined["consistency_error"].notna().sum()
     valid = combined[combined["consistency_error"].isna()]
 
     print(f"\n--- Results ---")
-    print(f"  Scored: {len(valid)}/{len(df)} ({n_errors} errors)")
+    print(f"  Scored: {len(valid)}/{len(combined)} ({n_errors} errors)")
     if len(valid) > 0:
         print(f"  Mean overall consistency score: {valid['overall_score'].mean():.3f}")
         print(f"  Mean simplification-claim score: {valid['simplification_score'].mean():.3f}")
@@ -186,8 +208,9 @@ def run_factual_consistency_eval():
     for patch, color in zip(bp["boxes"], ["#4a90d9", "#e08214"]):
         patch.set_facecolor(color)
         patch.set_alpha(0.7)
+    rng = np.random.default_rng(0)  # fixed, so the jitter redraws identically
     for i, d in enumerate(data_to_plot, start=1):
-        x = np.random.normal(i, 0.04, size=len(d))
+        x = rng.normal(i, 0.04, size=len(d))
         ax.scatter(x, d, alpha=0.6, color="black", s=25, zorder=3)
     ax.set_ylabel("Factual Consistency Score")
     ax.set_title("Factual Consistency by Claim Type\n(Adapted PlainQAFact Methodology - GPT-4o-mini)")
@@ -195,16 +218,14 @@ def run_factual_consistency_eval():
     ax.grid(axis="y", alpha=0.3)
     plt.tight_layout()
     fig_path = os.path.join(FIGURES_DIR, "factual_consistency_by_claim_type.png")
-    plt.savefig(fig_path, dpi=150, bbox_inches="tight")
+    plt.savefig(fig_path, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Fig saved - factual_consistency_by_claim_type.png")
 
-    print("\n--- Factual Consistency Evaluation complete ---")
-    print("  Reminder: adapted evaluation, not official PlainQAFact --")
-    print("  see cloud GPU setup plan for the validated metric.")
-
-    return combined
-
-
 if __name__ == "__main__":
-    run_factual_consistency_eval()
+    import sys
+    # --figures-only redraws from the saved scores, no API calls
+    if "--figures-only" in sys.argv:
+        summarise_and_plot(pd.read_csv(OUTPUT_PATH))
+    else:
+        run_factual_consistency_eval()

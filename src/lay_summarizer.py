@@ -120,7 +120,7 @@ def plot_fk_comparison(df_results, figures_dir):
 
     plt.tight_layout()
     outpath = os.path.join(figures_dir, "fk_comparison_source_generated_expert.png")
-    plt.savefig(outpath, dpi=150, bbox_inches="tight")
+    plt.savefig(outpath, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Figure saved: {outpath}")
 

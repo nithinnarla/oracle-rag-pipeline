@@ -69,7 +69,7 @@ def run_figures():
                     f'{val:.1f}', ha='center', fontsize=9)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_fk_comparison.png'), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_fk_comparison.png'), dpi=300, bbox_inches='tight')
     plt.close()
     print('Saved: cross_dataset_fk_comparison.png')
 
@@ -98,7 +98,7 @@ def run_figures():
         ax2.text(i, v + 0.005, f'{v:.3f}', ha='center', fontsize=9)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_routing_rouge.png'), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_routing_rouge.png'), dpi=300, bbox_inches='tight')
     plt.close()
     print('Saved: cross_dataset_routing_rouge.png')
 
@@ -114,7 +114,7 @@ def run_figures():
     ax.set_xlabel('Literacy Band', fontsize=10)
     ax.set_ylabel('Dataset', fontsize=10)
     plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_fk_by_band.png'), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_fk_by_band.png'), dpi=300, bbox_inches='tight')
     plt.close()
     print('Saved: cross_dataset_fk_by_band.png')
 
@@ -156,7 +156,7 @@ def run_figures():
                     ha='center', fontsize=10, fontweight='bold')
 
     plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_routing_impact.png'), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR, 'cross_dataset_routing_impact.png'), dpi=300, bbox_inches='tight')
     plt.close()
     print('Saved: cross_dataset_routing_impact.png')
 
@@ -218,7 +218,7 @@ def plot_misroute_significance():
 
     plt.tight_layout()
     out_path = os.path.join(FIGURES_DIR, 'cross_dataset_misroute_significance.png')
-    plt.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.savefig(out_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f'Saved: {out_path}')
     return results

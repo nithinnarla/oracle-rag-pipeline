@@ -128,7 +128,7 @@ def run_evaluation():
 
     plt.tight_layout()
     outpath = os.path.join(FIGURES_DIR, 'appls_metric_sensitivity.png')
-    plt.savefig(outpath, dpi=150, bbox_inches='tight')
+    plt.savefig(outpath, dpi=300, bbox_inches='tight')
     plt.close()
     print(f'\nFigure saved: {outpath}')
 
@@ -151,7 +151,7 @@ def run_evaluation():
 
     plt.tight_layout()
     outpath = os.path.join(FIGURES_DIR, 'appls_fk_sensitivity.png')
-    plt.savefig(outpath, dpi=150, bbox_inches='tight')
+    plt.savefig(outpath, dpi=300, bbox_inches='tight')
     plt.close()
     print(f'Figure saved: {outpath}')
 
