@@ -20,7 +20,6 @@ import pandas as pd
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO_ROOT, "src"))
-from literacy_classifier import classify_query
 
 RESULTS_PATH = os.path.join(REPO_ROOT, "data", "processed", "cross_dataset_results.csv")
 FIGURES_DIR = os.path.join(REPO_ROOT, "figures", "stage4")
@@ -28,6 +27,8 @@ DOCS_DIR = os.path.join(REPO_ROOT, "docs")
 
 
 def run_ablation():
+    # deferred so --figures-only can redraw from the saved results without textstat
+    from literacy_classifier import classify_query
     results = pd.read_csv(RESULTS_PATH)
     actual = results[results["condition"] == "actual"].copy()
 
@@ -92,14 +93,11 @@ def plot_ablation(actual, stats):
 
     plt.tight_layout()
     out_path = os.path.join(FIGURES_DIR, "fk_ablation_full_text_vs_question_only.png")
-    plt.savefig(out_path, dpi=150)
+    plt.savefig(out_path, dpi=300)
     plt.close()
     print(f"Saved: {out_path}")
 
 
-if __name__ == "__main__":
-    actual, stats = run_ablation()
-    plot_ablation(actual, stats)
 
 
 def plot_source_breakdown(actual):
@@ -123,7 +121,7 @@ def plot_source_breakdown(actual):
     plt.tight_layout()
 
     out_path = os.path.join(FIGURES_DIR, "fk_ablation_flip_rate_by_source.png")
-    plt.savefig(out_path, dpi=150)
+    plt.savefig(out_path, dpi=300)
     plt.close()
     print(f"Saved: {out_path}")
     return rate
@@ -165,7 +163,7 @@ def run_publication_extensions(actual):
     ax.legend()
     plt.tight_layout()
     out1 = os.path.join(FIGURES_DIR, "fk_ablation_length_correlation.png")
-    plt.savefig(out1, dpi=150)
+    plt.savefig(out1, dpi=300)
     plt.close()
     print(f"Saved: {out1}")
 
@@ -196,3 +194,41 @@ def run_publication_extensions(actual):
         "rouge_flip_mean": flip_rouge.mean(), "rouge_stable_mean": stable_rouge.mean(), "rouge_p": p_r,
         "chi2": chi2, "chi2_p": p_chi
     }
+
+
+def load_saved_ablation():
+    """Rebuild the analysis frame from the committed results, so the figures can
+    be redrawn without re-running the classifier."""
+    path = os.path.join(DOCS_DIR, "fk_ablation_results.csv")
+    actual = pd.read_csv(path)
+    actual["flipped"] = (actual["band_match"].astype(str).str.lower()
+                         != actual["band_match_question_only"].astype(str).str.lower())
+    return actual
+
+
+if __name__ == "__main__":
+    # every figure this module produces is generated here; previously the main
+    # block sat above plot_source_breakdown and run_publication_extensions and
+    # never called them, so Figures 11 and 12 were not reproducible from a run
+    from query_eligibility import exclude_derived_queries
+
+    if "--figures-only" in sys.argv:
+        actual = load_saved_ablation()
+        stats = None
+    else:
+        actual, stats = run_ablation()
+
+    # PLABA's query is its own full_text, so its band agreement and its
+    # question-only comparison are both circular; the saved CSV keeps every
+    # row, the reported analysis does not
+    analysed, derived = exclude_derived_queries(actual)
+    if len(derived):
+        print("\nExcluded %d rows from the reported analysis (%s): query is derived "
+              "from the same text that defines the band"
+              % (len(derived), ", ".join(sorted(derived["source"].unique()))))
+    print("Analysed n=%d" % len(analysed))
+
+    if stats is not None:
+        plot_ablation(analysed, stats)
+    plot_source_breakdown(analysed)
+    run_publication_extensions(analysed)

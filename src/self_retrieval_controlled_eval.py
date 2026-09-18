@@ -1,5 +1,5 @@
 """
-ORACLE, Self-Retrieval Evaluation — Pool-Size-Controlled Comparison
+ORACLE, Self-Retrieval Evaluation - Pool-Size-Controlled Comparison
 Phase 4, Stage 2 extension, controlled ablation
 
 Complements self_retrieval_eval.py (as-deployed, true band-pool sizes) with
@@ -29,8 +29,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(__file__))
-from retrieval_pipeline import get_band_embeddings, encode_query, cosine_similarity_batch
-from dpr_encoder import get_dpr_query_encoder
+from query_eligibility import (filter_eligible, report_exclusions,
+                               band_significance, print_significance)
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORPUS_PATH = os.path.join(REPO_ROOT, 'data', 'processed', 'oracle_corpus.csv')
@@ -46,6 +46,11 @@ FIXED_POOL_SIZE = 4264  # matches low band's true size, the smallest band
 
 
 def run_controlled_eval():
+    # imported here, not at module level, so --figures-only can redraw from the
+    # saved results without pulling in the DPR encoder and textstat
+    from retrieval_pipeline import get_band_embeddings, encode_query, cosine_similarity_batch
+    from dpr_encoder import get_dpr_query_encoder
+
     print("ORACLE, Self-Retrieval Evaluation - Pool-Size-Controlled")
     print("=" * 60)
     print(f"Fixed candidate pool size per query: {FIXED_POOL_SIZE}")
@@ -125,6 +130,19 @@ def run_controlled_eval():
     print(f"\nResults saved: {RESULTS_PATH}")
 
     print("\n--- Controlled Summary by Band (fixed pool=4,264) ---")
+    return summarise_and_plot(results_df)
+
+
+
+def summarise_and_plot(results_df):
+    """Analysis and figure. Applies the Section 3.2 query-eligibility rule
+    before summarising, so topic-index queries do not enter the means."""
+    eligible, dropped = filter_eligible(results_df, CORPUS_PATH)
+    report_exclusions(eligible, dropped)
+    results_df = eligible
+    stats = band_significance(results_df)
+    print_significance(stats)
+
     summary = results_df.groupby('literacy_band').agg(
         n=('record_id', 'count'),
         precision_at_1=('precision_at_1', 'mean'),
@@ -152,12 +170,15 @@ def run_controlled_eval():
     ax.legend()
     plt.tight_layout()
     outpath = os.path.join(FIGURES_DIR, 'self_retrieval_controlled_by_band.png')
-    plt.savefig(outpath, dpi=150, bbox_inches='tight')
+    plt.savefig(outpath, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"\nFigure saved: {outpath}")
 
     return results_df
 
-
 if __name__ == "__main__":
-    run_controlled_eval()
+    # --figures-only redraws from the saved results, no DPR encoder needed
+    if "--figures-only" in sys.argv:
+        summarise_and_plot(pd.read_csv(RESULTS_PATH))
+    else:
+        run_controlled_eval()
