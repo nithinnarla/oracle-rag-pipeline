@@ -10,9 +10,14 @@ Architecture:
 - Query encoder: facebook/dpr-question_encoder-single-nq-base
 - Embeddings saved as numpy arrays per literacy band
 
-Input: data/processed/oracle_corpus.csv (37,076 records)
+Input: data/processed/oracle_corpus.csv (36,664 records)
 Output: data/processed/embeddings/
-  - corpus_embeddings.npy, full corpus embeddings (37076, 768)
+  - corpus_embeddings.npy, full corpus embeddings (36664, 768)
+
+Note: the index currently on disk was built before the PubMed abstracts were
+dropped from the corpus and still holds 37,076 vectors. Re-running this script
+rebuilds it at 36,664. Section 4.2 of the paper records the discrepancy and
+check 18 in src/check_consistency.py fails if it is ever left undisclosed.
   - corpus_ids.npy, record_id alignment
   - embeddings_low.npy, embeddings_medium.npy, embeddings_high.npy, embeddings_clinical.npy
   - band_ids_low.npy / band_ids_medium.npy / band_ids_high.npy / band_ids_clinical.npy
