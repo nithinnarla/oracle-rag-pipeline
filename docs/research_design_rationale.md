@@ -163,7 +163,7 @@ The EDA found MIRAGE's 5 source datasets use incompatible answer formats, binary
 
 **MedMCQA corpus domination**
 
-Did not anticipate that MedMCQA (182,822 raw records) would outscale every other source by an order of magnitude once combined into a single retrieval corpus. Uncapped, MedMCQA was 89.9% of the corpus (189,366 of 210,731 records) -- a health-literacy RAG paper whose retrieval index is 90% medical entrance-exam questions undermines the patient-facing framing this project claims. Capped MedMCQA to 20,000 records, stratified by subject_name to preserve all 21 medical subjects proportionally. Post-cap: MedMCQA 42.4% of corpus, no single source above 50%.
+Did not anticipate that MedMCQA (182,822 raw records) [record note, Sep 19 2026: this paragraph quotes three different raw counts as the pipeline evolved, 182,822, 189,366 and, in the paper, 193,155. The paper's 193,155 is the figure for the splits actually loaded and is the one to cite.] would outscale every other source by an order of magnitude once combined into a single retrieval corpus. Uncapped, MedMCQA was 89.9% of the corpus (189,366 of 210,731 records) -- a health-literacy RAG paper whose retrieval index is 90% medical entrance-exam questions undermines the patient-facing framing this project claims. Capped MedMCQA to 20,000 records, stratified by subject_name to preserve all 21 medical subjects proportionally. Post-cap: MedMCQA 42.4% of corpus, no single source above 50%.
 
 **Answer field quality -- literal null-string bug**
 

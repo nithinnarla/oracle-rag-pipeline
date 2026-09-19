@@ -165,7 +165,7 @@ Full dependency list: `requirements.txt`
 
 ## Status
 
-🔬 Research in progress, Stages 1-4 complete, paper draft complete and under pre-submission audit
+Research in progress, Stages 1-4 complete, paper draft complete and under pre-submission audit
 
 **Stage 1 (complete):** Corpus pipeline, 36,664 records across 5 sources, 4 literacy bands, 67 EDA figures. (An earlier build counted 37,076 across 6 sources; the 412 PubMed abstracts were dropped from the corpus at commit adc79d5 and now appear only in the cross-dataset evaluation.)
 **Stage 2 (complete):** DPR retrieval pipeline with literacy-conditioned band indexing, 7 figures.
