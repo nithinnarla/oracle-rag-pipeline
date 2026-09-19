@@ -127,6 +127,16 @@ def run_retrieval_evaluation():
                 if fk is not None:
                     fk_by_band[band].append(fk)
 
+    # persist the routing counts so the figures can be redrawn, and the paper's
+    # reported values re-checked, without re-running DPR retrieval
+    import pandas as _pd
+    _pd.DataFrame([
+        {'band': b, 'correct': routing_correct[b], 'total': routing_total[b],
+         'accuracy': (routing_correct[b] / routing_total[b]) if routing_total[b] else None}
+        for b in BAND_ORDER
+    ]).to_csv(os.path.join(REPO_ROOT, 'data', 'processed',
+                           'retrieval_eval_routing.csv'), index=False)
+
     # Print routing accuracy
     print("\n--- Band Routing Accuracy ---")
     for band in BAND_ORDER:
@@ -155,7 +165,7 @@ def run_retrieval_evaluation():
     ax.set_xlabel('Query Literacy Band')
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_score_distribution.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 1 saved - eval_score_distribution.png")
 
@@ -175,7 +185,7 @@ def run_retrieval_evaluation():
     ax.legend(fontsize=9)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_routing_accuracy.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 2 saved - eval_routing_accuracy.png")
 
@@ -204,7 +214,7 @@ def run_retrieval_evaluation():
     ax.legend(fontsize=8, bbox_to_anchor=(1.01, 1), loc='upper left')
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_source_distribution.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 3 saved - eval_source_distribution.png")
 
@@ -221,7 +231,7 @@ def run_retrieval_evaluation():
     ax.legend(fontsize=9)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_fk_distribution.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 4 saved - eval_fk_distribution.png")
 
@@ -239,7 +249,7 @@ def run_retrieval_evaluation():
     ax.legend(fontsize=9)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_topk_decay.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 5 saved - eval_topk_decay.png")
 
@@ -267,7 +277,7 @@ def run_retrieval_evaluation():
                  '(rows = true band, cols = routed band)', fontsize=12)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_routing_confusion.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 6 saved - eval_routing_confusion.png")
 
@@ -297,7 +307,7 @@ def run_retrieval_evaluation():
     plt.xticks(rotation=15, ha='right', fontsize=9)
     plt.tight_layout()
     plt.savefig(os.path.join(FIGURES_DIR, 'eval_source_score_heatmap.png'),
-                dpi=150, bbox_inches='tight')
+                dpi=300, bbox_inches='tight')
     plt.close()
     print("  Fig 7 saved - eval_source_score_heatmap.png")
 

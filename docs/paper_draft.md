@@ -1,8 +1,26 @@
-# ORACLE: Paper Draft
-## JBI Submission Target Sep 22 2026
+# Where Literacy Conditioning Reaches in a Retrieval-Augmented Pipeline
+## Readability Improves, Retrieval Relevance and Factual Fidelity Do Not
+
+*Journal of Biomedical Informatics submission target, September 22 2026*
+
+**Nithin Raghava Ramachandra Narla**  
+Independent Researcher, Dallas-Fort Worth, Texas, United States  
+ORCID: 0009-0005-7458-551X  
+Corresponding author: nithinrf95@gmail.com
+
+**Keywords:** health literacy; retrieval-augmented generation; plain language summarization; readability assessment; biomedical question answering; dense passage retrieval
+
+## Highlights
+
+- Retrieval is conditioned on estimated health literacy, not simplified afterwards
+- Correct literacy-band routing improves readability (Wilcoxon n=177, p=0.0018)
+- Routing does not measurably change retrieval relevance or factual consistency
+- Flesch-Kincaid misroutes jargon-dense text: MedMCQA is 80.3% of the low band
+- Two factual-consistency metrics diverge; the gap is knowledge-base domain mismatch
+
 ## Abstract
 
-Retrieval-augmented generation systems retrieve identically for every user regardless of literacy level, and prior work treats accessibility as a post-generation simplification step, which introduces factual errors absent from the original source context. We present ORACLE, a system that conditions dense retrieval directly on an estimated literacy band via hard candidate-pool selection, paired with band-specific generation prompting. Evaluated across five corpus sources (36,664 records: MedMCQA, MedQA, MIRAGE, PubMedQA, PLABA), correct literacy-band routing significantly improves generation readability (Wilcoxon, n=177, p=0.0018) but produces no measurable effect on retrieval relevance or content fidelity, a bounded, falsifiable claim about which pipeline stage literacy conditioning actually affects. Factual consistency is evaluated two independent ways; the two scores diverge substantially, traced to a genuine domain mismatch in the official metric's knowledge base rather than a pipeline error. APPLS-based perturbation testing on our own data confirms ROUGE-L and BERTScore are sensitive to the transformations this evaluation cares about, while FK shows only weak, sample-size-dependent sensitivity. A self-retrieval evaluation, controlled for candidate-pool size, finds a genuine retrieval-quality advantage in the low-literacy band that survives two tested explanations and remains an open question. Comprehension-outcome measurement, whether improved readability improves actual understanding, is not attempted here and is identified as necessary future work alongside integrating MedQuAD, the corpus's most directly patient-facing excluded source.
+Retrieval-augmented generation systems retrieve identically for every user regardless of literacy level, and prior work treats accessibility as a post-generation simplification step, which introduces factual errors absent from the original source context. We present ORACLE, a system that conditions dense retrieval directly on an estimated literacy band via hard candidate-pool selection, paired with band-specific generation prompting. Evaluated across five corpus sources (36,664 records: MedMCQA, MedQA, MIRAGE, PubMedQA, PLABA), correct literacy-band routing significantly improves generation readability (Wilcoxon, n=177, p=0.0018) but produces no measurable effect on retrieval relevance or content fidelity, a bounded, falsifiable claim about which pipeline stage literacy conditioning actually affects. Factual consistency is evaluated two independent ways; the two scores diverge substantially, traced to a genuine domain mismatch in the official metric's knowledge base rather than a pipeline error. APPLS-based perturbation testing on our own data confirms ROUGE-L and BERTScore are sensitive to the transformations this evaluation cares about, while FK shows only weak, sample-size-dependent sensitivity. A self-retrieval evaluation, controlled for candidate-pool size, finds a retrieval-quality advantage in the low-literacy band that is significant against the other three bands pooled (Fisher exact, p=0.00014) though not against the clinical band alone, survives two tested explanations, and remains an open question. Comprehension-outcome measurement, whether improved readability improves actual understanding, is not attempted here and is identified as necessary future work alongside integrating MedQuAD, the corpus's most directly patient-facing excluded source.
 
 ---
 
@@ -38,7 +56,7 @@ PubMedQA (Jin et al., 2019) evaluates yes/no/maybe reasoning over biomedical res
 
 ### 2.3 Plain Language and Health Literacy
 
-You and Guo (2026) introduced PlainQAFact, documenting the factuality-accessibility inversion that anchors this paper's design rationale: simplification performed without access to full source context introduces factual errors. Guo et al. (2024) demonstrated that jargon identification requires personalization rather than universal dictionaries, informing this paper's per-band conditioning design. A separate work by Guo et al. (2024), APPLS, showed that standard readability and content metrics fail to predict actual comprehension, motivating the metric-validation approach in Section 5.5 rather than relying on citation-based justification alone. Attal et al. (2023) produced PLABA, a gold-standard dataset of plain-language biomedical adaptations, used here as the corpus's primary accessibility-focused evaluation source.
+You and Guo (2026) introduced PlainQAFact, documenting the factuality-accessibility inversion that anchors this paper's design rationale: simplification performed without access to full source context introduces factual errors. Guo et al. (2024b) demonstrated that jargon identification requires personalization rather than universal dictionaries, informing this paper's per-band conditioning design. A separate work by Guo et al. (2024a), APPLS, showed that standard readability and content metrics fail to predict actual comprehension, motivating the metric-validation approach in Section 5.5 rather than relying on citation-based justification alone. Attal et al. (2023) produced PLABA, a gold-standard dataset of plain-language biomedical adaptations, used here as the corpus's primary accessibility-focused evaluation source.
 
 ### 2.4 Health Literacy Frameworks
 
@@ -48,7 +66,13 @@ Nutbeam (2000) established a three-level health-literacy classification, which t
 
 ### 3.1 Framework Overview
 
+Figure 1 shows the pipeline end to end.
+
 ORACLE addresses literacy-agnostic retrieval through a four-stage pipeline: document ingestion with literacy scoring, retrieval restricted to a literacy-band-specific candidate pool via hard band selection, band-conditioned generation, and readability and content-fidelity evaluation. This architecture reflects a specific design choice: literacy conditioning happens upstream, at the retrieval stage, rather than downstream, as a post-processing simplification step applied after generation. You and Guo (2026) documented that post-hoc simplification introduces factual errors precisely because it operates on already-generated content without access to the original source material's full context; conditioning retrieval itself on literacy band avoids this failure mode by ensuring the system never retrieves content it will need to distort.
+
+![Figure 1: ORACLE pipeline architecture](../figures/oracle_architecture.png)
+
+**Figure 1.** The four-stage ORACLE pipeline. Documents are scored for Flesch-Kincaid grade on ingestion and assigned to one of four literacy bands; a query's estimated band selects that band's candidate pool exclusively, so literacy conditioning constrains retrieval rather than filtering its output; generation combines the retrieved documents with a band-specific system prompt; and evaluation covers retrieval, readability, content fidelity, and factual consistency separately. Band pool sizes are those of Table 2.
 
 ### 3.2 Retrieval Corpus
 
@@ -66,11 +90,11 @@ The retrieval corpus draws on five sources: MedMCQA, MedQA, MIRAGE, PubMedQA, an
 
 MedMCQA required explicit correction before inclusion. MedMCQA in its raw form contributes 193,155 records, 89.9% of the combined corpus, enough to crowd out every other source entirely. A cap of 20,000 records was therefore applied, using stratified sampling across MedMCQA's 21 medical subject categories so subject-level diversity would be preserved rather than sampled uniformly at random. This stratified step alone brings the source to approximately 20,000 records; a subsequent minimum-length quality filter, applied identically across all five sources, removes records with fewer than 20 characters of question text, reducing MedMCQA's final contribution to 15,732 records, 42.9% of the finished corpus. No single source exceeds half of the total, a deliberate outcome of the capping decision rather than an incidental property of the raw data.
 
-MedQuAD, a genuinely patient-facing question-answer dataset with 47,441 records, was evaluated for inclusion and excluded. The publicly available HuggingFace version of MedQuAD has a substantial null-answer problem affecting the majority of records; a usable subset of approximately 16,407 records with genuine, non-null answers does exist within the dataset, but integrating that subset was not completed before this corpus was finalized. This exclusion is a real limitation of the current corpus, since MedQuAD is the one source in this space designed explicitly for patient-facing question answering rather than clinical assessment; its absence is addressed directly in Section 6.4 and logged as future work rather than treated as a settled decision.
+MedQuAD (Ben Abacha and Demner-Fushman, 2019), a genuinely patient-facing question-answer dataset of 47,457 question-answer pairs drawn from twelve NIH websites, was evaluated for inclusion and excluded. The HuggingFace redistribution used here carries 47,441 of those records, and in it the majority have no answer text: 31,029 records across three subsets, A.D.A.M. Medical Encyclopedia, MedlinePlus Drug information, and MedlinePlus Herbal medicine and supplement information. That missingness is not a fault of the redistribution but a removal the dataset's own authors document, made to comply with MedlinePlus copyright, with the source URLs retained so the answers can be crawled back. A usable subset of approximately 16,407 records with genuine, non-null answers therefore exists, but integrating it would mean crawling the removed answers, and that was not completed before this corpus was finalized. This exclusion is a real limitation of the current corpus, since MedQuAD is the one source in this space designed explicitly for patient-facing question answering rather than clinical assessment; its absence is addressed directly in Section 6.4 and logged as future work rather than treated as a settled decision.
 
 ### 3.3 Literacy Band Classification
 
-On ingestion, every document and query is scored using Flesch-Kincaid grade level and assigned to one of four discrete bands: low (FK ≤ 6, plain language), medium (FK 7-10, general public), high (FK 11-14, educated layperson), and clinical (FK 15+, clinical professional), a finer-grained operationalization of Nutbeam's (2000) three-level literacy framework.
+On ingestion, every document and query is scored using Flesch-Kincaid grade level and assigned to one of four discrete bands: low (FK ≤ 6, plain language), medium (6 < FK ≤ 10, general public), high (10 < FK ≤ 14, educated layperson), and clinical (FK > 14, clinical professional), a finer-grained operationalization of Nutbeam's (2000) three-level literacy framework.
 
 FK is an imperfect proxy by construction: it captures surface features, sentence length and syllable count, not vocabulary difficulty or domain-specific jargon. This produces a documented, unmitigated failure mode in the corpus itself. MedMCQA, composed of short clinical exam-stem fragments, contributes 80.3% of all low-band-classified records despite containing dense medical terminology inappropriate for a genuinely low-literacy reader; PLABA, the one corpus source that is actual gold-standard plain-language writing, contributes zero low-band records. A classifier scoring surface complexity cannot distinguish a short, jargon-dense exam question from a genuinely accessible sentence of similar length.
 
@@ -82,7 +106,7 @@ Retrieval itself uses a DPR backbone (Karpukhin et al., 2020), with queries and 
 
 ### 3.5 Evaluation Metrics
 
-Retrieval quality is evaluated via self-supervised retrieval: each record's own question is used as a query, and the record's own record_id serves as its ground-truth relevant document, since it is definitionally the source the question was drawn from. This design permits standard information-retrieval metrics, Precision@1, Recall@K, and Mean Reciprocal Rank, evaluated separately within each literacy band's embedding pool. This measures whether the system can recover a record's source given its own question; it is a distinct and narrower guarantee than Precision@K measured against independently human-annotated relevance judgments, since only one document is treated as relevant per query by construction. Band-routing accuracy on a fixed 20-query evaluation set (5 per band), source diversity of retrieved documents, and FK-grade alignment between query and retrieved content are reported alongside these metrics as further proxies for retrieval behavior.
+Retrieval quality is evaluated via self-supervised retrieval: each record's own question is used as a query, and the record's own record_id is its ground-truth relevant document, since it is definitionally the source the question was drawn from. This design permits standard information-retrieval metrics, Precision@1, Recall@K, and Mean Reciprocal Rank, evaluated separately within each literacy band's embedding pool. This measures whether the system can recover a record's source given its own question; it is a distinct and narrower guarantee than Precision@K measured against independently human-annotated relevance judgments, since only one document is treated as relevant per query by construction. A separate fixed set of 20 hand-written queries, 5 per band, provides a second and different check on routing, reported in Section 5.2. Its queries are not drawn from the corpus and their bands are assigned by intended audience rather than by Flesch-Kincaid, so unlike the source-level routing measured on corpus records it asks whether FK recovers a literacy level a person assigned. Source diversity of retrieved documents and the FK-grade alignment between a query's band and the documents returned to it were also inspected as diagnostics during development; the second is constrained by construction, since hard band selection restricts retrieval to the query's own band, and neither is reported as a result.
 
 Factual consistency is evaluated two ways: an adapted GPT-4o-mini method using source-abstract ground truth, and the official PlainQAFact metric (You & Guo, 2026), reported together with an explanation of what each measures rather than treated as interchangeable. Readability is measured via FK and SMOG, reported for comparability but not treated as the study's primary evidence on their own. Generation quality is measured via ROUGE-L and BERTScore. APPLS-based perturbation testing (Section 5.5), applied directly to ORACLE's own PLABA test split, empirically confirms that ROUGE-L and BERTScore are strongly sensitive to the informativeness, coherence, and simplification transformations this pipeline cares about; FK shows small, only statistically-significant-at-scale sensitivity to the same transformations and does not meet the threshold this evaluation treats as meaningful, capturing a substantially weaker signal than ROUGE-L or BERTScore for these transformations.
 
@@ -99,7 +123,7 @@ MIMIC-III access, intended for a future patient-to-clinical comparison extension
 
 ### 4.2 Reproducibility
 
-All code, corpus construction scripts, evaluation scripts, and generated figures are available in the project repository. The retrieval corpus (`oracle_corpus.csv`) and all downstream evaluation outputs, including cross-dataset routing and readability results, factual consistency scores, and self-retrieval evaluation results, are committed alongside the scripts that produced them. A known source of non-determinism exists at the generation stage: repeated calls to gpt-4o-mini at temperature=0 do not guarantee bit-identical outputs across runs, confirmed directly during this paper's drafting when independently re-running the Section 5.3 significance test returned a closely comparable but not identical result (p=0.0018, n=177) to an earlier snapshot (p=0.0012, n=181) computed from the same underlying methodology. The qualitative pattern, that correct routing significantly improves readability without affecting content metrics, held identically across both computations; the specific point estimates should be read as reproducible in direction and approximate magnitude, not as exact, bit-for-bit reproducible values.
+All code, corpus construction scripts, evaluation scripts, and generated figures are available in the project repository. The downstream evaluation outputs are committed alongside the scripts that produced them: cross-dataset routing and readability results, the FK ablation results, factual consistency scores, the APPLS metric-sensitivity results, and both self-retrieval result sets. The 36,664-record retrieval corpus itself is not committed, being too large to version sensibly; it is rebuilt deterministically from the five public source datasets by the loader scripts in the repository, and is deposited separately so that the exact build used here can be obtained without re-running ingestion. One artifact lags the corpus: the DPR embedding index was built before the PubMed abstracts were removed, so it holds 37,076 vectors against the corpus's 36,664. Every query evaluated here belongs to the current corpus, and the pool-size-controlled comparison fixes each pool at 4,264 regardless, but the as-deployed pool sizes in Figure 4 are the index's rather than Table 2's. Rebuilding the index is a direct next step, and would change those three pool sizes rather than the queries or the ground truth. A consistency checker (`src/check_consistency.py`) re-verifies every number reported in this paper against those outputs, checks the embedding index against the corpus, and runs as a pre-commit gate. A known source of non-determinism exists at the generation stage: repeated calls to gpt-4o-mini at temperature=0 do not guarantee bit-identical outputs across runs, confirmed directly during this paper's drafting when independently re-running the Section 5.3 significance test returned a closely comparable but not identical result (p=0.0018, n=177) to an earlier snapshot (p=0.0012, n=181) computed from the same underlying methodology. The qualitative pattern, that correct routing significantly improves readability without affecting content metrics, held identically across both computations; the specific point estimates should be read as reproducible in direction and approximate magnitude, not as exact, bit-for-bit reproducible values.
 
 ## 5. Results
 
@@ -118,41 +142,43 @@ Table 2 summarizes the corpus's literacy-band distribution.
 
 The low band's composition reveals a documented, unmitigated failure mode of FK-based classification. MedMCQA, composed of short clinical exam-stem fragments, contributes 80.3% of all low-band-classified records despite containing dense medical terminology inappropriate for a genuinely low-literacy reader. PLABA, the corpus's one source of actual gold-standard plain-language writing, contributes zero low-band records; its content style does not register as "low" under a metric scoring only sentence length and syllable count.
 
-![Figure 1: Source distribution across the corpus](../figures/stage2/eval_source_distribution.png)
+![Figure 2: Corpus composition by source](../figures/corpus_composition.png)
 
-**Figure 1.** Distribution of corpus records by source.
+**Figure 2.** Distribution of corpus records by source.
 
-![Figure 2: FK grade distribution across the corpus](../figures/stage2/eval_fk_distribution.png)
+![Figure 3: FK grade distribution across the corpus](../figures/corpus_fk_distribution.png)
 
-**Figure 2.** Distribution of Flesch-Kincaid grade scores across all corpus records, the basis for literacy-band assignment.
+**Figure 3.** Distribution of Flesch-Kincaid grade scores across all corpus records, the basis for literacy-band assignment.
 
 ### 5.2 Literacy-Band Routing Accuracy by Source
 
-Routing accuracy, whether a query's estimated literacy band correctly matches its true source band, varies sharply by source rather than holding uniform across the corpus. On a 523-query evaluation set: MedMCQA and PLABA route correctly 100% of the time; MedQA routes correctly 73.0%; PubMedQA 44.7%; PubMed 42.7%; Mirage only 32.0%, the weakest of any source. This spread is large enough that a single blended routing-accuracy figure would misrepresent every individual source; identifying the specific source-level property driving this variation, beyond the corpus-composition and length factors ruled out elsewhere in this paper, is left as a direction for future investigation rather than claimed here.
+Routing accuracy, whether a query's estimated literacy band correctly matches its true source band, varies sharply by source rather than holding uniform across the corpus. On a 451-query evaluation set: MedMCQA routes correctly 100% of the time; MedQA routes correctly 73.0%; PubMedQA 44.7%; PubMed 42.7%; Mirage only 32.0%, the weakest of any source. PLABA is excluded from this comparison. Lacking a question field, its evaluation query is its own full text, which is also the text its band is assigned from, so its routing accuracy is 100% by construction rather than by measurement; excluding it leaves every other source's figure unchanged. This spread is large enough that a single blended routing-accuracy figure would misrepresent every individual source; identifying the specific source-level property driving this variation, beyond the corpus-composition and length factors ruled out elsewhere in this paper, is left as a direction for future investigation rather than claimed here.
 
-Self-retrieval evaluation, using each record's own question as its query and its own record_id as ground truth, was run on a stratified sample of 300 records per literacy band (1,200 total) rather than the full corpus, for computational feasibility; a full-corpus run was estimated at approximately 2.7 hours given the pipeline's current unoptimized similarity search.
+A second routing check, on the 20 hand-written queries described in Section 3.5, separates a question the source-level figures above cannot answer. Those figures compare a query's estimated band against a target band that is itself derived from Flesch-Kincaid, so they measure internal agreement between two FK scorings of related text. The hand-written set instead compares FK's estimate against a band assigned by intended audience, and accuracy falls with reading level: low 4 of 5, medium 3 of 5, high 1 of 5, clinical 2 of 5. With five queries per band these counts carry no statistical weight and are reported as a diagnostic rather than a result, but the direction matches the corpus-level evidence in Sections 5.1 and 5.6, and it is the only check here of FK against a human-assigned level rather than against another FK score.
 
-![Figure 3: Self-retrieval Precision@1, Recall@10, and MRR by literacy band, as-deployed pool sizes](../figures/stage2/self_retrieval_precision_by_band.png)
+Self-retrieval evaluation, using each record's own question as its query and its own record_id as ground truth, was run on a stratified sample of 300 records per literacy band (1,200 total) rather than the full corpus, for computational feasibility; a full-corpus run was estimated at approximately 2.7 hours given the pipeline's current unoptimized similarity search. Thirty-nine of those queries, all from PLABA, are excluded from the analysis under the same minimum question-length rule the corpus build applies (Section 3.2): PLABA is an abstract-to-plain-language adaptation corpus whose question field carries one of 75 health-topic indices rather than a question, so it has no query this design can use. That leaves 1,161 queries, and because PLABA contributes no low-band records the exclusion affects only the clinical and high bands.
 
-**Figure 3.** Self-retrieval evaluation by literacy band using each band's true, as-deployed candidate pool size (low=4,264; medium=14,798; high=12,281; clinical=5,321). Low band shows the strongest scores, but its candidate pool is also the smallest.
+![Figure 4: Self-retrieval Precision@1, Recall@10, and MRR by literacy band, as-deployed pool sizes](../figures/stage2/self_retrieval_precision_by_band.png)
+
+**Figure 4.** Self-retrieval evaluation by literacy band using each band's as-deployed candidate pool, taken from the embedding index rather than from Table 2: low=4,264, medium=14,829, high=12,448, clinical=5,535. The three larger bands exceed their Table 2 counts by 31, 167 and 214 records, 412 in total, because the index was built before the PubMed abstracts were dropped from the corpus (Section 4.2); the low band is unaffected, holding none of them, so the three comparison bands are marginally harder than the corpus counts imply. Low band shows the strongest scores (Precision@1 0.840 against 0.620-0.769 elsewhere; Fisher exact p<0.0001 against the other bands pooled and p=0.034 against clinical, the strongest of them), but its candidate pool is also the smallest, which the pool-size-controlled comparison below is designed to separate out.
 
 To isolate genuine retrieval-quality differences from candidate-pool-size effects, a second evaluation fixes the candidate pool to 4,264 records per query for every band, always including each query's own true source record.
 
-![Figure 4: Self-retrieval scores under a pool-size-controlled comparison](../figures/stage2/self_retrieval_controlled_by_band.png)
+![Figure 5: Self-retrieval scores under a pool-size-controlled comparison](../figures/stage2/self_retrieval_controlled_by_band.png)
 
-**Figure 4.** Pool-size-controlled self-retrieval evaluation, fixed candidate pool of 4,264 per query. Even with pool size held constant, low band keeps its edge, Precision@1 0.843 against 0.687-0.727 elsewhere, so the difference by band looks real rather than an artifact of pool size. A natural hypothesis that MedMCQA's short, distinctive questions (79.7% of the low band) drive this advantage does not hold: MedMCQA's own within-band Precision@1 (0.816) falls slightly below the band average, while Mirage, a minority source in this band (19.3%), retrieves at 0.966. The low band's aggregate advantage is not explained by its dominant source; it is better explained, provisionally, by Mirage's unusually strong retrievability specifically, a pattern this evaluation surfaces but does not yet explain.
+**Figure 5.** Pool-size-controlled self-retrieval evaluation, fixed candidate pool of 4,264 per query. Even with pool size held constant, low band keeps its edge, Precision@1 0.843 against 0.700-0.787 elsewhere, so the difference by band is not an artifact of pool size. That edge is significant against the other three bands pooled (Fisher exact, p=0.00014) but not against the clinical band on its own (0.787, p=0.103), so the advantage is over the rest of the corpus in aggregate rather than over every band individually. A natural hypothesis that MedMCQA's short, distinctive questions (79.7% of the low band) drive this advantage does not hold: MedMCQA's own within-band Precision@1 (0.816) falls slightly below the band average, while Mirage, a minority source in this band (19.3%), retrieves at 0.966. The low band's aggregate advantage is not explained by its dominant source; it is better explained, provisionally, by Mirage's unusually strong retrievability specifically, a pattern this evaluation surfaces but does not yet explain.
 
 ### 5.3 Routing Accuracy and Readability Outcomes
 
 Correct literacy-band routing significantly improves generation readability. Hold the retrieved context fixed and vary only whether the generation prompt used the wrong band or the correct one, the "upper bound" condition, and a clear split emerges. FK reduction moves significantly with routing correctness (Wilcoxon, n=177, wrong-band mean=-4.102, correct-band mean=-2.969, p=0.0018). ROUGE-L and BERTScore don't move at all (n=180, p=0.640 and p=0.937). The design predicts exactly this: with retrieved content identical in both conditions, only the prompt's band instruction changes, so only the metric that instruction actually shapes, readability, has anything to respond to. Content-level metrics simply have no path by which routing correctness could touch them.
 
-![Figure 5: Wrong-band versus correct-band generation, paired comparison across three metrics](../figures/stage4/cross_dataset_routing_impact.png)
+![Figure 6: Wrong-band versus correct-band generation, paired comparison across three metrics](../figures/stage4/cross_dataset_routing_impact.png)
 
-**Figure 5.** Wrong-band versus upper-bound (correct-band) generation on identical retrieved context, compared across FK reduction, ROUGE-L, and BERTScore.
+**Figure 6.** Wrong-band versus upper-bound (correct-band) generation on identical retrieved context, compared across FK reduction, ROUGE-L, and BERTScore.
 
-![Figure 6: Misroute significance summary table](../figures/stage4/cross_dataset_misroute_significance.png)
+![Figure 7: Misroute significance summary table](../figures/stage4/cross_dataset_misroute_significance.png)
 
-**Figure 6.** Wilcoxon significance summary for the wrong-band versus correct-band comparison across all three metrics.
+**Figure 7.** Wilcoxon significance summary for the wrong-band versus correct-band comparison across all three metrics.
 
 ### 5.4 Factual Consistency Evaluation
 
@@ -160,37 +186,37 @@ Factual consistency is evaluated two ways on a 20-record test set. An adapted me
 
 The official PlainQAFact metric (You and Guo, 2026), which uses external knowledge-base retrieval rather than the source abstract as its ground truth, was run separately and reports a substantially different overall score of approximately 0.33 (external-knowledge-base mean approximately 0.26). This official evaluation requires a locally hosted Llama 3.1 8B Instruct model on 40GB or more of CUDA-capable GPU memory; it was run in a separate environment meeting that requirement, since the primary development machine (Apple Silicon, no CUDA) cannot run it directly. The two scores are not measuring the same thing and are not in tension: the adapted method asks whether generated content is consistent with its own cited source, while the official metric asks whether it is consistent with an external medical knowledge base, and a domain mismatch between that knowledge base's coverage (general medical education content) and this corpus's clinical-trial-specific claims plausibly explains much of the gap. Both scores are reported for this reason, rather than treating either as the single correct measurement.
 
-![Figure 7: Adapted factual consistency scores by claim type](../figures/stage4/factual_consistency_by_claim_type.png)
+![Figure 8: Adapted factual consistency scores by claim type](../figures/stage4/factual_consistency_by_claim_type.png)
 
-**Figure 7.** Adapted-method factual consistency scores, simplification versus elaboration claims.
+**Figure 8.** Adapted-method factual consistency scores, simplification versus elaboration claims.
 
-![Figure 8: Official PlainQAFact scores by claim type](../figures/stage4/official_plainqafact_by_claim_type.png)
+![Figure 9: Official PlainQAFact scores by claim type](../figures/stage4/official_plainqafact_by_claim_type.png)
 
-**Figure 8.** Official PlainQAFact factual consistency scores, simplification versus elaboration claims.
+**Figure 9.** Official PlainQAFact factual consistency scores, simplification versus elaboration claims.
 
 ### 5.5 APPLS-Based Metric Validation
 
 Three perturbation types, informativeness (delete_sentence), coherence, and simplification, were applied to ORACLE's own data and each metric's correlation with the perturbation's severity was measured. ROUGE-L and BERTScore show large, consistent sensitivity across all three perturbation types (|r| = 0.63-0.98, p<0.001 in every case). FK's correlations are statistically significant in all three tests as well (p<0.003 in every case), a product of the large sample sizes involved (n=1,386-1,613), but its effect sizes are small (|r| = 0.08-0.28) and fall below the 0.3 threshold this evaluation treats as meaningful sensitivity, while ROUGE-L and BERTScore clear that threshold by a wide margin in every test. FK is therefore better described as largely, not completely, insensitive to these perturbations: technically detectable given enough data, but not sensitive enough to serve as a reliable signal for the transformations this pipeline cares about, in contrast to ROUGE-L and BERTScore's unambiguous sensitivity.
 
-![Figure 9: ROUGE-L and BERTScore sensitivity to APPLS perturbations](../figures/stage4/appls_metric_sensitivity.png)
+![Figure 10: ROUGE-L and BERTScore sensitivity to APPLS perturbations](../figures/stage4/appls_metric_sensitivity.png)
 
-**Figure 9.** ROUGE-L and BERTScore correlation with APPLS perturbation severity across all three perturbation types.
+**Figure 10.** ROUGE-L and BERTScore correlation with APPLS perturbation severity across all three perturbation types.
 
-![Figure 10: FK grade sensitivity to APPLS perturbations](../figures/stage4/appls_fk_sensitivity.png)
+![Figure 11: FK grade sensitivity to APPLS perturbations](../figures/stage4/appls_fk_sensitivity.png)
 
-**Figure 10.** FK grade correlation with APPLS perturbation severity, shown separately to illustrate its substantially weaker sensitivity relative to Figure 9.
+**Figure 11.** FK grade correlation with APPLS perturbation severity, shown separately to illustrate its substantially weaker sensitivity relative to Figure 10.
 
 ### 5.6 Limitations of the Literacy Proxy
 
-Full-text (question plus answer) FK scoring changes routing correctness for 17.4% of queries overall compared to question-only scoring, but this overall figure obscures a sharply uneven distribution: PLABA (58.3%) and MedQA (42.0%) are far more sensitive to this scoring choice than MedMCQA (1.0%), Mirage (6.0%), PubMed (0.0%), or PubMedQA (0.0%). This limitation should be scoped to PLABA and MedQA specifically, not stated as a corpus-wide risk. The mechanism is confirmed directly: query length correlates with flip likelihood (point-biserial r=0.519, p<0.00001, n=523), so longer queries are substantially more likely to have their routing decision change under full-text versus question-only scoring. No evidence in this evaluation indicates that misrouted queries produce worse generation quality by the content metrics tested (Section 5.3); this is reported plainly as an absence of detected harm, not as confirmation that misrouting is harmless.
+Full-text (question plus answer) FK scoring changes routing correctness for 10.9% of queries overall compared to question-only scoring, but this overall figure obscures a sharply uneven distribution: MedQA (42.0%) is far more sensitive to this scoring choice than Mirage (6.0%), MedMCQA (1.0%), PubMed (0.0%), or PubMedQA (0.0%). This limitation should be scoped to MedQA specifically, not stated as a corpus-wide risk. PLABA is excluded here for the same reason it is excluded from Section 5.2: its query is its own full text, so its two conditions differ only in length, not in whether the answer is included. The mechanism is confirmed directly: query length correlates with flip likelihood (point-biserial r=0.516, p<0.00001, n=451), so longer queries are substantially more likely to have their routing decision change under full-text versus question-only scoring. Query text enters this comparison truncated to its first 200 characters, which is where the length effect bites: MedQA's questions run 696 characters at the median and 95 of its 100 evaluated queries reach that cap, while no other source's median question approaches it. No evidence in this evaluation indicates that misrouted queries produce worse generation quality by the content metrics tested (Section 5.3). Pooled across sources, flipped queries do score lower on ROUGE-L (0.030 against 0.118), but that comparison is confounded by composition rather than informative: flipping concentrates almost entirely in MedQA and Mirage, the two sources with the lowest ROUGE-L overall, and within each source separately the difference disappears (MedQA 0.030 against 0.029, p=0.29; Mirage 0.010 against 0.049, p=0.20). This is reported plainly as an absence of detected harm, not as confirmation that misrouting is harmless.
 
-![Figure 11: Routing flip rate by source, full-text versus question-only FK scoring](../figures/stage4/fk_ablation_flip_rate_by_source.png)
+![Figure 12: Routing flip rate by source, full-text versus question-only FK scoring](../figures/stage4/fk_ablation_flip_rate_by_source.png)
 
-**Figure 11.** Proportion of queries whose routing decision changes between full-text and question-only FK scoring, by source. PLABA and MedQA are substantially more sensitive to this scoring choice than the other four sources.
+**Figure 12.** Proportion of queries whose routing decision changes between full-text and question-only FK scoring, by source, across the 451 queries that have a question field. MedQA is substantially more sensitive to this scoring choice than the other four sources.
 
-![Figure 12: Query length versus routing-flip likelihood](../figures/stage4/fk_ablation_length_correlation.png)
+![Figure 13: Query length versus routing-flip likelihood](../figures/stage4/fk_ablation_length_correlation.png)
 
-**Figure 12.** Relationship between query word count and the likelihood that full-text scoring flips the routing decision relative to question-only scoring (point-biserial r=0.519, p<0.00001).
+**Figure 13.** Relationship between query word count and the likelihood that full-text scoring flips the routing decision relative to question-only scoring (point-biserial r=0.516, p<0.00001, n=451).
 
 ## 6. Discussion
 
@@ -230,15 +256,31 @@ The central empirical contribution is precise rather than sweeping. Correct lite
 
 Several limitations bound what this evaluation can claim. FK's jargon-blindness is a real, unmitigated production risk. Comprehension-outcome measurement, the question of whether improved readability actually improves reader understanding, is not attempted here and should not be inferred from the readability results reported. MedQuAD, the corpus's most directly patient-facing candidate source, is not currently integrated. Future work should prioritize MedQuAD re-integration, human-subjects comprehension validation, and a systematic investigation of what makes Mirage's questions more reliably retrievable than their length or corpus share would predict.
 
+## Declarations
+
+**CRediT author contributions.** Nithin Raghava Ramachandra Narla: conceptualization; methodology; software; validation; formal analysis; investigation; data curation; writing, original draft; writing, review and editing; visualization. Sole author, so all roles are the author's.
+
+**Competing interests.** None declared.
+
+**Funding.** This research received no external funding.
+
+**Ethics.** The study used public secondary datasets containing no direct personal identifiers and involved no human participants, so no review board approval was required. No comprehension outcomes were measured on human readers; see Section 6.4.
+
+**Data availability.** Code, evaluation outputs and figures: github.com/nithinnarla/oracle-rag-pipeline. The five source datasets are public and cited in Section 3.2. The assembled retrieval corpus is rebuilt by the repository's loader scripts and deposited separately, as stated in Section 4.2; no new primary data were collected.
+
+**Generative AI.** The research question, the four-stage pipeline design, the literacy-band formulation and the choice of evaluations are the author's own, and every reported result comes from the code in the repository above. During analysis and manuscript preparation the author used Claude (Anthropic) to edit and condense prose, to audit every reported value against the pipeline's own output, and to assist with code: the consistency checker, the corpus and architecture figures, the query-eligibility rule of Section 3.5, and the significance tests reported in Sections 5.2 and 5.6. That audit surfaced and corrected several errors in earlier drafts, including two mislabelled figures and the PLABA query-eligibility problem described in Section 3.5. The author reviewed and edited all output, verified every reported value, and takes full responsibility for this publication.
+
 ## References
 
 Attal, K., Ondov, B., & Demner-Fushman, D. (2023). A dataset for plain language adaptation of biomedical abstracts. *Scientific Data*, 10, 8.
 
 Baker, D. W. (2006). The meaning and measure of health literacy. *Journal of General Internal Medicine*, 21(8), 878-883.
 
-Guo, Y., August, T., Leroy, G., Cohen, T., & Wang, L. L. (2024). APPLS: Evaluating evaluation metrics for plain language summarization. In *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing* (pp. 9194-9211).
+Ben Abacha, A., & Demner-Fushman, D. (2019). A question-entailment approach to question answering. *BMC Bioinformatics*, 20(1), 511.
 
-Guo, Y., Chang, J. C., Antoniak, M., Bransom, E., Cohen, T., Wang, L., & August, T. (2024). Personalized jargon identification for enhanced interdisciplinary communication. In *Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies* (Volume 1: Long Papers) (pp. 4535-4550).
+Guo, Y., August, T., Leroy, G., Cohen, T., & Wang, L. L. (2024a). APPLS: Evaluating evaluation metrics for plain language summarization. In *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing* (pp. 9194-9211).
+
+Guo, Y., Chang, J. C., Antoniak, M., Bransom, E., Cohen, T., Wang, L., & August, T. (2024b). Personalized jargon identification for enhanced interdisciplinary communication. In *Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies* (Volume 1: Long Papers) (pp. 4535-4550).
 
 Institute of Medicine. (2004). *Health literacy: A prescription to end confusion*. National Academies Press.
 
