@@ -238,6 +238,8 @@ FK's jargon-blindness is a second real production risk, not a solved problem. Me
 
 ### 6.4 Limitations
 
+The evaluation has no unconditioned baseline. Both conditions compared in Section 5.3 are literacy-conditioned: generation under the wrong band and generation under the correct band, on identical retrieved context. Nothing here compares ORACLE against a standard retrieval-augmented pipeline carrying no literacy conditioning at all. The readability improvement reported is therefore an improvement of correct routing over incorrect routing, not over an unconditioned system, and no re-analysis of the data collected here can answer the second question. Establishing what literacy conditioning gains over doing nothing requires running that third condition, which this evaluation did not.
+
 FK as a literacy proxy is not validated against actual patient comprehension in this evaluation; it measures surface features, sentence length and syllable count, rather than vocabulary difficulty or domain-specific jargon load, and Section 5.6 documents a further, source-specific routing risk when full-text rather than question-only scoring is used. Estimating literacy band from a short conversational query is also a fundamentally noisier task than the standardized-instrument literacy measurement (Baker, 2006) this design conceptually extends.
 
 MedQuAD, the one dataset in this space explicitly designed for patient-facing question answering, is excluded from the current corpus. A usable subset of approximately 16,407 non-null-answer records exists within the dataset; re-integrating it is identified as direct future work rather than attempted here (Section 3.2).
