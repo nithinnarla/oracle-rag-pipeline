@@ -205,7 +205,7 @@ def run_peft_adapter():
 
         adapter_path = save_adapter(peft_model_band, band)
         print(f"    Steps: {stats['n_steps']} | "
-              f"Loss: {stats['initial_loss']:.4f} → {stats['final_loss']:.4f} | "
+              f"Loss: {stats['initial_loss']:.4f} -> {stats['final_loss']:.4f} | "
               f"Reduction: {stats['loss_reduction']:.1f}%")
         print(f"    Saved: {adapter_path}")
 

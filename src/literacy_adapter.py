@@ -254,7 +254,7 @@ def run_literacy_adapter():
         print(f"  Jargon substitutions: {adapted['adaptation_metadata']['total_jargon_substitutions']}")
         if adapted['adaptation_metadata']['substitutions']:
             for sub in adapted['adaptation_metadata']['substitutions'][:3]:
-                print(f"    '{sub['original']}' → '{sub['substituted']}'")
+                print(f"    '{sub['original']}' -> '{sub['substituted']}'")
         print(f"  Context length: {len(adapted['context'])} chars")
         print(f"  Source distribution: {adapted['adaptation_metadata']['source_distribution']}")
 

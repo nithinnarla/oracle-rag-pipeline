@@ -5,6 +5,8 @@
 **Researcher:** Nithin Narla
 **Status:** Complete, informed ORACLE framework design
 
+> **Record note, September 17 2026.** Written in the period above and corrected in place on September 17 2026 where it misdescribed what was built or what a cited work found. The analysis and design reasoning are kept as they were written; corrections appear in square brackets. docs/paper_draft.md is the current statement of the study.
+
 ---
 
 ## Why I Started Looking At This
@@ -40,7 +42,7 @@ The foundational RAG paper. Dense retrieval over a fixed corpus, generation cond
 Fusion-in-Decoder, retrieve multiple passages, fuse during generation. Strong on factual QA. Same limitation as Lewis et al., retrieval is literacy-agnostic. Fusing multiple clinical passages does not help if all of them are written for clinicians.
 
 **Karpukhin et al. (2020), Dense Passage Retrieval for Open-Domain QA (EMNLP)**
-DPR, the dense retrieval backbone that makes modern RAG practical. Bi-encoder architecture, efficient similarity search. ORACLE builds on this but adds literacy conditioning to the query encoder. The query representation carries both semantic intent and literacy band, changing what gets retrieved, not just how the output is worded.
+DPR, the dense retrieval backbone that makes modern RAG practical. Bi-encoder architecture, efficient similarity search. ORACLE builds on this but adds literacy conditioning to retrieval. [As built, the conditioning is hard band selection on the candidate pool, not a change to the query representation: the DPR question encoder is used unmodified and the query's estimated band restricts which records are ranked. The effect on what gets retrieved is the same, but the mechanism is pool restriction, not a literacy-aware embedding. See Section 3.4 of the paper.]
 
 ### Biomedical QA Benchmarks
 
@@ -54,7 +56,7 @@ DPR, the dense retrieval backbone that makes modern RAG practical. Bi-encoder ar
 12,723 USMLE board exam questions. The clinical QA benchmark requiring genuine medical reasoning. Useful for evaluating Stage 1 retrieval quality on clinical queries. Same limitation: USMLE tests clinicians, not patients.
 
 **Xiong et al. (2024), MIRAGE: Benchmarking RAG for Medicine (ACL Findings)**
-The most important recent benchmark paper for ORACLE. MIRAGE is the first comprehensive RAG-specific evaluation for medicine, testing retrieval, generation, and faithfulness together. What MIRAGE does not test: accessibility. It evaluates whether the RAG system produces medically accurate outputs, not whether those outputs are understandable to patients at different literacy levels. ORACLE extends MIRAGE's evaluation framework with accessibility metrics.
+The most important recent benchmark paper for ORACLE. MIRAGE is a comprehensive RAG-specific evaluation for medicine, testing retrieval, generation, and faithfulness together. [The original wording called it the first; that is not a claim this review verified.] What MIRAGE does not test: accessibility. It evaluates whether the RAG system produces medically accurate outputs, not whether those outputs are understandable to patients at different literacy levels. ORACLE extends MIRAGE's evaluation framework with accessibility metrics.
 
 ### Plain Language and Health Literacy
 
@@ -62,10 +64,10 @@ The most important recent benchmark paper for ORACLE. MIRAGE is the first compre
 The paper that anchored ORACLE's design. PlainQAFact documents what I observed in production, factual consistency degrades when generating plain language summaries of biomedical content. The simplification process introduces errors. The paper proposes a retrieval-augmented evaluation framework to catch these errors. What it does not address: the upstream retrieval problem. PlainQAFact evaluates plain language generation quality; ORACLE conditions retrieval on literacy before generation begins.
 
 **Guo et al. (2024), Personalized Jargon Identification for Enhanced Interdisciplinary Communication (NAACL)**
-Jargon identification as a personalization task, different users need different technical terms explained. Directly relevant to ORACLE's Stage 3 jargon substitution policy. The finding that jargon identification needs to be personalized rather than universal is built into ORACLE's per-literacy-band PEFT adapter design.
+Jargon identification as a personalization task, different users need different technical terms explained. Directly relevant to ORACLE's Stage 3 jargon substitution policy. The finding that jargon identification needs to be personalized rather than universal informed ORACLE's per-literacy-band design. [The PEFT adapter stack was built and structurally validated but never trained to convergence, and is not the mechanism behind any reported result. Band conditioning at generation is done with band-specific system prompts. See Sections 3.4 and 6.4 of the paper.]
 
 **Guo et al. (2024), APPLS: Evaluating Evaluation Metrics for Plain Language Summarization (EMNLP)**
-Meta-evaluation of plain language metrics, which metrics actually predict whether humans understand plain language summaries. The finding: standard NLP metrics do not correlate well with human comprehension. APPLS provides the evaluation framework ORACLE uses in Stage 4. This paper is why ORACLE reports comprehension outcome measurement rather than just readability scores.
+Meta-evaluation of plain language metrics, which metrics actually predict whether humans understand plain language summaries. The finding: standard NLP metrics do not correlate well with human comprehension. APPLS provides the evaluation framework ORACLE uses in Stage 4. [ORACLE applies APPLS's perturbation battery to its own data in Section 5.5, and reports no comprehension outcomes at all. Measuring whether improved readability improves understanding is named as necessary future work in Sections 3.5 and 6.4. This paper is why the metric suite is validated on this corpus rather than justified by citation, not why comprehension is reported.]
 
 **Attal et al. (2023), PLABA: A Dataset for Plain Language Adaptation of Biomedical Abstracts (Scientific Data)**
 750+ biomedical abstracts with expert plain language adaptations. Small dataset, high quality. The critical dataset for ORACLE's Stage 4 evaluation, it has gold-standard plain language references that allow factual consistency verification. Limitation: 750 examples is a small evaluation set. ORACLE uses PLABA for evaluation, not training.
@@ -76,7 +78,7 @@ Meta-evaluation of plain language metrics, which metrics actually predict whethe
 ### Clinical Text and MIMIC-III
 
 **Johnson et al. (2016), MIMIC-III Clinical Database (Scientific Data)**
-46,000+ ICU patient records including discharge summaries. The clinical text dataset representing the hardest accessibility challenge, discharge summaries are written by clinicians for clinicians, then handed to patients and caregivers who must navigate post-discharge care. The literacy gap between document author and document reader is largest here. ORACLE uses MIMIC-III discharge summaries as the primary clinical-to-patient translation evaluation. Access via PhysioNet credentialed registration, same credentials as FAPE.
+46,000+ ICU patient records including discharge summaries. The clinical text dataset representing the hardest accessibility challenge, discharge summaries are written by clinicians for clinicians, then handed to patients and caregivers who must navigate post-discharge care. The literacy gap between document author and document reader is largest here. [MIMIC-III was never obtained and is not used anywhere in ORACLE. PhysioNet credentialed access was not granted before the corpus was finalised, no loader was written, and the corpus is the five sources of Table 1. The clinical-to-patient translation evaluation described here was not carried out; the clinical band is made up of the clinical-professional content already in those five sources. This entry is kept as a record of what was planned.]
 
 ### Health Literacy Frameworks
 
@@ -91,7 +93,7 @@ Nutbeam (2000) defined three levels of health literacy, functional, communicativ
 
 The RAG literature has developed rapidly since Lewis et al. (2020) but has focused almost entirely on factual accuracy and retrieval precision. The accessibility dimension, whether retrieved and generated content is understandable to the intended user, is absent from every major RAG benchmark including MIRAGE (2024).
 
-The plain language literature has developed separately. Guo et al.'s series at UIUC represents the most systematic work connecting plain language quality to retrieval and generation. PlainQAFact (2025) is the first paper to use retrieval-augmented evaluation for plain language factual consistency. But the retrieval architecture itself remains literacy-agnostic across all published work.
+The plain language literature has developed separately. Guo et al.'s series at UIUC represents the most systematic work connecting plain language quality to retrieval and generation. PlainQAFact (You & Guo, 2026) uses retrieval-augmented evaluation for plain language [the original wording called it the first to do so, which this review did not verify] factual consistency. But the retrieval architecture itself remains literacy-agnostic across all published work.
 
 The gap: no paper has conditioned retrieval on user literacy profile. Every system retrieves the same documents regardless of who is asking, then attempts to simplify the output after retrieval. ORACLE's core contribution is moving literacy conditioning upstream into the retrieval step.
 
@@ -145,7 +147,7 @@ Every RAG system retrieves literacy-agnostically. ORACLE conditions retrieval on
 Simplification after retrieval introduces errors. ORACLE moves literacy conditioning upstream. Architectural shift not incremental improvement.
 
 **Gap 3, Production failure modes are documented but not instrumented.**
-PlainQAFact (2025) documents the factuality-accessibility inversion. No deployed system catches it in production. ORACLE's Stage 4 monitoring instruments for it continuously.
+PlainQAFact (You & Guo, 2026) documents the factuality-accessibility inversion. No deployed system catches it in production. ORACLE's Stage 4 monitoring instruments for it continuously.
 
 **Gap 4, Evaluation measures text properties, not comprehension outcomes.**
 MIRAGE measures factual accuracy. APPLS measures plain language quality. No benchmark measures whether patients at different literacy levels actually understand and can use the output. ORACLE measures this.

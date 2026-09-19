@@ -5,6 +5,8 @@
 **Researcher:** Nithin Narla
 **Status:** Complete, major design decisions documented before Phase 4 implementation
 
+> **Record note, September 17 2026.** Written in the period above and corrected in place on September 17 2026 where it misdescribed what was built or what a cited work found. The analysis and design reasoning are kept as they were written; corrections appear in square brackets. docs/paper_draft.md is the current statement of the study.
+
 ---
 
 ## Why I'm Writing This Down
@@ -17,11 +19,13 @@ The specific risk with ORACLE is that the architecture has three contested desig
 
 ## The Research Question, Why Comparative and Not Something Easier
 
-The easy version of this question is Descriptive: document readability gaps in existing biomedical RAG systems. That is a real contribution but it does not tell practitioners what to do about it. Guo et al.'s PlainQAFact (2025) already documented the factuality-accessibility inversion problem. A paper that only confirms what Guo found is not a paper worth writing.
+The easy version of this question is Descriptive: document readability gaps in existing biomedical RAG systems. That is a real contribution but it does not tell practitioners what to do about it. You and Guo's PlainQAFact (2026) already documented the factuality-accessibility inversion problem. A paper that only confirms what Guo found is not a paper worth writing.
 
 The Comparative framing is the right choice: does literacy-conditioned RAG outperform standard RAG on comprehension outcomes across literacy levels? The comparison is explicit, ORACLE vs. standard RAG baseline, evaluated not just on retrieval quality but on whether users at different literacy levels actually understand the output. That question has a direct answer and direct implications for system design.
 
 The honest constraint this framing imposes: I need a controlled comparison, which means the standard RAG baseline has to use identical retrieval infrastructure, identical generation model, identical evaluation pipeline, the only difference is whether retrieval is conditioned on literacy. Any other difference becomes a confound. That constraint shapes every implementation decision downstream.
+
+[This constraint was never satisfied, and it is the study's central limitation. No standard RAG baseline was built: the comparison the evaluation actually runs is wrong band against correct band on identical retrieved context, which measures the effect of routing accuracy rather than the effect of literacy conditioning against no conditioning. Comprehension outcomes were not measured either. The paper's claims are scoped to what was measured, so nothing it states is false, but 'improves readability compared to what' is the question this document promised to answer and the study does not. Section 6.4 of the paper is where that has to be owned.]
 
 ---
 
@@ -31,7 +35,7 @@ The honest constraint this framing imposes: I need a controlled comparison, whic
 
 The standard approach is to retrieve first, then assess readability of retrieved content. I rejected this because it means the retrieval step has already committed to a document that may be inappropriate for the user, and then the system has to either serve it anyway or discard it and retrieve again.
 
-Literacy scoring at ingestion time means every document in the corpus has a readability label before any query arrives. When a query comes in with an estimated literacy band, the retrieval step can weight candidates by both semantic similarity and readability appropriateness simultaneously. This is architecturally different from post-hoc simplification and it is why ORACLE avoids the factuality-accessibility inversion that You & Guo (2025) documented, simpler documents are retrieved rather than complex documents rewritten.
+Literacy scoring at ingestion time means every document in the corpus has a readability label before any query arrives. When a query comes in with an estimated literacy band, the retrieval step can weight candidates by both semantic similarity and readability appropriateness simultaneously. This is architecturally different from post-hoc simplification and it is why ORACLE avoids the factuality-accessibility inversion that You & Guo (2026) documented, simpler documents are retrieved rather than complex documents rewritten.
 
 The implementation cost is front-loaded: scoring 35M+ PubMed abstracts at ingestion time is expensive. The payoff is cleaner retrieval semantics at query time and a corpus that can be queried by literacy band directly.
 
@@ -49,11 +53,13 @@ A single fine-tuned model for plain language generation learns to produce one st
 
 PEFT adapter stacks, one adapter per literacy band, allow the base model's general language understanding to be preserved while each adapter specializes for one literacy register. The adapters are small, less than 1% of model parameters, so the computational cost is manageable. The key advantage is that swapping adapters at inference time costs microseconds, making real-time literacy adaptation feasible.
 
-The honest limitation: adapter stacks require labeled examples from each literacy band. For clinical-level text I have MIMIC-III discharge summaries. For patient-level text I have MedQuAD and PLABA. For intermediate levels the training data is sparse. The paper will report performance separately by literacy band and acknowledge where training data was limited.
+The honest limitation: adapter stacks require labeled examples from each literacy band. For clinical-level text I have MIMIC-III discharge summaries. For patient-level text I have MedQuAD and PLABA. For intermediate levels the training data is sparse. The paper will report performance separately by literacy band and acknowledge where training data was limited. [Neither premise held. MIMIC-III access was never granted and MedQuAD was never integrated, leaving PLABA as the only band-labelled plain-language source, so the adapters were built and structurally validated but never trained to convergence and no adapter performance is reported. Band conditioning at generation is done with band-specific system prompts instead. See Section 6.4 of the paper.]
 
 **Stage 4, Why comprehension outcome measurement and not just readability scores**
 
-Flesch-Kincaid and SMOG are proxy metrics. They measure surface features of text, sentence length, syllable count, as proxies for actual comprehension difficulty. You & Guo (2025) showed that readability scores remain stable after model updates while actual user comprehension drops. If ORACLE's evaluation relies only on FK and SMOG, it will miss exactly the failure mode it was designed to address.
+[Comprehension outcomes were not measured. The decision recorded here was to treat FK and SMOG as insufficient on their own, and what was done instead is the APPLS-based validation of the metric suite in Section 5.5. Human comprehension measurement is named as necessary future work in Section 6.4.]
+
+Flesch-Kincaid and SMOG are proxy metrics. They measure surface features of text, sentence length, syllable count, as proxies for actual comprehension difficulty. [This originally credited You & Guo with showing that readability scores stay stable after model updates while user comprehension drops. PlainQAFact shows no such thing: it is a factual-consistency evaluation metric for biomedical plain-language summarization, and what it documents is that simplification performed without access to the full source context introduces factual errors. The reasoning below does not depend on the misattributed claim, since FK and SMOG being surface proxies stands on its own and is confirmed empirically in Section 5.5 of the paper.] If ORACLE's evaluation relies only on FK and SMOG, it will miss exactly the failure mode it was designed to address.
 
 PlainQAFact measures factual consistency specifically in plain language outputs, catching the hallucinations introduced by simplification. APPLS measures plain language quality across multiple dimensions rather than just readability. Downstream task success rate, can a user at a specific literacy level correctly answer comprehension questions about the output, is the ultimate ground truth metric.
 
@@ -89,7 +95,7 @@ Attal et al. (2023). The only dataset with human-expert plain language adaptatio
 
 **MIMIC-III (pending PhysioNet credentialed access), Clinical discharge summaries**
 
-Johnson et al. (2016). The clinical-to-patient translation problem in its purest form, documents written by clinicians for clinical handoff that patients and family members must navigate after discharge. MIMIC-III is the dataset that makes that translation gap measurable in ORACLE's evaluation. Access pending PhysioNet credentialed registration.
+Johnson et al. (2016). The clinical-to-patient translation problem in its purest form, documents written by clinicians for clinical handoff that patients and family members must navigate after discharge. MIMIC-III is the dataset that makes that translation gap measurable in ORACLE's evaluation. Access pending PhysioNet credentialed registration. [Access was never granted, no loader was built, and MIMIC-III appears nowhere in the study. The corpus is the five sources of Table 1.]
 
 ---
 
@@ -105,7 +111,7 @@ Included because reviewers expect them and because they provide a surface-level 
 
 **PlainQAFact factual consistency score**
 
-You & Guo (2025). Built specifically to catch hallucinations introduced by plain language simplification. Without PlainQAFact, ORACLE has no way to demonstrate that literacy-conditioned retrieval avoids the factuality-accessibility inversion that post-hoc simplification produces.
+You & Guo (2026). Built specifically to catch hallucinations introduced by plain language simplification. Without PlainQAFact, ORACLE has no way to demonstrate that literacy-conditioned retrieval avoids the factuality-accessibility inversion that post-hoc simplification produces.
 
 **APPLS plain language evaluation metrics**
 
@@ -121,7 +127,7 @@ The ultimate ground truth. Simulated via MedQuAD and PLABA QA pairs. It is a pro
 
 **Post-hoc simplification instead of literacy-conditioned retrieval**
 
-Every existing system does this. You & Guo (2025) documented why it fails. I am not building another system that does post-hoc simplification and hoping the failure mode does not appear in evaluation. The architecture choice is the paper's core contribution.
+Every existing system does this. You & Guo (2026) documented why it fails. I am not building another system that does post-hoc simplification and hoping the failure mode does not appear in evaluation. The architecture choice is the paper's core contribution.
 
 **Single literacy band instead of discrete band classification**
 

@@ -5,6 +5,8 @@
 **Researcher:** Nithin Narla
 **Status:** Complete, all 9 protocols applied across 16 papers
 
+> **Record note, September 17 2026.** Written in the period above and corrected in place on September 17 2026 where it misdescribed what was built or what a cited work found. The analysis and design reasoning are kept as they were written; corrections appear in square brackets. docs/paper_draft.md is the current statement of the study.
+
 **Verified dataset pipeline at time of analysis:**
 - PubMedQA: 273,518 records (Jin et al. 2019)
 - MedMCQA: 193,155 records (Pal et al. 2022)
@@ -67,7 +69,7 @@ Nutbeam 2000, Baker 2006, IOM 2004, public health literature that NLP has ignore
 APPLS (2024) shows standard readability metrics predict surface features, not comprehension. Most prior work uses Flesch-Kincaid as primary metric. For ORACLE's evaluation design these two positions cannot coexist, reporting Flesch-Kincaid as primary evidence of accessibility improvement would contradict what APPLS demonstrates. ORACLE reports readability metrics for comparability with prior work but treats downstream task success rate as primary.
 
 **Conflict 2, Simplification accuracy vs accessibility:**
-PlainQAFact (2025) documents that simplification degrades factual consistency. Prior plain language work treated simplification as uniformly beneficial. This is not a minor disagreement, it changes the architectural direction entirely. Post-hoc simplification optimizes the wrong thing. ORACLE's upstream retrieval conditioning is the architectural response.
+PlainQAFact (You & Guo, 2026) documents that simplification degrades factual consistency. Prior plain language work treated simplification as uniformly beneficial. This is not a minor disagreement, it changes the architectural direction entirely. Post-hoc simplification optimizes the wrong thing. ORACLE's upstream retrieval conditioning is the architectural response.
 
 **Conflict 3, Benchmark coverage vs patient population:**
 MIRAGE (2024) is the strongest RAG medical benchmark but evaluates clinical knowledge not patient comprehension. Treating MIRAGE performance as evidence of accessibility improvement would be misleading. ORACLE uses MIRAGE for retrieval quality evaluation and adds separate comprehension outcome metrics for accessibility evaluation.
@@ -80,7 +82,7 @@ MIRAGE (2024) is the strongest RAG medical benchmark but evaluates clinical know
 Lewis et al. (2020) retrieves based on semantic similarity. Karpukhin et al. (2020) optimizes for factual recall. Both assume the same document is appropriate for all users. The entire RAG literature takes this as given. Health literacy research (Nutbeam 2000, Baker 2006) has documented for 25 years that the same health information is not accessible to all users. These two bodies of literature have never been brought into direct conflict. ORACLE is the first system to treat this as a design problem rather than an edge case.
 
 **Contradiction 2, Simplification helps vs simplification introduces errors:**
-The plain language literature before 2024 treated simplification as uniformly beneficial, simpler language improves health outcomes, therefore simplify everything. PlainQAFact (2025) directly contradicts this, simplification of biomedical content systematically degrades factual consistency. Simplification helps when the source content is already appropriate for the audience. It introduces errors when rewriting content written for a different audience. ORACLE's architecture resolves this by retrieving audience-appropriate content rather than rewriting.
+The plain language literature before 2024 treated simplification as uniformly beneficial, simpler language improves health outcomes, therefore simplify everything. PlainQAFact (You & Guo, 2026) directly contradicts this, simplification of biomedical content systematically degrades factual consistency. Simplification helps when the source content is already appropriate for the audience. It introduces errors when rewriting content written for a different audience. ORACLE's architecture resolves this by retrieving audience-appropriate content rather than rewriting.
 
 **Contradiction 3, Personalization is useful vs personalization is unscalable:**
 Guo et al. (2024) jargon paper shows personalized jargon identification outperforms universal jargon dictionaries. Standard biomedical NLP treats vocabulary as universal. Per-user models resolve the personalization problem but do not scale. ORACLE uses per-literacy-band PEFT adapters, personalization by literacy group rather than individual, balancing quality and scalability.
@@ -90,15 +92,15 @@ Guo et al. (2024) jargon paper shows personalized jargon identification outperfo
 ## Protocol 3, Citation Chain: Three Concepts Tracked
 
 **Concept 1, Literacy-Conditioned Retrieval:**
-DPR (Karpukhin 2020) → RAG (Lewis 2020) → FiD (Izacard 2021) → MIRAGE (Xiong 2024)
+DPR (Karpukhin 2020) -> RAG (Lewis 2020) -> FiD (Izacard 2021) -> MIRAGE (Xiong 2024)
 The citation chain for retrieval architecture stops at factual accuracy. No paper in this chain adds literacy conditioning. ORACLE is the next step, DPR backbone with literacy-conditioned query encoder.
 
 **Concept 2, Plain Language Factuality:**
-PLABA (Attal 2023) → APPLS (Guo 2024) → PlainQAFact (Guo 2025)
+PLABA (Attal 2023) -> APPLS (Guo 2024) -> PlainQAFact (You & Guo 2026)
 Clean three-paper chain. PLABA creates the gold standard data. APPLS identifies that standard metrics fail on plain language. PlainQAFact builds retrieval-augmented evaluation to catch factual errors. ORACLE's Stage 4 evaluation builds directly on this chain.
 
 **Concept 3, Health Literacy as Outcome Predictor:**
-Nutbeam (2000) → Baker (2006) → IOM (2004) → [gap] → ORACLE
+Nutbeam (2000) -> Baker (2006) -> IOM (2004) -> [gap] -> ORACLE
 The public health chain establishes that health literacy predicts outcomes. The NLP chain has never picked this up. ORACLE connects these two chains, using health literacy frameworks to design evaluation metrics that measure what actually matters, not just what is easy to compute.
 
 ---
@@ -140,7 +142,7 @@ Bi-encoder trained on Natural Questions. In-batch negatives for efficient traini
 **Xiong et al. (2024), MIRAGE:**
 Evaluates 7 RAG systems across 5 medical QA datasets, MedQA, MedMCQA, PubMedQA, BioASQ, MMLU-Med. 7,663 total questions. Strong benchmark design. Limitation: no accessibility evaluation. Factual accuracy is necessary but not sufficient for ORACLE's use case.
 
-**You & Guo (2025), PlainQAFact:**
+**You & Guo (2026), PlainQAFact:**
 Retrieval-augmented factual consistency evaluation using question generation and answering. Demonstrates factual degradation during plain language generation. Strong evidence base. Limitation: evaluation framework only, does not propose the architectural fix that would prevent the errors it documents.
 
 **Guo et al. (2024), APPLS:**
@@ -157,11 +159,11 @@ The RAG literature and the health literacy literature have been developing in pa
 
 ORACLE is built on the observation that this gap has concrete consequences. The failure modes I observed in production, readability mismatch, literacy drift across turns, factuality-accessibility inversion, post-processing as the wrong architecture, are all downstream of one root cause: RAG systems retrieve the same documents for all users regardless of literacy level, then attempt to simplify outputs written for the wrong audience.
 
-The Guo et al. series at UIUC (2024-2025) represents the most systematic recent work on the NLP side of this problem. APPLS (2024) shows that standard readability metrics fail to predict human comprehension of biomedical plain language. PlainQAFact (2025) shows that simplification of biomedical content degrades factual consistency. Together these papers document the problem precisely. Neither proposes the architectural fix because both treat simplification as the intervention, they are trying to do it better, not questioning whether it is the right approach.
+The Guo et al. series at UIUC (2024-2026) represents the most systematic recent work on the NLP side of this problem. APPLS (2024) shows that standard readability metrics fail to predict human comprehension of biomedical plain language. PlainQAFact (You & Guo, 2026) shows that simplification of biomedical content degrades factual consistency. Together these papers document the problem precisely. Neither proposes the architectural fix because both treat simplification as the intervention, they are trying to do it better, not questioning whether it is the right approach.
 
 The fix is upstream. Literacy-conditioned retrieval changes what gets retrieved based on who is asking, not just what they are asking. If a low-literacy user is identified, the retrieval step should surface MedQuAD answers written by NIH for health consumers and PLABA adaptations written for general audiences, not PubMed abstracts written for researchers. The generation step then starts from content appropriate for the audience, reducing the simplification burden and the associated error rate simultaneously.
 
-Three design choices follow from this analysis. First, literacy conditioning must be applied at the query encoder level, changing the representation used for retrieval, not filtering outputs afterward. Second, per-literacy-band PEFT adapters rather than a single generation model, different literacy bands require systematically different generation policies. Third, evaluation must include comprehension outcome measurement, APPLS shows text-level metrics are insufficient, and 535,437 verified records across six datasets (see correction, line 20, on corpus vs. verification-total scope) still leave the accessibility evaluation gap completely open.
+Three design choices follow from this analysis. First, literacy conditioning must be applied at retrieval time rather than after generation [the conclusion drawn here was that it belongs at the query encoder; what was built conditions the candidate pool instead, with the encoder unmodified, which satisfies the same requirement by a different mechanism], changing the representation used for retrieval, not filtering outputs afterward. Second, per-literacy-band PEFT adapters rather than a single generation model, different literacy bands require systematically different generation policies. Third, evaluation must include comprehension outcome measurement, APPLS shows text-level metrics are insufficient, and 535,437 verified records across six datasets (see correction, line 20, on corpus vs. verification-total scope) still leave the accessibility evaluation gap completely open.
 
 ---
 
@@ -196,11 +198,11 @@ Verified: 535,437 records across 6 datasets (verification total, not corpus comp
 RAG ARCHITECTURE CLUSTER
 └── Literacy-agnostic retrieval is the core architectural gap
     ├── Lewis et al. 2020 (NeurIPS), Foundational RAG
-    │   └── literacy-agnostic by design → ORACLE GAP 1
+    │   └── literacy-agnostic by design -> ORACLE GAP 1
     ├── Karpukhin et al. 2020 (EMNLP), DPR backbone
     │   └── ORACLE builds on DPR + adds literacy conditioning
     └── Izacard & Grave 2021 (EACL), FiD multi-passage
-        └── multi-passage fusion → informs Stage 2 design
+        └── multi-passage fusion -> informs Stage 2 design
 
 BIOMEDICAL BENCHMARK CLUSTER
 ├── Jin et al. 2019, PubMedQA 273,518 records
@@ -208,14 +210,14 @@ BIOMEDICAL BENCHMARK CLUSTER
 ├── Jin et al. 2021, MedQA 12,723 records
 └── Xiong et al. 2024, MIRAGE 7,663 records
     ├── best available RAG medical benchmark
-    └── no accessibility evaluation → ORACLE GAP 2
+    └── no accessibility evaluation -> ORACLE GAP 2
 
 PLAIN LANGUAGE CLUSTER (Guo et al. UIUC series)
 ├── APPLS 2024, standard metrics fail on plain language
 │   └── ORACLE uses downstream task success rate
 ├── Jargon 2024, personalization required
 │   └── ORACLE per-literacy-band PEFT adapters
-└── PlainQAFact 2025, simplification degrades factuality
+└── PlainQAFact 2026, simplification degrades factuality
     └── ORACLE upstream retrieval conditioning
 
 PATIENT-FACING DATASET CLUSTER
@@ -252,7 +254,7 @@ ORACLE CORE CONTRIBUTION
 Every major RAG system, from Lewis et al. (2020) to MIRAGE (2024), retrieves the same documents for all users. A nurse and a newly diagnosed patient asking the same question get the same retrieved content. This is not an edge case. 36% of US adults have basic or below basic health literacy (IOM 2004). The system being built for patients is failing a third of them by design. ORACLE addresses this by conditioning retrieval on who is asking, not just what they are asking.
 
 **Point 2, Simplification as post-processing is the wrong fix for the right problem:**
-The plain language NLP community has spent years building better simplification models. PlainQAFact (2025) shows those models introduce factual errors. The problem is not that simplification models are inadequate, it is that rewriting content written for a different audience is architecturally the wrong approach. ORACLE moves literacy conditioning upstream into retrieval. The generation step starts from content already appropriate for the audience, eliminating the source of simplification errors rather than trying to reduce them.
+The plain language NLP community has spent years building better simplification models. PlainQAFact (You & Guo, 2026) shows those models introduce factual errors. The problem is not that simplification models are inadequate, it is that rewriting content written for a different audience is architecturally the wrong approach. ORACLE moves literacy conditioning upstream into retrieval. The generation step starts from content already appropriate for the audience, eliminating the source of simplification errors rather than trying to reduce them.
 
 **Point 3, 535,437 verified records (verification total, see correction above) and no existing system evaluates accessibility across any of them:**
 PubMedQA, MedMCQA, MedQA, and MIRAGE collectively represent the strongest available biomedical QA evaluation. None of them measure whether a patient at a specific literacy level understood the output. MedQuAD and PLABA represent real patient-facing content, 47,457 NIH QA pairs and 921 expert plain language adaptations. ORACLE is the first system that evaluates across all of these simultaneously with comprehension outcome measurement as the primary metric. The gap is not a niche corner case, it is the difference between evaluating whether the system knows medicine and evaluating whether the system helps patients.

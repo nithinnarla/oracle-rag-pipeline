@@ -169,7 +169,7 @@ def run_literacy_classifier():
         pred = result['band']
         match = "" if pred == expected else ""
         correct += (pred == expected)
-        print(f"  {match} [{expected}→{pred}] FK={result['fk_grade']:5.1f} "
+        print(f"  {match} [{expected}->{pred}] FK={result['fk_grade']:5.1f} "
               f"margin={result.get('margin', 0):4.1f}: {query[:55]}...")
 
     print(f"\n  Sample accuracy: {correct}/{len(test_queries)} "

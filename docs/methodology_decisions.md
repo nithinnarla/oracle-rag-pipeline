@@ -228,7 +228,7 @@ Instruction-tuned, health domain capable, strong summarization quality at evalua
 
 ## Decision 13, Adapted Factual Consistency Evaluation Instead of Official PlainQAFact; Cloud GPU Path Deferred
 
-**Decision:** Evaluate Stage 4 factual consistency using an adapted GPT-4o-mini-based methodology (src/factual_consistency_eval.py), not the official PlainQAFact metric (You & Guo, 2025, arXiv 2503.08890, accepted JBI) directly.
+**Decision:** Evaluate Stage 4 factual consistency using an adapted GPT-4o-mini-based methodology (src/factual_consistency_eval.py), not the official PlainQAFact metric (You & Guo, preprint 2025 as arXiv 2503.08890, published 2026 in the Journal of Biomedical Informatics 178, 105019, which is the version the paper cites) directly.
 
 **Why not the official pip package:** The official plainqafact package requires Llama 3.1 8B Instruct locally (40GB+ GPU memory per the repo's own README) and a separate LERC scoring model - infeasible on this machine (Apple Silicon, no CUDA). A dry-run install was tested and revealed a further problem beyond compute: the package's dependency tree (torch 2.13.0, transformers 4.44.2, pyserini, faiss-cpu, nmslib, spacy) conflicts with versions already verified working elsewhere in this project (torch 2.10.0, transformers 4.57.6, confirmed working via HyDMIS's mbert_classifier.py). Installing it risked breaking a working environment for a package that would still hit the same GPU wall regardless.
 
@@ -418,5 +418,27 @@ The paper should report the current numbers (p=0.049/0.179/0.072, n=121-124) as 
 *Generation quality, flipped vs stable, honest result.* Flipped records show FK reduction of -2.595 (n=91) versus -3.268 for stable records (n=410), Mann-Whitney p=0.0527, borderline. ROUGE-L shows no meaningful difference (flipped 0.151, stable 0.131, p=0.9036). There is no evidence that FK-choice-driven misrouting produces worse generation quality by these two metrics; if anything the direction is opposite to the intuitive expectation, though the FK result does not clear conventional significance. This should be reported plainly rather than interpreted as confirming harm from misrouting, since the data does not support that conclusion.
 
 *Source concentration, confirmed statistically real.* Chi-square test of independence between source and flip status: chi2=185.61, dof=5, p<0.000001. The concentration in plaba and medqa (and near-total absence in pubmed/pubmedqa) is not a small-sample artifact.
+
+**Correction, Sep 17 2026. PLABA must be excluded from this decision's figures.** Every number above was computed
+over all 523 rows, PLABA among them, and PLABA does not belong in a full_text-versus-question-only comparison at
+all. PLABA has no question field: its `question` column carries one of 75 health-topic indices, and
+`cross_dataset_eval.py` therefore substitutes `full_text` as its query. The question-only condition then scores that
+same `full_text` truncated to 200 characters, so for PLABA the two conditions differ only in length. All 72 of its
+rows sit exactly at the cap and every one is a `full_text` prefix. Its 58.3% was measuring truncation, not the
+scoring choice this decision is about.
+
+Revised figures with PLABA excluded, n=451: overall disagreement 10.9% rather than 17.4%; flip rate by source medqa
+42.0% (42/100), mirage 6.0% (6/100), medmcqa 1.0% (1/100), pubmed 0.0% (0/75), pubmedqa 0.0% (0/76), each unchanged
+from above; point-biserial r=0.516, p<0.0001. The length mechanism survives essentially intact, so this decision's
+core reasoning stands. What changes is its scope: the limitation belongs to medqa alone, not to "plaba and medqa".
+
+Two further corrections to the reasoning above. First, the 200-character truncation was never stated and is the
+actual mechanism behind the length effect, since medqa's questions run 696 characters at the median and 95 of its
+100 evaluated queries reach the cap while no other source's median approaches it. Second, the generation-quality
+result changes shape once PLABA is out: pooled ROUGE-L now looks significantly worse for flipped records (0.030
+against 0.118, p<0.00001), which reads as evidence of harm but is not. Flipping concentrates in medqa and mirage,
+the two sources with the lowest ROUGE-L overall, and within each source the difference disappears (medqa 0.030 vs
+0.029, p=0.29; mirage 0.010 vs 0.049, p=0.20). The original conclusion, that there is no evidence of harm, is
+correct and is now supported by a within-source test rather than by a pooled comparison.
 
 **Artifacts (updated):** `figures/stage4/fk_ablation_length_correlation.png` added.

@@ -1,10 +1,11 @@
 ## Paper Outline, JBI Submission Target Sep 22 2026
 
+> **Record note, September 17 2026.** This outline is superseded by docs/paper_draft.md. Values computed before the corpus dropped its PubMed source, and before PLABA was excluded from the routing and ablation analyses, were corrected here on September 17 2026 so the outline does not contradict the manuscript.
 ---
 
 ## Abstract (250 words)
 - RAG systems retrieve identically for all users regardless of literacy; a nurse and a newly diagnosed patient asking the same question get the same retrieved content
-- No prior system conditions retrieval on user literacy; simplification is treated as post-hoc, which introduces factual errors (PlainQAFact, You & Guo 2025)
+- No prior system conditions retrieval on user literacy; simplification is treated as post-hoc, which introduces factual errors (PlainQAFact, You & Guo 2026)
 - ORACLE: literacy-conditioned dense retrieval, PEFT adapters per literacy band, comprehension-outcome evaluation over readability scores alone
 - Evaluated across 5 corpus sources (36,664 records: MedMCQA, MedQA, MIRAGE, PubMedQA, PLABA)
 - Key finding: correct literacy-band routing significantly improves generation readability (p=0.0012) but does not affect content-level metrics (ROUGE-L, BERTScore), a bounded, falsifiable claim about which stage of the pipeline literacy conditioning actually affects
@@ -23,7 +24,7 @@
 ### 1.2 The Literacy-Agnostic Retrieval Problem
 - Every major RAG system (Lewis et al. 2020, Karpukhin et al. 2020, Izacard & Grave 2021) retrieves on semantic similarity alone
 - No notion of whether retrieved content is appropriate for the user's literacy level
-- Simplification-as-post-processing introduces factual errors (You & Guo 2025); the right fix is upstream
+- Simplification-as-post-processing introduces factual errors (You & Guo 2026); the right fix is upstream
 
 ### 1.3 ORACLE Contributions
 - First system to condition dense retrieval on estimated literacy band
@@ -47,7 +48,7 @@
 - MIRAGE is the strongest available RAG-specific medical benchmark but has no accessibility dimension
 
 ### 2.3 Plain Language and Health Literacy
-- You & Guo (2025), PlainQAFact: documents factuality-accessibility inversion, anchors ORACLE's design
+- You & Guo (2026), PlainQAFact: documents factuality-accessibility inversion, anchors ORACLE's design
 - Guo et al. (2024), Jargon: personalization required, not universal dictionaries; informs per-band PEFT design
 - Guo et al. (2024), APPLS: standard metrics fail to predict comprehension; motivates comprehension-outcome measurement over readability scores alone
 - Attal et al. (2023), PLABA: gold-standard plain language adaptations, ORACLE's primary evaluation dataset
@@ -67,7 +68,7 @@
 
 ### 3.2 Retrieval Corpus
 - 36,664 records across 5 sources: MedMCQA (15,732), MedQA (11,431), MIRAGE (7,580), PubMedQA (1,000 expert-labeled subset), PLABA (921)
-- MedMCQA capped from 193,155 (89.9% corpus share) to prevent single-source domination; final corpus balance 42.4% MedMCQA, no source above 50%
+- MedMCQA capped from 193,155 (89.9% corpus share) to prevent single-source domination; final corpus balance 42.9% MedMCQA, no source above 50%
 - MedQuAD (47,441 records, patient-facing) evaluated for inclusion but excluded: HuggingFace version's null-answer contamination affects 65.4% of records; a genuine 16,407-record usable subset exists but was not integrated in time, logged as future work
 - See figures/corpus_composition.png for per-source breakdown
 
@@ -84,7 +85,7 @@
 
 ### 3.5 Evaluation Metrics
 - Retrieval: standard IR metrics (Precision@K, Recall@K, MRR, NDCG), evaluated separately by literacy group
-- Factual consistency: both an adapted GPT-4o-mini method and the official PlainQAFact metric (You & Guo 2025), reported together with an explanation of what each measures
+- Factual consistency: both an adapted GPT-4o-mini method and the official PlainQAFact metric (You & Guo 2026), reported together with an explanation of what each measures
 - Readability: FK, SMOG, reported for comparability but not treated as primary evidence
 - Generation quality: ROUGE-L, BERTScore
 - APPLS-based empirical validation (Decision 15) confirms ROUGE-L/BERTScore are sensitive to informativeness/coherence/simplification perturbations on ORACLE's own data; FK/SMOG are not, and measure a distinct property
@@ -112,19 +113,19 @@
 
 ### 5.2 Literacy-Band Routing Accuracy by Source
 - Routing accuracy varies sharply by source (not uniform); reported per-source, not as a single blended percentage
-- plaba and medqa show the highest sensitivity to full-text-vs-question-only FK scoring (58.3% and 42.0% flip rates respectively); mirage, medmcqa, pubmed, pubmedqa show minimal to zero sensitivity
+- medqa shows the highest sensitivity to full-text-vs-question-only FK scoring (42.0% flip rates respectively); mirage, medmcqa, pubmed, pubmedqa show minimal to zero sensitivity
 - This limitation should be scoped to plaba/medqa specifically in the paper, not stated as a uniform corpus-wide risk
 - See figures/stage4/cross_dataset_fk_by_band.png and cross_dataset_routing_impact.png
 
 ### 5.3 Routing Accuracy and Readability Outcomes
-- Headline finding: correct band routing significantly improves FK reduction (independently recomputed directly from data/processed/cross_dataset_results.csv, Sep 7 2026: p=0.0012, n=181, wrong_mean=-4.157, upper_mean=-2.974); does not significantly change ROUGE-L or BERTScore
+- Headline finding: correct band routing significantly improves FK reduction (independently recomputed directly from data/processed/cross_dataset_results.csv, Sep 7 2026: p=0.0012, n=181, wrong_mean=-4.102, upper_mean=-2.969); does not significantly change ROUGE-L or BERTScore
 - Mechanistically expected: band-prompt controls surface style, which FK measures; retrieved content is fixed identically across compared conditions, so content metrics have no channel to be affected
 - Bounded, falsifiable claim: routing governs readability outcomes specifically, not content relevance or faithfulness generally
 - See figures/stage4/cross_dataset_misroute_significance.png
 
 ### 5.4 Factual Consistency Evaluation
 - Adapted method (GPT-4o-mini, source-abstract ground truth): overall consistency ~0.96, simplification claims score higher than elaboration claims, consistent with PlainQAFact's own documented finding
-- Official PlainQAFact (You & Guo 2025): overall ~0.33, a genuinely different measurement using external knowledge-base retrieval as ground truth
+- Official PlainQAFact (You & Guo 2026): overall ~0.33, a genuinely different measurement using external knowledge-base retrieval as ground truth
 - Domain-mismatch confirmed at both mechanism level (direct retrieval inspection) and systematic level (234 claims): PlainQAFact's Textbooks knowledge base covers foundational medical education content, not clinical-trial-specific claims; StatPearls performs better for the same query type but does not fully compensate
 - Both scores reported with this explanation; neither validates nor invalidates the other; they measure different things
 
@@ -136,7 +137,7 @@
 
 ### 5.6 Limitations of the Literacy Proxy
 - Full-text (question+answer) FK scoring changes routing correctness for roughly 1 in 6 queries versus question-only scoring, concentrated in plaba and medqa specifically
-- Length mechanism confirmed directly (point-biserial r=0.519, p<0.0001): longer queries flip more often
+- Length mechanism confirmed directly (point-biserial r=0.516, p<0.0001, n=451 after excluding PLABA): longer queries flip more often
 - No evidence that misrouting produces worse generation quality by the two metrics tested; reported plainly, not interpreted as confirming harm
 - See figures/stage4/fk_ablation_flip_rate_by_source.png and fk_ablation_length_correlation.png
 
@@ -153,7 +154,7 @@
 - Reporting multiple metrics together, rather than one composite score, is methodologically necessary, not just cautious
 
 ### 6.3 Production Deployment Implications
-- 93.6% of the retrieval corpus is clinical-professional content (MedMCQA, MedQA, MIRAGE combined); the paper must scope its claim accordingly: ORACLE improves retrieval quality across FK literacy levels, not necessarily for lay patient populations specifically
+- 94.8% of the retrieval corpus is clinical-professional content (MedMCQA, MedQA, MIRAGE combined); the paper must scope its claim accordingly: ORACLE improves retrieval quality across FK literacy levels, not necessarily for lay patient populations specifically
 - FK's jargon-blindness (low-literacy band contaminated by short clinical fragments) is a real, unmitigated production risk, not a solved problem
 
 ### 6.4 Limitations
@@ -182,7 +183,7 @@
 - Pal et al. (2022), MedMCQA: Large-Scale Multi-Subject Multi-Choice Medical QA, CHIL
 - Jin et al. (2021), MedQA: USMLE Dataset, Applied Sciences
 - Xiong et al. (2024), MIRAGE: Benchmarking RAG for Medicine, ACL Findings
-- You & Guo (2025), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization, arXiv
+- You & Guo (2026), PlainQAFact: Retrieval-Augmented Factual Consistency Evaluation for Biomedical Plain Language Summarization, arXiv
 - Guo et al. (2024), Personalized Jargon Identification for Enhanced Interdisciplinary Communication, NAACL
 - Guo et al. (2024), APPLS: Evaluating Evaluation Metrics for Plain Language Summarization, EMNLP
 - Attal et al. (2023), PLABA: A Dataset for Plain Language Adaptation of Biomedical Abstracts, Scientific Data
