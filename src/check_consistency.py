@@ -9,8 +9,7 @@ on Sep 17 2026, so each one is a regression test, not a hypothetical.
 Run before every commit:
     python src/check_consistency.py
 
-Exits non-zero if any check fails, so it can be wired into .git/hooks/pre-commit
-via the shared gate at ~/nithin-research/tools/pre-commit.
+Exits non-zero if any check fails, so it can be wired into .git/hooks/pre-commit.
 """
 
 import os
