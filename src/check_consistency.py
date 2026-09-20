@@ -665,6 +665,55 @@ def check_journal_requirements(text):
         except ImportError:
             pass
 
+# --------------------------------------------------------------------------
+# 20. a notebook that displays a figure must show that figure's current bytes
+# --------------------------------------------------------------------------
+def check_notebook_figure_outputs():
+    """A cell whose source is Image('../figures/x.png') stores a copy of that
+    file in its output. Redrawing the figure does not touch the stored copy, so
+    the notebook goes on displaying the old image from the same path. Seven
+    outputs had drifted this way across two notebooks, five of them surviving
+    the September dpi sweep unnoticed, which is exactly the kind of staleness
+    nobody thinks to look for."""
+    name = 'Check 20 (notebook figure outputs)'
+    nb_dir = os.path.join(REPO_ROOT, 'notebooks')
+    if not os.path.isdir(nb_dir):
+        note('%s skipped, no notebooks directory' % name)
+        return
+    import base64
+    import hashlib
+    import json as _json
+    pattern = re.compile(r"""Image\(['"]\.\./(figures/[^'"]+)['"]\)""")
+    for fn in sorted(os.listdir(nb_dir)):
+        if not fn.endswith('.ipynb'):
+            continue
+        try:
+            nb = _json.load(open(os.path.join(nb_dir, fn), encoding='utf-8'))
+        except ValueError:
+            fail(name, '%s is not valid JSON' % fn)
+            continue
+        for i, cell in enumerate(nb.get('cells', [])):
+            m = pattern.search(''.join(cell.get('source', [])))
+            if not m:
+                continue
+            target = os.path.join(REPO_ROOT, m.group(1))
+            if not os.path.exists(target):
+                fail(name, '%s cell %d displays %s, which does not exist'
+                     % (fn, i, m.group(1)))
+                continue
+            current = hashlib.md5(open(target, 'rb').read()).hexdigest()
+            for out in cell.get('outputs', []):
+                for mime, payload in (out.get('data') or {}).items():
+                    if not mime.startswith('image/png'):
+                        continue
+                    raw = base64.b64decode(
+                        payload if isinstance(payload, str) else ''.join(payload))
+                    if hashlib.md5(raw).hexdigest() != current:
+                        fail(name, '%s cell %d shows a stale copy of %s, '
+                                   'rerun the cell or refresh its output'
+                             % (fn, i, os.path.basename(m.group(1))))
+
+
 def main():
     if not os.path.exists(PAPER):
         print('paper not found at %s' % PAPER)
@@ -690,6 +739,7 @@ def main():
     check_handwritten_routing(text)
     check_embedding_index(text)
     check_journal_requirements(text)
+    check_notebook_figure_outputs()
 
     strict = '--submission' in sys.argv
 
@@ -714,11 +764,11 @@ def main():
         print('\nNOT SUBMISSION READY')
         return 1
     if pendings:
-        print('\n19 checks: no correctness problems. %d item(s) still pending '
+        print('\n20 checks: no correctness problems. %d item(s) still pending '
               'before submission, listed above.' % len(pendings))
         print('Run with --submission to treat those as fatal.')
         return 0
-    print('\n19 checks passed, and nothing pending')
+    print('\n20 checks passed, and nothing pending')
     return 0
 
 
