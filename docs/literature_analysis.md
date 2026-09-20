@@ -66,7 +66,7 @@ Nutbeam 2000, Baker 2006, IOM 2004, public health literature that NLP has ignore
 ### Conflicts
 
 **Conflict 1, Readability metrics vs comprehension outcomes:**
-APPLS (2024) shows standard readability metrics predict surface features, not comprehension. Most prior work uses Flesch-Kincaid as primary metric. For ORACLE's evaluation design these two positions cannot coexist, reporting Flesch-Kincaid as primary evidence of accessibility improvement would contradict what APPLS demonstrates. ORACLE reports readability metrics for comparability with prior work but treats downstream task success rate as primary.
+APPLS (2024) shows standard readability metrics predict surface features, not comprehension. Most prior work uses Flesch-Kincaid as primary metric. For ORACLE's evaluation design these two positions cannot coexist, reporting Flesch-Kincaid as primary evidence of accessibility improvement would contradict what APPLS demonstrates. ORACLE reports readability metrics for comparability with prior work but treats downstream task success rate as primary. [Correction, Sep 20 2026: downstream task success was never measured, so readability and content-fidelity metrics are what the evaluation actually rests on. The conflict identified here is real and unresolved rather than resolved by a task-success measure; the paper handles it by scoping its claim to readability and saying plainly that comprehension is not shown.]
 
 **Conflict 2, Simplification accuracy vs accessibility:**
 PlainQAFact (You & Guo, 2026) documents that simplification degrades factual consistency. Prior plain language work treated simplification as uniformly beneficial. This is not a minor disagreement, it changes the architectural direction entirely. Post-hoc simplification optimizes the wrong thing. ORACLE's upstream retrieval conditioning is the architectural response.
@@ -185,7 +185,7 @@ Three literacy bands with PEFT adapters introduces switching latency at inferenc
 Nutbeam (2000) defines three levels, functional, communicative, critical. ORACLE adopts this classification. But health literacy exists on a continuous spectrum and the boundaries between bands are not clinically validated for RAG system design. A patient near the boundary between bands could receive systematically wrong content if misclassified. The three-band design is a practical choice, not a validated one, band boundaries need empirical calibration against comprehension outcomes in Stage 4.
 
 **Assumption 6, Comprehension outcome measurement is feasible at evaluation scale:**
-ORACLE's Stage 4 evaluation includes downstream task success rate by literacy group. This requires either human evaluation or a proxy task for comprehension. Human evaluation does not scale to the full dataset. Proxy tasks, follow-up question answering, cloze tasks, are imperfect proxies for actual comprehension. The evaluation design needs to specify exactly what comprehension measurement looks like in practice and what its limitations are before Stage 4 begins.
+ORACLE's Stage 4 evaluation includes downstream task success rate by literacy group. [Correction, Sep 20 2026: it does not. No task-success measure was built or run, and this assumption was never discharged. The evaluation that shipped measures readability, retrieval relevance and factual consistency, and the paper lists comprehension measurement as necessary future work.] This requires either human evaluation or a proxy task for comprehension. Human evaluation does not scale to the full dataset. Proxy tasks, follow-up question answering, cloze tasks, are imperfect proxies for actual comprehension. The evaluation design needs to specify exactly what comprehension measurement looks like in practice and what its limitations are before Stage 4 begins.
 
 ---
 
@@ -214,11 +214,19 @@ BIOMEDICAL BENCHMARK CLUSTER
 
 PLAIN LANGUAGE CLUSTER (Guo et al. UIUC series)
 ├── APPLS 2024, standard metrics fail on plain language
-│   └── ORACLE uses downstream task success rate
+│   └── ORACLE tests metric sensitivity instead (5.5)
 ├── Jargon 2024, personalization required
-│   └── ORACLE per-literacy-band PEFT adapters
+│   └── ORACLE band adapters, built but never trained
 └── PlainQAFact 2026, simplification degrades factuality
     └── ORACLE upstream retrieval conditioning
+
+[Correction, Sep 20 2026: two labels in this map were rewritten. The first read "ORACLE uses
+downstream task success rate"; no task-success measure was built, and what answers APPLS's
+finding is the perturbation testing of Section 5.5, which measures on this corpus whether
+ROUGE-L, BERTScore and FK are sensitive to the transformations that matter. The second read
+"ORACLE per-literacy-band PEFT adapters"; those adapters were built and structurally validated
+but never trained to convergence, and prompt-based conditioning produces every result in the
+paper.]
 
 PATIENT-FACING DATASET CLUSTER
 ├── MedQuAD 47,457 records (NIH, 12 websites)

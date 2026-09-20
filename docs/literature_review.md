@@ -84,7 +84,7 @@ Meta-evaluation of plain language metrics, which metrics actually predict whethe
 
 The NLP literature treats readability as a text property, Flesch-Kincaid scores, SMOG index, syllable counts. The health literacy literature treats it as an interaction between text, reader, and context. These two literatures are not in conversation and the gap matters for ORACLE.
 
-Nutbeam (2000) defined three levels of health literacy, functional, communicative, and critical, that map directly onto ORACLE's literacy band classification. Baker (2006) showed that health literacy predicts health outcomes independently of education and income. The Institute of Medicine (2004) documented that health literacy affects medication adherence, hospitalization rates, and preventive care utilization. These findings are why ORACLE's evaluation includes comprehension outcome measurement, readability scores are a proxy for what actually matters, which is whether patients can use the information to make decisions.
+Nutbeam (2000) defined three levels of health literacy, functional, communicative, and critical, that map directly onto ORACLE's literacy band classification. Baker (2006) showed that health literacy predicts health outcomes independently of education and income. The Institute of Medicine (2004) documented that health literacy affects medication adherence, hospitalization rates, and preventive care utilization. These findings are why ORACLE's evaluation includes comprehension outcome measurement, readability scores are a proxy for what actually matters, which is whether patients can use the information to make decisions. [Correction, Sep 20 2026: no comprehension outcome was measured. The evaluation reports readability and content-fidelity proxies only, and Section 6.4 of the paper states that comprehension measurement was not attempted and would require human-subjects testing. The reasoning above is why it should be measured, not a description of what was done.]
 
 ---
 
@@ -123,7 +123,7 @@ The gap: no paper has conditioned retrieval on user literacy profile. Every syst
 
 Guo et al. (2024) APPLS is the key paper. Standard readability metrics predict surface features of text, sentence length, syllable count, that correlate with but do not determine comprehension. APPLS shows human comprehension judgments align poorly with these metrics for biomedical content specifically.
 
-The implication for ORACLE: reporting Flesch-Kincaid scores is necessary for comparability with prior work but insufficient as primary evidence of accessibility improvement. ORACLE's Stage 4 evaluation includes downstream task success rate by literacy group, the metric that actually measures whether the system is doing what it claims.
+The implication for ORACLE: reporting Flesch-Kincaid scores is necessary for comparability with prior work but insufficient as primary evidence of accessibility improvement. ORACLE's Stage 4 evaluation includes downstream task success rate by literacy group, the metric that actually measures whether the system is doing what it claims. [Correction, Sep 20 2026: that metric was never built or run. Flesch-Kincaid and SMOG, with ROUGE-L and BERTScore alongside them, are what the evaluation actually reports, and Section 5.5 of the paper tests those metrics' sensitivity on this corpus rather than assuming it. The insufficiency identified here stands, and the paper answers it by bounding its claim to readability instead of claiming accessibility improvement.]
 
 ---
 

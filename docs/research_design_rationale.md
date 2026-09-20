@@ -103,11 +103,11 @@ Johnson et al. (2016). The clinical-to-patient translation problem in its purest
 
 **Retrieval metrics by literacy group**
 
-Standard IR metrics, Precision@K, Recall@K, MRR, NDCG, but evaluated separately by literacy group. Aggregate retrieval metrics hide the disparity ORACLE is designed to fix.
+Standard IR metrics, Precision@K, Recall@K, MRR, NDCG, but evaluated separately by literacy group. Aggregate retrieval metrics hide the disparity ORACLE is designed to fix. [Correction, Sep 20 2026: NDCG was never computed. The self-retrieval evaluation reports Precision@1, Recall@K and MRR per band, and nothing in src/ calculates NDCG. The per-band split described here did happen and is Sections 5.2 and 5.3 of the paper.]
 
 **Readability metrics (Flesch-Kincaid, SMOG)**
 
-Included because reviewers expect them and because they provide a surface-level sanity check. Not relied on as primary evidence. Reported alongside comprehension metrics with explicit acknowledgment that they are proxies.
+Included because reviewers expect them and because they provide a surface-level sanity check. Not relied on as primary evidence. Reported alongside comprehension metrics with explicit acknowledgment that they are proxies. [Correction, Sep 20 2026: there are no comprehension metrics to report them alongside. Readability sits next to ROUGE-L and BERTScore, and Section 5.5 tests whether those metrics are sensitive to the transformations this pipeline cares about rather than assuming it. The paper still says plainly that readability is a proxy.]
 
 **PlainQAFact factual consistency score**
 
@@ -119,7 +119,7 @@ Guo et al. (2024) EMNLP. Multi-dimensional plain language quality assessment bey
 
 **Downstream task success rate by literacy group**
 
-The ultimate ground truth. Simulated via MedQuAD and PLABA QA pairs. It is a proxy for real comprehension measurement but it is the closest available approximation without a human subjects study.
+The ultimate ground truth. Simulated via MedQuAD and PLABA QA pairs. It is a proxy for real comprehension measurement but it is the closest available approximation without a human subjects study. [Correction, Sep 20 2026: this was never built. No task-success measure exists in the repository, and MedQuAD is not in the corpus at all, so it could not have supplied the QA pairs. The paper lists comprehension measurement as necessary future work and makes no claim resting on it.]
 
 ---
 

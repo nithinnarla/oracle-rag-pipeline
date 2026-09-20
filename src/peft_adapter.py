@@ -9,6 +9,7 @@ Architecture (Decision 6):
 - Base model: facebook/dpr-question_encoder-single-nq-base (shared weights)
 - LoRA adapters: r=8, alpha=16, dropout=0.1 per band
 - Training data: PLABA for low band; PubMed abstracts for clinical band
+  (planned; no training run was ever carried out, see the note below)
 - Shared base weights, only adapter parameters differ per band
 - Enables literacy conditioning with manageable compute
 
