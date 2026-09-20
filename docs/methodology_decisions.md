@@ -106,6 +106,8 @@ DPR encodes semantic meaning rather than keyword overlap, critical for health QA
 **Why PEFT per band:**
 ORACLE's contribution is literacy-conditioned retrieval, the claim that retrieval quality improves when the retrieval model is adapted to the user's literacy level. Single fine-tune loses this conditioning. Full fine-tune per band is computationally prohibitive for a research pipeline. PEFT adapters (LoRA specifically) allow lightweight per-band adaptation with shared base model weights, enabling literacy conditioning with manageable compute. Prompt conditioning has insufficient adaptation capacity for retrieval quality differences across literacy bands.
 
+[Correction, Sep 20 2026. This decision was reversed in practice and the alternative it rejects is what shipped. The PEFT adapters were built and structurally validated but never trained to convergence, and no result in the paper comes from them. Literacy conditioning at generation is done with a band-specific system prompt per band, which is the prompt conditioning dismissed above, and conditioning at retrieval is hard candidate-pool selection rather than an adapted encoder. The claim that prompt conditioning has insufficient capacity was never tested; it was asserted here and then bypassed. Section 3.4 of the paper describes what was actually built and Section 6.4 lists the untrained adapter as a limitation.]
+
 ---
 
 ## Decision 7: PlainQAFact + APPLS as Primary Evaluation Metrics
@@ -121,6 +123,8 @@ ORACLE's contribution is literacy-conditioned retrieval, the claim that retrieva
 **Why PlainQAFact + APPLS:**
 ORACLE's contribution is health accessibility, not just retrieval accuracy but generation quality for low-literacy users. PlainQAFact measures whether generated answers are factually consistent with retrieved context, which is critical for medical content where hallucination is harmful. APPLS measures plain language quality specifically. It directly evaluates ORACLE's core claim that literacy-conditioned retrieval produces more accessible answers. Standard metrics (ROUGE, BERTScore) measure generation quality generally but not accessibility specifically. Both PlainQAFact and APPLS are validated for health communication contexts.
 
+[Correction, Sep 20 2026. Two things here are wrong about what PlainQAFact does and what happened. It does not measure consistency against the retrieved context: it retrieves from an external knowledge base, which is precisely why its score for this corpus (about 0.33) diverges from the adapted source-abstract method (0.969), a divergence Section 5.4 reports and traces to a domain mismatch. Neither metric ended up as the single primary measure either. Both factual-consistency scores are reported side by side, and APPLS is used in the form of perturbation testing (Section 5.5) to check whether the metric suite is sensitive at all, rather than as a quality score.]
+
 ---
 
 ## Decision 8, PubMed API for Retrieval Corpus Augmentation
@@ -134,6 +138,8 @@ ORACLE's contribution is health accessibility, not just retrieval accuracy but g
 
 **Why PubMed API:**
 NCBI E-utilities provides programmatic access to 35M+ PubMed abstracts with no storage requirements. API-based fetching allows targeted retrieval of abstracts relevant to the QA corpus via MeSH query expansion, more efficient than bulk download. 412 abstracts fetched in Stage 1 pilot (FK mean 13.4, confirming clinical professional level). PubMed augmentation adds clinical evidence retrieval to the corpus without dominating the patient-facing content balance. Reproducible via documented API parameters and seed PMIDs.
+
+[Correction, Sep 20 2026. PubMed is not in the corpus. The 412 abstracts fetched in the Stage 1 pilot were dropped at commit adc79d5, and the corpus the paper reports is five sources totalling 36,664 records: MedMCQA, MedQA, MIRAGE, PubMedQA and PLABA. PubMed survives only in the cross-dataset evaluation, where 118 of its rows appear, and in the embedding index, which was built before the drop and so holds 412 more vectors than the corpus; that gap is disclosed in Section 4.2 and in Figure 4's caption. The 35M-abstract scale described above was never approached: the pilot fetched 412.]
 
 ---
 
@@ -191,7 +197,7 @@ All references as listed in literature_review.md and literature_analysis.md.
 
 **What was tried:** Gradient Boosting classifier trained on corpus documents using FK grade, FRE score, and word count as features. Achieved 100% test accuracy and 100% 5-fold CV accuracy.
 
-**Why rejected:** The 100% accuracy is circular, FK grade was used to create the literacy band labels (low ≤6, medium 7-10, high 11-14, clinical 15+) and then used as the primary classifier feature. The model is not learning anything, it is recovering the deterministic rule used to create the labels. This is data leakage from label construction.
+**Why rejected:** The 100% accuracy is circular, FK grade was used to create the literacy band labels (low FK <= 6, medium 6 < FK <= 10, high 10 < FK <= 14, clinical FK > 14; the integer ranges this line originally gave, low <=6 / medium 7-10 / high 11-14 / clinical 15+, were corrected on Sep 20 2026 to the half-open intervals literacy_classifier.py actually applies, since FK is continuous and a score of 6.4 falls in medium rather than nowhere) and then used as the primary classifier feature. The model is not learning anything, it is recovering the deterministic rule used to create the labels. This is data leakage from label construction.
 
 **Why rule-based routing:** Rule-based FK thresholds are honest, interpretable, and directly implement the same logic used in corpus labeling. No model file needed. No training required.
 
