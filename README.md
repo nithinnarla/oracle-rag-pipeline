@@ -2,7 +2,7 @@
 
 ## The Problem I Kept Running Into
 
-Eight years of building ML systems in regulated domains, healthcare triage, clinical NLP, enterprise data pipelines, and the same failure mode kept showing up in health information systems. A retrieval system surfaces the right document. The factual content is accurate. The source is credible. And the person reading it has no idea what it means.
+Seven years of building ML systems in regulated domains, healthcare triage, clinical NLP, enterprise data pipelines, and the same failure mode kept showing up in health information systems. A retrieval system surfaces the right document. The factual content is accurate. The source is credible. And the person reading it has no idea what it means.
 
 Readability and factual accuracy are treated as separate problems in the literature. They are not separate in deployment. A perfectly retrieved, perfectly accurate biomedical passage that a newly-diagnosed diabetic patient cannot parse is a system failure, just one that no standard evaluation metric catches.
 
