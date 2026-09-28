@@ -1,11 +1,11 @@
 """
-ORACLE - Stage 4: Factual Consistency Evaluation (Adapted from PlainQAFact)
-Phase 4 - Stage 4: Evaluation metrics (Decision 7: PlainQAFact + APPLS)
+ORACLE, Stage 4: Factual Consistency Evaluation (Adapted from PlainQAFact)
+Phase 4, Stage 4: Evaluation metrics (Decision 7: PlainQAFact + APPLS)
 
-IMPORTANT - READ BEFORE CITING: This is an ADAPTED evaluation, not the
+IMPORTANT, READ BEFORE CITING: This is an ADAPTED evaluation, not the
 official PlainQAFact metric (You & Guo, 2025, arXiv 2503.08890, accepted JBI).
 The official pipeline requires Llama 3.1 8B Instruct locally (40GB+ GPU
-memory) and a separate LERC scoring model - infeasible on this machine
+memory) and a separate LERC scoring model, infeasible on this machine
 (Apple Silicon, no CUDA). Installing the official `plainqafact` pip package
 was also rejected: its dependency tree (torch 2.13.0, transformers 4.44.2,
 pyserini, faiss-cpu, nmslib, spacy) conflicts with versions already verified
@@ -14,9 +14,9 @@ by mbert_classifier.py in the sibling HyDMIS repo) and was never intended to
 share an environment with an existing project per the official repo's own
 isolated-conda-env setup instructions.
 
-This script borrows PlainQAFact's real conceptual approach - classify
+This script borrows PlainQAFact's real conceptual approach, classify
 sentence type, extract a claim, verify it against the source, score
-consistency - but substitutes GPT-4o-mini for every model in the original
+consistency, but substitutes GPT-4o-mini for every model in the original
 pipeline (their fine-tuned classifier, Llama 3.1 8B for answer extraction,
 BART for question generation, and their QA/LERC scoring models). Results
 from this script are NOT directly comparable to PlainQAFact's published
@@ -26,17 +26,17 @@ metric, wherever reported.
 UPDATE (Aug 6 2026): the official PlainQAFact metric has since been run
 separately on a cloud GPU (RunPod, RTX PRO 6000), on the same 20 source_text/
 generated_summary pairs this script evaluates. Result: internal_mean~0.65,
-external_mean~0.26, overall_mean~0.33 - substantially different from this
+external_mean~0.26, overall_mean~0.33, substantially different from this
 script's ~0.96, NOT because either is broken, but because the two measure
 factual consistency against different ground truth (this script: the source
 abstract; official PlainQAFact: external knowledge-base retrieval, which
 struggles to find fact-specific matches for ORACLE's clinical-trial-specific
 claims). See methodology_decisions.md Decision 13 for the complete
 investigation, systematic evidence (234 claims), and what this means for
-reporting both scores in the paper - they are not interchangeable and
+reporting both scores in the paper, they are not interchangeable and
 should not be presented as one validating the other.
 
-Pipeline/infrastructure script - no notebook (single quantitative
+Pipeline/infrastructure script, no notebook (single quantitative
 evaluation, matches methodology_decisions.md documentation pattern).
 """
 

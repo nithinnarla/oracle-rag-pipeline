@@ -82,7 +82,7 @@ def run_cross_dataset_eval():
             f"logic and would overwrite all of it with a fresh "
             f"n={SAMPLES_PER_SOURCE_PER_BAND}/band pilot. Checking this "
             f"before loading the corpus or making any API calls, not "
-            f"after -- see cross_dataset_eval.ipynb for why this matters."
+            f"after; see cross_dataset_eval.ipynb for why this matters."
         )
     print("Loading corpus...")
     df = pd.read_csv(CORPUS_PATH)

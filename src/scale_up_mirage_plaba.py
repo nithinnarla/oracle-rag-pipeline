@@ -7,7 +7,7 @@ matching the scale-up already run for medmcqa/pubmedqa.
 Appends to existing cross_dataset_results.csv, does not overwrite.
 Excludes rows already sampled (condition='actual', these two sources),
 so no duplicate queries. plaba has zero corpus records in the 'low'
-literacy band -- that band is skipped for plaba, not padded or faked.
+literacy band. That band is skipped for plaba, not padded or faked.
 """
 import os
 import sys

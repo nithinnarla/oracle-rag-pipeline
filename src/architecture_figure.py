@@ -1,5 +1,5 @@
 """
-ORACLE, Framework Architecture Diagram - Section 3.1
+ORACLE, Framework Architecture Diagram, Section 3.1
 Phase 5, schematic for the paper
 
 Section 3.1 describes the four-stage pipeline in prose with no figure. This

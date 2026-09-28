@@ -1,5 +1,5 @@
 """
-ORACLE, Self-Retrieval Evaluation - Pool-Size-Controlled Comparison
+ORACLE, Self-Retrieval Evaluation, Pool-Size-Controlled Comparison
 Phase 4, Stage 2 extension, controlled ablation
 
 Complements self_retrieval_eval.py (as-deployed, true band-pool sizes) with

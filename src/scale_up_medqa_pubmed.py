@@ -7,7 +7,7 @@ matching the scale-up already run for medmcqa/pubmedqa/mirage/plaba.
 Appends to existing cross_dataset_results.csv, does not overwrite.
 Excludes rows already sampled (condition='actual', these two sources),
 so no duplicate queries. pubmed has zero corpus records in the 'low'
-literacy band -- that band is skipped for pubmed, not padded or faked. medqa has all 4 bands present.
+literacy band. That band is skipped for pubmed, not padded or faked. medqa has all 4 bands present.
 """
 import os
 import sys

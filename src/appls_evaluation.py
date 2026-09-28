@@ -1,5 +1,5 @@
 """
-ORACLE APPLS Option 2 - Metric Sensitivity Evaluation
+ORACLE APPLS Option 2, Metric Sensitivity Evaluation
 Tests whether ORACLE's metrics (FK, ROUGE-L, BERTScore) are sensitive
 to informativeness (delete_sentence), coherence (coherent), and
 simplification (simplification) perturbations on ORACLE's own PLABA test split.

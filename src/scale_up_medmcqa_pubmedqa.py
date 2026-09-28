@@ -1,6 +1,6 @@
 """
 ORACLE Cross-Dataset Scale-Up: medmcqa and pubmedqa, n=25/band
-Aug 11 2026 - extends pilot (n=5) toward stronger paired significance test
+Aug 11 2026, extends pilot (n=5) toward stronger paired significance test
 for Decision 16's routing-readability finding (p=0.032 on n=38, flagged
 as thin, needs more misrouted-query observations to hold up under scrutiny)
 
