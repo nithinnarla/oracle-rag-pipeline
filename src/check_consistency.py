@@ -714,6 +714,38 @@ def check_notebook_figure_outputs():
                              % (fn, i, os.path.basename(m.group(1))))
 
 
+# --------------------------------------------------------------------------
+# 21. every exhibit is cited in the running text
+# --------------------------------------------------------------------------
+def check_exhibits_are_cited(text):
+    """The journal asks that every figure and table be cited in the manuscript
+    text. Five article figures once carried a caption and an embed and were
+    never mentioned in a sentence, which no other check noticed: the caption
+    itself satisfies any test that only counts occurrences of "Figure N". So
+    captions, embeds and headings are stripped before looking, and a
+    supplementary exhibit counts only when the body cites it, since the
+    supplementary list at the end always names them all."""
+    name = 'Check 21 (exhibits cited in text)'
+    body = text.split('## Supplementary Material')[0]
+    prose = '\n'.join(l for l in body.split('\n')
+                      if not l.startswith(('![', '**Figure', '**Table', '|', '#')))
+
+    for kind in ('Figure', 'Table'):
+        for n in re.findall(r'^\*\*%s (\d+)\.' % kind, text, re.M):
+            if not re.search(r'%ss?\s+%s\b' % (kind, n), prose):
+                fail(name, '%s %s has a caption but is never cited in the text'
+                        % (kind, n))
+
+    cited = set()
+    for m in re.finditer(r'(?:Figures?|Tables?)\s+(S\d+)(?:\s+and\s+(S\d+))?', prose):
+        cited.add(m.group(1))
+        if m.group(2):
+            cited.add(m.group(2))
+    for s in re.findall(r'\*\*(?:Figure|Table) (S\d+)\.\*\*', text):
+        if s not in cited:
+            fail(name, 'supplementary %s is listed but never cited in the body' % s)
+
+
 def main():
     if not os.path.exists(PAPER):
         print('paper not found at %s' % PAPER)
@@ -739,6 +771,7 @@ def main():
     check_handwritten_routing(text)
     check_embedding_index(text)
     check_journal_requirements(text)
+    check_exhibits_are_cited(text)
     check_notebook_figure_outputs()
 
     strict = '--submission' in sys.argv
@@ -764,11 +797,11 @@ def main():
         print('\nNOT SUBMISSION READY')
         return 1
     if pendings:
-        print('\n20 checks: no correctness problems. %d item(s) still pending '
+        print('\n21 checks: no correctness problems. %d item(s) still pending '
               'before submission, listed above.' % len(pendings))
         print('Run with --submission to treat those as fatal.')
         return 0
-    print('\n20 checks passed, and nothing pending')
+    print('\n21 checks passed, and nothing pending')
     return 0
 
 

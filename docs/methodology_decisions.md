@@ -1,4 +1,7 @@
 # ORACLE, Methodology Decisions Log
+
+> **Record note, September 29 2026.** The manuscript was restructured for the journal's submission requirements: Experimental Setup was folded into Methods, so every section after it shifted down by one. Section numbers written in this document before that date refer to the earlier numbering. The mapping is 5.5 to 4.5, 5.6 to 4.6, 6.3 to 5.3 and 6.4 to 5.4. Six figures and one table also moved to supplementary material and the figures that remain are numbered one to seven. docs/paper_draft.md is the authority.
+
 ## Literacy-Conditioned Health RAG Pipeline, Methodology Decisions
 
 ---

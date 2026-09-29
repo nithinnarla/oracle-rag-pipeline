@@ -1,5 +1,8 @@
 ## Paper Outline, JBI Submission Target Sep 22 2026
 
+> **Record note, September 29 2026.** The manuscript was restructured for the journal's submission requirements: Experimental Setup was folded into Methods, so every section after it shifted down by one. Section numbers written in this document before that date refer to the earlier numbering. The mapping is 5.5 to 4.5, 5.6 to 4.6, 6.3 to 5.3 and 6.4 to 5.4. Six figures and one table also moved to supplementary material and the figures that remain are numbered one to seven. docs/paper_draft.md is the authority.
+
+
 > **Record note, September 17 2026.** This outline is superseded by docs/paper_draft.md. Values computed before the corpus dropped its PubMed source, and before PLABA was excluded from the routing and ablation analyses, were corrected here on September 17 2026 so the outline does not contradict the manuscript.
 >
 > **Record note, September 20 2026.** The headline significance value still reads p=0.0012 throughout this outline. That number is real but superseded: it is the earlier snapshot at n=181, which the manuscript reports in Section 4.2 as evidence that generation is not bit-reproducible. The manuscript's headline is p=0.0018 at n=177. The outline's p-values were left as written rather than rewritten, because this document is a record of the planning stage and the manuscript is the authority on every reported value.

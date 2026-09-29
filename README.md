@@ -16,7 +16,7 @@ ORACLE is my attempt to make that failure mode measurable and fixable.
 
 **This paper specifically asks:** where in a retrieval-augmented pipeline does literacy conditioning actually reach? Holding the retrieved context fixed and varying only whether generation used the correct literacy band, which measured outcomes move and which do not?
 
-That is narrower than the motivation above, and deliberately so. The comparison run is correct band against wrong band on identical context. It is **not** literacy-conditioned RAG against standard unconditioned RAG: no such baseline was built, which is the study's main limitation and is stated in Section 6.4 of the paper. Comprehension outcomes were not measured either. The question as originally framed, quoted above the rewrite, is the motivation; the question answered is the one stated here.
+That is narrower than the motivation above, and deliberately so. The comparison run is correct band against wrong band on identical context. It is **not** literacy-conditioned RAG against standard unconditioned RAG: no such baseline was built, which is the study's main limitation and is stated in Section 5.4 of the paper. Comprehension outcomes were not measured either. The question as originally framed, quoted above the rewrite, is the motivation; the question answered is the one stated here.
 
 ---
 
@@ -32,7 +32,7 @@ Three failure modes that appear in production and are invisible to standard benc
 
 **Failure 3, Readability metrics are not comprehension.** Flesch-Kincaid and SMOG measure surface features, sentence length and syllable count, and a text can score as accessible while remaining unreadable in practice. This corpus shows the failure directly: MedMCQA's short, jargon-dense exam stems make up 80.3% of the low-literacy band, while PLABA, the one source that is genuine plain-language writing, contributes none of it.
 
-An earlier version of this section claimed that readability scores stay stable after a model update while user comprehension drops within weeks. That claim had no source and nothing here measures it; comprehension was never measured at all. What is measured is metric sensitivity, in Section 5.5 of the paper.
+An earlier version of this section claimed that readability scores stay stable after a model update while user comprehension drops within weeks. That claim had no source and nothing here measures it; comprehension was never measured at all. What is measured is metric sensitivity, in Section 4.5 of the paper.
 
 ORACLE surfaces the first two directly and documents the third as an unmitigated limitation.
 
@@ -44,7 +44,7 @@ ORACLE surfaces the first two directly and documents the third as an unmitigated
 > in early 2026. It is rewritten here to describe what was actually built and
 > evaluated, because several planned components were never implemented and a reader
 > comparing this file with the paper would have found them contradicting each other.
-> docs/paper_draft.md is the current statement of the study, and Section 6.4 lists
+> docs/paper_draft.md is the current statement of the study, and Section 5.4 lists
 > what remains future work.
 
 **Stage 1, Document ingestion and literacy scoring:**
