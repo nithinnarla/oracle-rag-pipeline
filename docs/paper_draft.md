@@ -46,7 +46,7 @@ The remainder of this paper proceeds as follows. Section 2 reviews related work 
 
 ### 1.5 Statement of Significance
 
-| Heading | Content |
+|  |  |
 |---|---|
 | **Problem or Issue** | Retrieval-augmented generation for health information returns the same documents to every user regardless of reading level, and accessibility is normally addressed by simplifying the output afterwards. |
 | **What is Already Known** | Simplification performed without the full source context introduces factual errors that were not in the source. Readability formulas are widely used as proxies for health literacy. |
