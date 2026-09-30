@@ -42,7 +42,7 @@ This paper makes three contributions. First, ORACLE is the first system, to our 
 
 ### 1.4 Paper Organization
 
-The remainder of this paper proceeds as follows. Section 2 reviews related work in RAG foundations, biomedical question-answering benchmarks, plain-language and health-literacy research, and health-literacy measurement frameworks. Section 3 covers ORACLE's methodology, spanning the four-stage pipeline, the retrieval corpus, literacy-band classification, the retrieval and generation mechanism, and the evaluation metrics. Experimental setup and reproducibility follow in Section 4. Section 4 reports results, Section 5 discusses their implications, and Section 6 closes the paper.
+The remainder of this paper proceeds as follows. Section 2 reviews related work in RAG foundations, biomedical question-answering benchmarks, plain-language and health-literacy research, and health-literacy measurement frameworks. Section 3 covers ORACLE's methodology, spanning the four-stage pipeline, the retrieval corpus, literacy-band classification, the retrieval and generation mechanism, the evaluation metrics, and the implementation and reproducibility details. Section 4 reports results, Section 5 discusses their implications, and Section 6 closes the paper.
 
 ### 1.5 Statement of Significance
 
