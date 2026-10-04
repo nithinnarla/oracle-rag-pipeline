@@ -247,7 +247,7 @@ data/processed/*.npy
 
 # Processed corpus, regenerate with text_preprocessor.py
 # oracle_corpus.csv and pubmed_abstracts.csv contain PubMed abstract text
-# (publisher copyright, not ours to redistribute) -- do not track these two
+# (publisher copyright, not ours to redistribute). Do not track these two
 data/processed/literacy_classifier.pkl
 data/processed/literacy_classifier_report.txt
 
